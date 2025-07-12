@@ -110,13 +110,13 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         url = f"https://learn.aakashitutor.com/api/getquizfromid?nid={nid}"
         response = requests.get(url, timeout=10)
         response.raise_for_status()
-        
-        # DEBUG: Print full raw response
+
+        # DEBUG: Print raw response in console
         print("INFO DEBUG:", response.text)
 
         data = response.json()
 
-        # Handle both dict and list response
+        # Handle both list and dict
         if isinstance(data, list) and data:
             quiz = data[0]
         elif isinstance(data, dict) and "nid" in data:
@@ -126,16 +126,14 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         title = quiz.get("title", "N/A")
         display_name = quiz.get("display_name", "N/A")
-        subjects = quiz.get("subject_displayname", [])
-
-        subject_line = ", ".join(subjects) if subjects else "N/A"
+        syllabus = quiz.get("content_groups_title", "N/A")
 
         msg = f"""📑 *Test Info*
 
 🆔 *NID:* `{nid}`
 📝 *Title:* *{title}*
 📛 *Display Name:* *{display_name}*
-📚 *Subjects:* *{subject_line}*
+📚 *Syllabus:* *{description}*
 """
         await update.message.reply_text(msg, parse_mode="Markdown")
 
