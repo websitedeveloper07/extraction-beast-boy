@@ -144,10 +144,6 @@ def extract_syllabus(subject, html):
 from html import unescape
 from bs4 import BeautifulSoup
 import re
-
-from html import unescape
-from bs4 import BeautifulSoup
-import re
 import html
 
 async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -172,16 +168,20 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         quiz = data[0]
         title = quiz.get("title", "N/A")
         display_name = quiz.get("display_name", "N/A")
-        description = quiz.get("description", "")
+        description = quiz.get("description", "") or ""  # safe fallback to empty string
 
-        # Clean description
-        soup = BeautifulSoup(unescape(description), "html.parser")
-        raw_text = soup.get_text(separator="\n").strip()
+        # Clean and parse syllabus description
+        clean_text = ""
+        try:
+            soup = BeautifulSoup(unescape(description), "html.parser")
+            clean_text = soup.get_text(separator="\n").strip()
+        except Exception:
+            clean_text = ""
 
-        # Find subject-wise syllabus using regex
-        matches = re.findall(r'([A-Za-z &]+)\s*:\s*(.+?)(?:\n|$)', raw_text)
+        # Extract subject-wise syllabus using regex
+        matches = re.findall(r'([A-Za-z &]+)\s*:\s*(.+?)(?:\n|$)', clean_text)
 
-        # Start building message
+        # Start building the message
         full_msg = f"📘 <b>Test Info</b>\n\n"
         full_msg += f"📝 <b>Title:</b> {html.escape(title)}\n"
         full_msg += f"📛 <b>Display Name:</b> {html.escape(display_name)}\n"
@@ -199,7 +199,6 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         logger.error(f"Error fetching info for NID {nid}: {e}")
         await update.message.reply_text(f"❌ Failed to fetch info for NID {nid}.")
-
 
 
 
