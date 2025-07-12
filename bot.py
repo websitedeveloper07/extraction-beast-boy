@@ -5,6 +5,7 @@ import requests
 from io import BytesIO
 from bs4 import BeautifulSoup
 import psutil
+from telegram import InputMediaDocument
 
 from telegram import Update
 from telegram.ext import (
@@ -125,10 +126,15 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Only_Question_Paper.html": generate_html_only_questions(data, title, desc)
     }
 
-      for filename, html in htmls.items():
+          docs = []
+    for filename, html in htmls.items():
         bio = BytesIO(html.encode("utf-8"))
         bio.name = filename
-        await update.message.reply_document(bio, filename=filename)
+        docs.append(bio)
+
+    await update.message.reply_media_group(
+        [InputMediaDocument(media=doc, filename=doc.name) for doc in docs]
+    )
 
 
     extracted_papers_count += 1
