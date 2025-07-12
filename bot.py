@@ -84,13 +84,17 @@ async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cpu = psutil.cpu_percent()
     ram = psutil.virtual_memory()
     msg = f"""📊 *Bot Status*
-• Extracted Papers: `{extracted_papers_count}`
-• CPU Usage: `{cpu}%`
-• RAM Usage: `{ram.percent}%`
-• Authorized Users: `{len(AUTHORIZED_USER_IDS)}`
-• Plan: `{PLAN}`
+
+📄 Extracted Papers: *{extracted_papers_count}*
+🧠 CPU Usage: *{cpu}%*
+💾 RAM Usage: *{ram.percent}%*
+👥 Authorized Users: *{len(AUTHORIZED_USER_IDS)}*
+🪪 Plan: *{𝑷𝒓𝒐 𝑷𝒍𝒂𝒏⚡}*
+👑 Owner: *『𝗥ᴏᴄ𝗄𝑦』*
 """
     await update.message.reply_text(msg, parse_mode='Markdown')
+
+
 
 
 
@@ -123,10 +127,18 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Only_Question_Paper.html": generate_html_only_questions(data, title, desc)
     }
 
-    for filename, html in htmls.items():
-        bio = BytesIO(html.encode("utf-8"))
-        bio.name = filename
-        await update.message.reply_document(bio, filename=filename)
+   docs = []
+for filename, html in htmls.items():
+    bio = BytesIO(html.encode("utf-8"))
+    bio.name = filename
+    docs.append(bio)
+
+await update.message.reply_media_group(
+    [ 
+        InputMediaDocument(media=doc, filename=doc.name)
+        for doc in docs
+    ]
+)
 
     extracted_papers_count += 1
     await update.message.reply_text("✅ All HTML files sent!")
