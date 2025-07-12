@@ -127,13 +127,27 @@ from telegram.helpers import escape_markdown  # make sure this is at the top
 import re
 from bs4 import BeautifulSoup
 
+from html import escape
+from bs4 import BeautifulSoup
+
+def extract_syllabus(subject, html):
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+        lines = soup.get_text().split("\n")
+        for line in lines:
+            if subject.lower() in line.lower():
+                return line.strip()
+    except:
+        pass
+    return "Not found"
+
 async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
         await send_unauthorized_message(update)
         return
 
     if not context.args:
-        await update.message.reply_text("❌ Please provide a NID. Example: /info 4382000229")
+        await update.message.reply_text("❌ Please provide a NID. Example: /info 4385527980")
         return
 
     nid = context.args[0]
@@ -149,30 +163,17 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         quiz = data[0]
         title = quiz.get("title", "N/A")
         display_name = quiz.get("display_name", "N/A")
-        description_html = quiz.get("description", "")
+        desc = quiz.get("description", "")
 
-        # Extract syllabus using regex and clean HTML
-        syllabus_blocks = {"Physics": "", "Chemistry": "", "Mathematics": ""}
-        matches = re.findall(r"<strong>(.*?)\s*:\s*</strong>(.*?)<br>", description_html, re.DOTALL)
-        for subject, content in matches:
-            subject = subject.strip().capitalize()
-            if subject in syllabus_blocks:
-                clean = BeautifulSoup(content, "html.parser").get_text().strip()
-                syllabus_blocks[subject] = clean
+        # Extract syllabus lines
+        phy = extract_syllabus("Physics", desc)
+        chem = extract_syllabus("Chemistry", desc)
+        math = extract_syllabus("Mathematics", desc)
 
-        # Build the message with quote blocks
-        msg = f"*📑 Test Info:*\n\n" \
-              f"🎯 *Title:* {title}\n" \
-              f"📛 *Display Name:* {display_name}\n" \
-              f"📚 *Syllabus:*\n"
+        # Build quote-style message using HTML
+        text = f"""<b>📑 Test Info</b>\n\n<b>📝 Title:</b> {escape(title)}\n<b>📛 Display Name:</b> {escape(display_name)}\n\n<blockquote><b>📘 Physics:</b>\n{escape(phy)}</blockquote>\n<blockquote><b>🧪 Chemistry:</b>\n{escape(chem)}</blockquote>\n<blockquote><b>📐 Mathematics:</b>\n{escape(math)}</blockquote>"""
 
-        for subject in ["Physics", "Chemistry", "Mathematics"]:
-            content = syllabus_blocks.get(subject)
-            if content:
-                msg += f"\n*{subject}:*\n```{content}```"
-
-        await update.message.reply_text(msg, parse_mode="Markdown")
-
+        await update.message.reply_text(text, parse_mode="HTML")
     except Exception as e:
         logger.error(f"Error fetching info for NID {nid}: {e}")
         await update.message.reply_text(f"❌ Failed to fetch info for NID {nid}.")
