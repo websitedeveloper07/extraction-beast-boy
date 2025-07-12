@@ -44,8 +44,9 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 Commands:
 • `/extract` - Extracts and sends all 3 HTML formats for a given NID.
 • `/status` - Shows bot status, usage, and plan.
+• `/info <nid>` Gives info about nid, Test title/Display name etc.
 • `/au <user_id>` - Authorize a user (owner only).
-• `/ru <user_id>` - Revoke a user (owner only).
+• `/ru <user_id>` - Revoke a user (owner only). 
 """,
         parse_mode='Markdown'
     )
