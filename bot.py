@@ -161,7 +161,7 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         raw_description = quiz.get("description", "")
 
         # Start message with test info
-        msg = f"*📘 Test Info*\n\n"
+        msg = f"*📘 NID Info*\n\n"
         msg += f"*📝 Title:* {escape_markdown(title)}\n"
         msg += f"*📛 Display Name:* {escape_markdown(display_name)}\n\n"
 
