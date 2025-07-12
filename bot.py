@@ -1,175 +1,176 @@
 import os
 import json
+import logging
 import requests
 from io import BytesIO
-import logging
-import re
 from bs4 import BeautifulSoup
-import psutil # For system status
+import psutil
 
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
+from telegram import Update
 from telegram.ext import (
-    ApplicationBuilder,
-    CommandHandler,
-    MessageHandler,
-    ConversationHandler,
-    CallbackQueryHandler,
-    ContextTypes,
-    filters,
+    ApplicationBuilder, CommandHandler, MessageHandler,
+    ConversationHandler, ContextTypes, filters
 )
-from telegram.error import Conflict
-from weasyprint import HTML, CSS # Ensure WeasyPrint is installed and its dependencies are met
 
+# === CONFIG ===
+BOT_TOKEN = "8163450084:AAFCadeMAzxD6Rb6nfYwJ5Ke5IR8HcCIhWM"  # Replace with your token
+OWNER_ID = 7796598050
+AUTHORIZED_USER_IDS = {OWNER_ID}
+PLAN = "PRO PLAN⚡"
+
+ASK_NID = 0
+extracted_papers_count = 0
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# --- Configuration ---
-# IMPORTANT: Replace with your actual bot token from BotFather
-BOT_TOKEN = "8163450084:AAFCadeMAzxD6Rb6nfYwJ5Ke5IR8HcCIhWM" 
-# IMPORTANT: Replace with your Telegram User ID (numeric) - only this user can authorize/revoke others
-OWNER_ID = 7796598050 
-
-# Set to store authorized user IDs. Initialize with the owner's ID.
-# This list controls who can use the bot.
-AUTHORIZED_USER_IDS = {OWNER_ID}
-
-# Counter for extracted papers
-extracted_papers_count = 0
-
-# Define conversation states
-ASK_NID = 0 # Only one state needed now as extraction is direct after NID
-WAIT_FOR_CHOICE = 1 # State for initial format choice
-
-# --- Helper Functions ---
-
 def is_authorized(user_id):
-    """Checks if a user ID is in the set of authorized users."""
     return user_id in AUTHORIZED_USER_IDS
 
-async def send_unauthorized_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Sends an unauthorized message to users who are not allowed."""
+async def send_unauthorized_message(update: Update):
     if update.message:
         await update.message.reply_text("❌ Access Denied. You are not authorized to use this bot.")
     elif update.callback_query:
-        await update.callback_query.answer("❌ Access Denied! You are not authorized.", show_alert=True)
-        await update.callback_query.message.reply_text("❌ Access Denied. You are not authorized to use this bot.")
-    logger.warning(f"Unauthorized access attempt by user ID: {update.effective_user.id}")
+        await update.callback_query.answer("❌ Access Denied!", show_alert=True)
 
+async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_authorized(update.effective_user.id):
+        await send_unauthorized_message(update)
+        return
 
-def fetch_locale_json_from_api(nid: str):
-    """
-    Fetches question data from the API for a given NID.
-    The API response is expected to be a dictionary where top-level keys are
-    individual question NIDs (e.g., "4379498037"), and each of these contains
-    language-specific sub-dictionaries (e.g., '843' for English).
-    This function extracts all English questions found in the response.
-    """
-    url = f"https://learn.aakashitutor.com/quiz/{nid}/getlocalequestions"
+    await update.message.reply_text(
+        "🤖 *HTML Extractor Bot*
+
+Commands:
+• `/extract` - Extracts and sends all 3 HTML formats for a given NID.
+• `/status` - Shows bot status, usage, and plan.
+• `/au <user_id>` - Authorize a user (owner only).
+• `/ru <user_id>` - Revoke a user (owner only).",
+        parse_mode='Markdown')
+
+async def authorize_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id != OWNER_ID:
+        await update.message.reply_text("🚫 Only the bot owner can use this command.")
+        return
+
     try:
-        response = requests.get(url, timeout=15)
-        response.raise_for_status() # Raise an HTTPError for bad responses (4xx or 5xx)
-        raw_data = response.json()
-        # Log the full raw data for debugging purposes
-        logger.info(f"Raw API response for NID {nid}: {json.dumps(raw_data, indent=2)}")
+        user_id = int(context.args[0])
+        AUTHORIZED_USER_IDS.add(user_id)
+        await update.message.reply_text(f"✅ User ID {user_id} authorized.")
+    except:
+        await update.message.reply_text("❌ Invalid usage. Example: /au 123456789")
 
-        processed_questions = []
+async def revoke_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id != OWNER_ID:
+        await update.message.reply_text("🚫 Only the bot owner can use this command.")
+        return
 
-        def is_valid_question_object(data_obj):
-            """
-            Checks if a dictionary has the minimum required keys for a question:
-            'body' (question text) and 'alternatives' (list of options).
-            """
-            return isinstance(data_obj, dict) and \
-                           "body" in data_obj and \
-                           "alternatives" in data_obj and \
-                           isinstance(data_obj.get("alternatives"), list)
+    try:
+        user_id = int(context.args[0])
+        if user_id == OWNER_ID:
+            await update.message.reply_text("🚫 You cannot revoke yourself.")
+            return
+        AUTHORIZED_USER_IDS.discard(user_id)
+        await update.message.reply_text(f"🗑️ User ID {user_id} revoked.")
+    except:
+        await update.message.reply_text("❌ Invalid usage. Example: /ru 123456789")
 
-        # The provided JSON snippet shows raw_data as a dictionary
-        # where keys are NIDs (e.g., "4379498037", "4379498039", "4379498041").
-        # Each of these NID-keyed objects then contains language-specific data.
-        if isinstance(raw_data, dict):
-            for question_nid_key, question_data_by_language in raw_data.items():
-                if isinstance(question_data_by_language, dict):
-                    # We are looking for the English version, which is consistently under the '843' key
-                    english_version = question_data_by_language.get("843")
-                    
-                    if is_valid_question_object(english_version):
-                        # Verify it's indeed English, though the '843' key strongly implies it.
-                        # The provided JSON shows 'language': ['843'] and 'language_names': ['English']
-                        # directly within the '843' object, so we can check those.
-                        languages = english_version.get("language", [])
-                        language_names = english_version.get("language_names", [])
-                        
-                        if "843" in languages or "English" in language_names:
-                            processed_questions.append({
-                                "body": english_version.get("body", ""),
-                                "alternatives": english_version.get("alternatives", [])
-                            })
-                            logger.info(f"NID {nid}: Successfully extracted English question for internal NID {question_nid_key}.")
-                        else:
-                            logger.warning(f"NID {nid}: Found data under {question_nid_key} -> '843', but it's not explicitly marked as English.")
-                    else:
-                        logger.warning(f"NID {nid}: No valid question object found under {question_nid_key} -> '843'.")
-                else:
-                    logger.warning(f"NID {nid}: Content under top-level key '{question_nid_key}' is not a dictionary (expected language mapping).")
-        else:
-            logger.error(f"NID {nid}: Raw API response is not a dictionary (expected NID mapping). Type: {type(raw_data)}")
-            return None # Indicate failure if the top-level structure is wrong
+async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_authorized(update.effective_user.id):
+        await send_unauthorized_message(update)
+        return
 
-        if not processed_questions:
-            logger.error(f"NID {nid}: No English questions extracted from the API response.")
+    cpu = psutil.cpu_percent()
+    ram = psutil.virtual_memory()
+    msg = (
+        f"📊 *Bot Status*
+"
+        f"• Extracted Papers: `{extracted_papers_count}`\n"
+        f"• CPU Usage: `{cpu}%`\n"
+        f"• RAM Usage: `{ram.percent}%`\n"
+        f"• Authorized Users: `{len(AUTHORIZED_USER_IDS)}`\n"
+        f"• Plan: `{PLAN}`"
+    )
+    await update.message.reply_text(msg, parse_mode='Markdown')
 
-        return processed_questions
-    except requests.exceptions.RequestException as req_err:
-        logger.error(f"Network error fetching questions for NID {nid}: {req_err}")
-        return None
-    except json.JSONDecodeError as json_err:
-        logger.error(f"JSON decode error for NID {nid}: API returned invalid JSON. Error: {json_err}")
-        return None
-    except Exception as e:
-        logger.error(f"An unexpected error occurred for NID {nid}: {e}", exc_info=True) # exc_info to print traceback
-        return None
+async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_authorized(update.effective_user.id):
+        await send_unauthorized_message(update)
+        return ConversationHandler.END
 
-def fetch_test_title_and_description(nid: str):
-    """
-    Fetches the test title and description from the API for a given NID.
-    """
-    url = f"https://learn.aakashitutor.com/api/getquizfromid?nid={nid}"
+    await update.message.reply_text("🔢 Please send the NID to extract:")
+    return ASK_NID
+
+async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global extracted_papers_count
+    nid = update.message.text.strip()
+    if not nid.isdigit():
+        await update.message.reply_text("❌ Invalid NID. Please send numbers only.")
+        return ASK_NID
+
+    await update.message.reply_text("🔍 Extracting data and generating HTMLs...")
+
+    data = fetch_locale_json_from_api(nid)
+    if not data:
+        await update.message.reply_text("⚠️ No valid data found for this NID.")
+        return ConversationHandler.END
+
+    title, desc = fetch_test_title_and_description(nid)
+    htmls = {
+        "QP_with_Answers.html": generate_html_with_answers(data, title, desc),
+        "Only_Answer_Key.html": generate_answer_key_table(data, title, desc),
+        "Only_Question_Paper.html": generate_html_only_questions(data, title, desc)
+    }
+
+    for filename, html in htmls.items():
+        bio = BytesIO(html.encode("utf-8"))
+        bio.name = filename
+        await update.message.reply_document(bio, filename=filename)
+
+    extracted_papers_count += 1
+    await update.message.reply_text("✅ All HTML files sent!")
+    return ConversationHandler.END
+
+# === Utility Functions ===
+def fetch_locale_json_from_api(nid):
+    url = f"https://learn.aakashitutor.com/quiz/{nid}/getlocalequestions"
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
-        data = response.json()
-        if isinstance(data, list) and data:
-            item = data[0]
-            title = item.get("title", f"Test {nid}").strip()
-            description = item.get("description", "").strip()
-            return title, description
-        return f"Test {nid}", "" # Default title if not found
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Network error fetching title for NID {nid}: {e}")
-        return f"Test {nid}", ""
-    except json.JSONDecodeError:
-        logger.error(f"JSON decode error for title for NID {nid}: API returned invalid JSON.")
-        return f"Test {nid}", ""
-    except Exception as e:
-        logger.error(f"An unexpected error occurred fetching title for NID {nid}: {e}")
-        return f"Test {nid}", ""
+        raw = response.json()
+        out = []
+        for block in raw.values():
+            english = block.get("843")
+            if english and "body" in english:
+                out.append({
+                    "body": english["body"],
+                    "alternatives": english.get("alternatives", [])
+                })
+        return out
+    except:
+        return None
 
-def process_html_content(html_string: str) -> str:
-    """
-    Processes HTML content, specifically fixing protocol-relative image URLs.
-    """
-    if not html_string:
+def fetch_test_title_and_description(nid):
+    url = f"https://learn.aakashitutor.com/api/getquizfromid?nid={nid}"
+    try:
+        response = requests.get(url, timeout=10)
+        data = response.json()
+        if data:
+            return data[0].get("title", f"Test_{nid}"), data[0].get("description", "")
+    except:
+        pass
+    return f"Test_{nid}", ""
+
+def process_html_content(html):
+    if not html:
         return ""
-    soup = BeautifulSoup(html_string, 'html.parser')
-    for img_tag in soup.find_all('img'):
-        src = img_tag.get('src')
+    soup = BeautifulSoup(html, 'html.parser')
+    for img in soup.find_all('img'):
+        src = img.get('src')
         if src and src.startswith('//'):
-            # Convert protocol-relative URL to absolute HTTPS URL
-            img_tag['src'] = f"https:{src}"
+            img['src'] = f"https:{src}"
     return str(soup)
 
-# --- HTML Generation Functions (Unchanged as per request) ---
+# === HTML Generators ===
 def generate_html_with_answers(data, test_title, syllabus):
     """Generate HTML with questions and highlighted correct answers - PDF friendly"""
     html = f"""
@@ -386,7 +387,7 @@ def generate_html_with_answers(data, test_title, syllabus):
     for idx, q in enumerate(data, 1):
         processed_body = process_html_content(q['body'])
         html += "<div class='question-card'>"
-        html += "<div class='question-watermark'><a href='https://t.me/rockyleakss' target='_blank'>@𝓡𝓞𝑪𝓚𝓚𝓨</a></div>"
+        html += "<div class='question-watermark'><a href='https://t.me/rockyleakss' target='_blank'>@𝓡𝓞𝑪𝓚𝓨</a></div>"
         html += f"<div class='question-title'>Question {idx}</div>"
         html += f"<div class='question-body'>{processed_body}</div>"
         html += "<div class='options'>"
@@ -610,7 +611,7 @@ def generate_html_only_questions(data, test_title, syllabus):
     for idx, q in enumerate(data, 1):
         processed_body = process_html_content(q['body'])
         html += "<div class='question-card'>"
-        html += "<div class='question-watermark'><a href='https://t.me/rockyleakss' target='_blank'>@𝓡𝓞𝑪𝓚𝓚𝓨</a></div>"
+        html += "<div class='question-watermark'><a href='https://t.me/rockyleakss' target='_blank'>@𝓡𝓞𝑪𝓚𝓨</a></div>"
         html += f"<div class='question-title'>Question {idx}</div>"
         html += f"<div class='question-body'>{processed_body}</div>"
         html += "<div class='options'>"
@@ -895,289 +896,25 @@ def generate_answer_key_table(data, test_title, syllabus):
 </html>
     """
     return html
-
-# --- Command Handlers ---
-
-async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    """
-    Starts the conversation, displays bot info, and presents format options to authorized users.
-    """
-    user_id = update.effective_user.id
-    if not is_authorized(user_id):
-        await send_unauthorized_message(update, context)
-        return ConversationHandler.END
-
-    message_text = (
-        "Hello! I am your document extraction bot.\n\n"
-        "Here's what I can do:\n"
-        "• Select an option below to extract content from NID.\n"
-        "• `/status` - Check the bot's working status and extracted papers count.\n"
-        "• `/au <user_id>` - (Owner only) Authorize a user to use this bot.\n"
-        "• `/ru <user_id>` - (Owner only) Revoke authorization from a user.\n\n"
-        "Please choose the desired output format below:"
-    )
-
-    keyboard = [
-        [InlineKeyboardButton("📝 QP + Answer Key", callback_data="qp_with_answers")],
-        [InlineKeyboardButton("🔑 Only Answer Key", callback_data="only_key")],
-        [InlineKeyboardButton("❓ Only Question Paper", callback_data="only_qp")]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    await update.message.reply_text(message_text, reply_markup=reply_markup)
-    return WAIT_FOR_CHOICE
-
-async def authorize_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Allows the owner to authorize another user."""
-    if update.effective_user.id != OWNER_ID:
-        await update.message.reply_text("🚫 Only the bot owner can use this command.")
-        return
-
-    if not context.args:
-        await update.message.reply_text("Usage: `/au <user_id>`\nExample: `/au 123456789`", parse_mode='Markdown')
-        return
-
-    try:
-        user_id_to_authorize = int(context.args[0])
-        if user_id_to_authorize not in AUTHORIZED_USER_IDS:
-            AUTHORIZED_USER_IDS.add(user_id_to_authorize)
-            await update.message.reply_text(f"✅ User ID `{user_id_to_authorize}` has been authorized.", parse_mode='Markdown')
-            logger.info(f"User ID {user_id_to_authorize} authorized by {update.effective_user.id}")
-        else:
-            await update.message.reply_text(f"❕ User ID `{user_id_to_authorize}` is already authorized.", parse_mode='Markdown')
-    except ValueError:
-        await update.message.reply_text("❌ Invalid User ID. Please provide a numerical ID.")
-    except Exception as e:
-        logger.error(f"Error in authorize_user: {e}", exc_info=True)
-        await update.message.reply_text("An error occurred while trying to authorize the user.")
-
-async def revoke_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Allows the owner to revoke authorization from a user."""
-    if update.effective_user.id != OWNER_ID:
-        await update.message.reply_text("🚫 Only the bot owner can use this command.")
-        return
-
-    if not context.args:
-        await update.message.reply_text("Usage: `/ru <user_id>`\nExample: `/ru 123456789`", parse_mode='Markdown')
-        return
-
-    try:
-        user_id_to_revoke = int(context.args[0])
-        if user_id_to_revoke == OWNER_ID:
-            await update.message.reply_text("🚫 You cannot revoke authorization from yourself (the owner).")
-            return
-
-        if user_id_to_revoke in AUTHORIZED_USER_IDS:
-            AUTHORIZED_USER_IDS.remove(user_id_to_revoke)
-            await update.message.reply_text(f"🗑️ User ID `{user_id_to_revoke}` has had their authorization revoked.", parse_mode='Markdown')
-            logger.info(f"User ID {user_id_to_revoke} revoked by {update.effective_user.id}")
-        else:
-            await update.message.reply_text(f"❕ User ID `{user_id_to_revoke}` is not currently authorized.", parse_mode='Markdown')
-    except ValueError:
-        await update.message.reply_text("❌ Invalid User ID. Please provide a numerical ID.")
-    except Exception as e:
-        logger.error(f"Error in revoke_user: {e}", exc_info=True)
-        await update.message.reply_text("An error occurred while trying to revoke authorization.")
-
-
-async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    """
-    Handles the user's format choice from the inline keyboard.
-    """
-    if not is_authorized(update.effective_user.id):
-        await send_unauthorized_message(update, context)
-        return ConversationHandler.END
-
-    query = update.callback_query
-    await query.answer() # Acknowledge the callback query
-
-    context.user_data['mode'] = query.data
     
-    # Directly ask for NID after format selection
-    await query.edit_message_text("🔢 Please send the NID (Numerical ID) for the test you want to extract:")
-    return ASK_NID
-
-async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    """
-    Receives the NID from the user and performs all extractions.
-    """
-    if not is_authorized(update.effective_user.id):
-        await send_unauthorized_message(update, context)
-        return ConversationHandler.END
-
-    nid = update.message.text.strip()
-    if not nid.isdigit():
-        await update.message.reply_text("❌ Invalid NID. Please send a numerical ID.")
-        return ASK_NID # Stay in this state until a valid NID is provided
-
-    await update.message.reply_text("🚀 Fetching data and generating files... This may take a moment.")
-    
-    global extracted_papers_count
-
-    try:
-        data = fetch_locale_json_from_api(nid)
-        if not data:
-            await update.message.reply_text("⚠️ Could not retrieve question data for the provided NID. Please check the NID or try again later.")
-            return ConversationHandler.END # End conversation
-
-        test_title, syllabus = fetch_test_title_and_description(nid)
-
-        # --- Generate and Send all formats ---
-        # 1. QP + Answer Key (PDF)
-        html_qp_answers = generate_html_with_answers(data, test_title, syllabus)
-        qp_answers_pdf_file = BytesIO()
-        HTML(string=html_qp_answers).write_pdf(qp_answers_pdf_file)
-        qp_answers_pdf_file.seek(0)
-        await update.message.reply_document(
-            qp_answers_pdf_file,
-            filename=f"{test_title}_QP_with_Answers.pdf",
-            caption="📝 Question Paper with Answer Key (PDF)"
-        )
-        logger.info(f"Sent QP with Answers PDF for NID {nid}")
-
-        # 2. Only Answer Key (PDF)
-        html_only_key = generate_answer_key_table(data, test_title, syllabus)
-        only_key_pdf_file = BytesIO()
-        HTML(string=html_only_key).write_pdf(only_key_pdf_file)
-        only_key_pdf_file.seek(0)
-        await update.message.reply_document(
-            only_key_pdf_file,
-            filename=f"{test_title}_Only_Answer_Key.pdf",
-            caption="🔑 Only Answer Key (PDF)"
-        )
-        logger.info(f"Sent Only Answer Key PDF for NID {nid}")
-
-        # 3. Only Question Paper (PDF)
-        html_only_qp = generate_html_only_questions(data, test_title, syllabus)
-        only_qp_pdf_file = BytesIO()
-        HTML(string=html_only_qp).write_pdf(only_qp_pdf_file)
-        only_qp_pdf_file.seek(0)
-        await update.message.reply_document(
-            only_qp_pdf_file,
-            filename=f"{test_title}_Only_Question_Paper.pdf",
-            caption="❓ Only Question Paper (PDF)"
-        )
-        logger.info(f"Sent Only Question Paper PDF for NID {nid}")
-        
-        extracted_papers_count += 1
-        await update.message.reply_text(
-            "✅ All requested formats have been extracted and sent!"
-        )
-
-    except Exception as e:
-        logger.error(f"Error during extraction for NID {nid}: {e}", exc_info=True)
-        await update.message.reply_text(
-            f"❌ An error occurred during extraction. Please ensure the NID is correct and try again.\nError: `{html.escape(str(e))}`"
-        , parse_mode='Markdown')
-    
-    return ConversationHandler.END # End the conversation after sending files
-
-async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Displays bot status including extracted papers count, CPU, and RAM usage."""
-    if not is_authorized(update.effective_user.id):
-        await send_unauthorized_message(update, context)
-        return
-
-    try:
-        cpu_usage = psutil.cpu_percent(interval=1) # Measures CPU usage over 1 second
-        ram_info = psutil.virtual_memory()
-        ram_total_gb = round(ram_info.total / (1024**3), 2)
-        ram_used_gb = round(ram_info.used / (1024**3), 2)
-        ram_percent = ram_info.percent
-
-        status_message = (
-            f"📊 **Bot Status**\n"
-            f"• Papers extracted: `{extracted_papers_count}`\n"
-            f"• CPU Usage: `{cpu_usage}%`\n"
-            f"• RAM Usage: `{ram_percent}%` (`{ram_used_gb}` GB / `{ram_total_gb}` GB)\n"
-            f"• Authorized Users: `{len(AUTHORIZED_USER_IDS)}`\n\n"
-            f"Authorized User IDs (Owner View): `{list(AUTHORIZED_USER_IDS)}`"
-        )
-        await update.message.reply_text(status_message, parse_mode='Markdown')
-    except Exception as e:
-        logger.error(f"Error fetching status: {e}", exc_info=True)
-        await update.message.reply_text(f"❌ Could not retrieve status information. Error: `{html.escape(str(e))}`", parse_mode='Markdown')
-
-async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Responds to unknown commands or general text messages if not in a conversation state."""
-    if not is_authorized(update.effective_user.id):
-        await send_unauthorized_message(update, context)
-        return
-
-    if update.message.text and update.message.text.startswith('/'):
-        await update.message.reply_text("🤷‍♂️ Sorry, I don't understand that command. Please use /start for available options.")
-    else:
-        # If not a command and not expecting NID, do nothing or provide general help
-        # This prevents the bot from constantly replying to non-command messages when not in a conversation.
-        pass
-
-async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Log the error and send a message to the user."""
-    logger.error(msg="Exception while handling an update:", exc_info=context.error)
-    if update.effective_message:
-        await update.effective_message.reply_text(
-            "An unexpected error occurred while processing your request. Please try again later or contact the bot administrator."
-        )
-
+# === Main ===
 def main():
-    """Start the bot."""
-    # Create the Application and pass your bot's token.
-    application = ApplicationBuilder().token(BOT_TOKEN).build()
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    # Conversation Handler for /start -> format choice -> NID input
     conv_handler = ConversationHandler(
-        entry_points=[CommandHandler("start", start_command)],
-        states={
-            WAIT_FOR_CHOICE: [CallbackQueryHandler(handle_callback_query)],
-            ASK_NID: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_nid)],
-        },
-        fallbacks=[
-            # This handler will catch any command during the conversation and tell the user to complete current task or restart.
-            # You might want more specific fallbacks or allow certain commands during conversation.
-            MessageHandler(filters.COMMAND, unknown_command_in_conv),
-            MessageHandler(filters.TEXT & ~filters.COMMAND, unexpected_text_in_conv)
-        ],
-        allow_reentry=True # Allows users to restart the conversation with /start
+        entry_points=[CommandHandler("extract", extract_command)],
+        states={ASK_NID: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_nid)]},
+        fallbacks=[]
     )
 
-    application.add_handler(conv_handler)
+    app.add_handler(CommandHandler("start", start_command))
+    app.add_handler(CommandHandler("status", status_command))
+    app.add_handler(CommandHandler("au", authorize_user))
+    app.add_handler(CommandHandler("ru", revoke_user))
+    app.add_handler(conv_handler)
 
-    # General Command Handlers (outside the conversation flow)
-    # These handlers will only trigger if a conversation is NOT active or if `fallbacks` redirect to them.
-    application.add_handler(CommandHandler("au", authorize_user))
-    application.add_handler(CommandHandler("ru", revoke_user))
-    application.add_handler(CommandHandler("status", status_command))
-    
-    # Generic handler for unknown commands or messages not caught by specific handlers (must be last)
-    application.add_handler(MessageHandler(filters.COMMAND, unknown))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, unknown)) # Catch any other text
-
-    # Error handler
-    application.add_error_handler(error_handler)
-
-    # Function to handle unknown commands within a conversation
-    async def unknown_command_in_conv(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        if not is_authorized(update.effective_user.id):
-            await send_unauthorized_message(update, context)
-            return ConversationHandler.END
-        await update.message.reply_text("Please complete the current task or use /start to restart.")
-
-    # Function to handle unexpected text within a conversation
-    async def unexpected_text_in_conv(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        if not is_authorized(update.effective_user.id):
-            await send_unauthorized_message(update, context)
-            return ConversationHandler.END
-        await update.message.reply_text("I'm expecting a numerical ID. Please provide the NID or use /start to cancel.")
-
-
-    # Run the bot until you press Ctrl-C
-    logger.info("Bot started polling...")
-    try:
-        application.run_polling(allowed_updates=Update.ALL_TYPES)
-    except Conflict:
-        logger.warning("Conflict error: Another bot instance is likely running. Please ensure only one instance is active.")
-    except Exception as e:
-        logger.critical(f"Unhandled exception in main application loop: {e}", exc_info=True)
+    logger.info("Bot started...")
+    app.run_polling()
 
 if __name__ == '__main__':
     main()
