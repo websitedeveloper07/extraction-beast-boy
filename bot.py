@@ -37,8 +37,8 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await send_unauthorized_message(update)
         return
 
-await update.message.reply_text(
-    """🤖 *HTML Extractor Bot*
+    await update.message.reply_text(
+        """🤖 *HTML Extractor Bot*
 
 Commands:
 • `/extract` - Extracts and sends all 3 HTML formats for a given NID.
@@ -46,9 +46,8 @@ Commands:
 • `/au <user_id>` - Authorize a user (owner only).
 • `/ru <user_id>` - Revoke a user (owner only).
 """,
-    parse_mode='Markdown'
-)
-
+        parse_mode='Markdown'
+    )
 
 async def authorize_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != OWNER_ID:
@@ -84,16 +83,15 @@ async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     cpu = psutil.cpu_percent()
     ram = psutil.virtual_memory()
-    msg = (
-        f"📊 *Bot Status*
-"
-        f"• Extracted Papers: `{extracted_papers_count}`\n"
-        f"• CPU Usage: `{cpu}%`\n"
-        f"• RAM Usage: `{ram.percent}%`\n"
-        f"• Authorized Users: `{len(AUTHORIZED_USER_IDS)}`\n"
-        f"• Plan: `{PLAN}`"
-    )
-    await update.message.reply_text(msg, parse_mode='Markdown')
+msg = f"""📊 *Bot Status*
+• Extracted Papers: `{extracted_papers_count}`
+• CPU Usage: `{cpu}%`
+• RAM Usage: `{ram.percent}%`
+• Authorized Users: `{len(AUTHORIZED_USER_IDS)}`
+• Plan: `{PLAN}`
+"""
+await update.message.reply_text(msg, parse_mode='Markdown')
+
 
 async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
