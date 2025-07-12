@@ -95,6 +95,42 @@ async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 """
     await update.message.reply_text(msg, parse_mode='Markdown')
 
+async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_authorized(update.effective_user.id):
+        await send_unauthorized_message(update)
+        return
+
+    if not context.args:
+        await update.message.reply_text("❌ Please provide a NID. Example: /info 4382000229")
+        return
+
+    nid = context.args[0]
+    try:
+        url = f"https://learn.aakashitutor.com/api/getquizfromid?nid={nid}"
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+
+        if not data or not isinstance(data, list):
+            raise ValueError("Invalid response format")
+
+        quiz = data[0]
+        title = quiz.get("title", "N/A")
+        display_name = quiz.get("display_name", "N/A")
+        subjects = quiz.get("subject_displayname", [])
+
+        subject_line = ", ".join(subjects) if subjects else "N/A"
+
+        msg = f"""📑 *Test Info*
+
+📝 *Title:* {title}
+📛 *Display Name:* {display_name}
+📚 *Subjects:* {subject_line}
+"""
+        await update.message.reply_text(msg, parse_mode="Markdown")
+
+    except Exception as e:
+        await update.message.reply_text(f"❌ Failed to fetch info for NID {nid}.")
 
 
 async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -919,6 +955,7 @@ def main():
 
     app.add_handler(CommandHandler("start", start_command))
     app.add_handler(CommandHandler("status", status_command))
+    app.add_handler(CommandHandler("info", info_command))
     app.add_handler(CommandHandler("au", authorize_user))
     app.add_handler(CommandHandler("ru", revoke_user))
     app.add_handler(conv_handler)
