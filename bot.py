@@ -37,15 +37,18 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await send_unauthorized_message(update)
         return
 
-    await update.message.reply_text(
-        "🤖 *HTML Extractor Bot*
+await update.message.reply_text(
+    """🤖 *HTML Extractor Bot*
 
 Commands:
 • `/extract` - Extracts and sends all 3 HTML formats for a given NID.
 • `/status` - Shows bot status, usage, and plan.
 • `/au <user_id>` - Authorize a user (owner only).
-• `/ru <user_id>` - Revoke a user (owner only).",
-        parse_mode='Markdown')
+• `/ru <user_id>` - Revoke a user (owner only).
+""",
+    parse_mode='Markdown'
+)
+
 
 async def authorize_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != OWNER_ID:
