@@ -141,13 +141,17 @@ def extract_syllabus(subject, html):
         pass
     return "Not found"
 
+from html import unescape
+from bs4 import BeautifulSoup
+import re
+
 async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
         await send_unauthorized_message(update)
         return
 
     if not context.args:
-        await update.message.reply_text("❌ Please provide a NID. Example: /info 4385527980")
+        await update.message.reply_text("❌ Please provide a NID. Example: `/info 4385527980`", parse_mode='Markdown')
         return
 
     nid = context.args[0]
@@ -163,20 +167,35 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         quiz = data[0]
         title = quiz.get("title", "N/A")
         display_name = quiz.get("display_name", "N/A")
-        desc = quiz.get("description", "")
+        description = quiz.get("description", "")
 
-        # Extract syllabus lines
-        phy = extract_syllabus("Physics", desc)
-        chem = extract_syllabus("Chemistry", desc)
-        math = extract_syllabus("Mathematics", desc)
+        # Clean and parse HTML description to extract subject-wise syllabus
+        soup = BeautifulSoup(unescape(description), "html.parser")
+        raw_text = soup.get_text(separator="\n").strip()
 
-        # Build quote-style message using HTML
-        text = f"""<b>📑 Test Info</b>\n\n<b>📝 Title:</b> {escape(title)}\n<b>📛 Display Name:</b> {escape(display_name)}\n\n<blockquote><b>📘 Physics:</b>\n{escape(phy)}</blockquote>\n<blockquote><b>🧪 Chemistry:</b>\n{escape(chem)}</blockquote>\n<blockquote><b>📐 Mathematics:</b>\n{escape(math)}</blockquote>"""
+        # Find all lines that look like: Subject : Topics...
+        matches = re.findall(r'([A-Za-z &]+)\s*:\s*(.+)', raw_text)
 
-        await update.message.reply_text(text, parse_mode="HTML")
+        # Initial message with title and display name
+        main_msg = f"""📘 *Test Info*
+
+📝 *Title:* {title}
+📛 *Display Name:* {display_name}
+"""
+        await update.message.reply_text(main_msg, parse_mode='Markdown')
+
+        # Send each subject+syllabus as a quote block
+        if matches:
+            for subject, syllabus in matches:
+                quote = f"<blockquote><b>{subject.strip()}</b>: {syllabus.strip()}</blockquote>"
+                await update.message.reply_text(quote, parse_mode='HTML')
+        else:
+            await update.message.reply_text("_No syllabus info found in this test._", parse_mode="Markdown")
+
     except Exception as e:
         logger.error(f"Error fetching info for NID {nid}: {e}")
         await update.message.reply_text(f"❌ Failed to fetch info for NID {nid}.")
+
 
 
 
