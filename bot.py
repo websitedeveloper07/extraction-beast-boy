@@ -124,6 +124,9 @@ from bs4 import BeautifulSoup
 
 from telegram.helpers import escape_markdown  # make sure this is at the top
 
+import re
+from bs4 import BeautifulSoup
+
 async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
         await send_unauthorized_message(update)
@@ -146,35 +149,34 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         quiz = data[0]
         title = quiz.get("title", "N/A")
         display_name = quiz.get("display_name", "N/A")
-        description = quiz.get("description", "")
+        description_html = quiz.get("description", "")
 
-        # Extract subject-wise syllabus from description (HTML)
-        soup = BeautifulSoup(description, "html.parser")
-        lines = [line.strip() for line in soup.get_text().splitlines() if line.strip()]
-        subject_quotes = []
+        # Extract syllabus using regex and clean HTML
+        syllabus_blocks = {"Physics": "", "Chemistry": "", "Mathematics": ""}
+        matches = re.findall(r"<strong>(.*?)\s*:\s*</strong>(.*?)<br>", description_html, re.DOTALL)
+        for subject, content in matches:
+            subject = subject.strip().capitalize()
+            if subject in syllabus_blocks:
+                clean = BeautifulSoup(content, "html.parser").get_text().strip()
+                syllabus_blocks[subject] = clean
 
-        for line in lines:
-            if ':' in line:
-                subject, syllabus = line.split(':', 1)
-                subject_quotes.append(f"> *{subject.strip()}*:\n> {syllabus.strip()}")
+        # Build the message with quote blocks
+        msg = f"*📑 Test Info:*\n\n" \
+              f"🎯 *Title:* {title}\n" \
+              f"📛 *Display Name:* {display_name}\n" \
+              f"📚 *Syllabus:*\n"
 
-        # Construct the final message
-        msg = f"""📑 *Test Info*\n
-📝 *Title:* {title}
-📛 *Display Name:* {display_name}
-📚 *Syllabus:*"""
+        for subject in ["Physics", "Chemistry", "Mathematics"]:
+            content = syllabus_blocks.get(subject)
+            if content:
+                msg += f"\n*{subject}:*\n```{content}```"
 
-        # Join syllabus lines
-        for quote in subject_quotes:
-            msg += f"\n\n{quote}"
-
-        # Escape and send using MarkdownV2
-        escaped_msg = escape_markdown(msg, version=2)
-        await update.message.reply_text(escaped_msg, parse_mode="MarkdownV2")
+        await update.message.reply_text(msg, parse_mode="Markdown")
 
     except Exception as e:
-        logging.error(f"INFO CMD ERROR: {e}")
+        logger.error(f"Error fetching info for NID {nid}: {e}")
         await update.message.reply_text(f"❌ Failed to fetch info for NID {nid}.")
+
 
 
 
