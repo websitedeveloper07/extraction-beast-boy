@@ -96,6 +96,12 @@ async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 """
     await update.message.reply_text(msg, parse_mode='Markdown')
 
+from bs4 import BeautifulSoup
+
+def clean_html(html):
+    """Convert HTML to clean plain text."""
+    return BeautifulSoup(html or "", "html.parser").get_text(separator="\n", strip=True)
+
 async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
         await send_unauthorized_message(update)
@@ -112,26 +118,22 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         response.raise_for_status()
         data = response.json()
 
-        print("INFO DEBUG:", json.dumps(data, indent=2))  # log for debug
+        if not isinstance(data, list) or not data:
+            raise ValueError("Empty or invalid API response")
 
-        # Fix: Handle list or dict formats
-        if isinstance(data, list) and len(data) > 0:
-            quiz = data[0]
-        elif isinstance(data, dict) and "nid" in data:
-            quiz = data
-        else:
-            raise ValueError("Unexpected format or empty response")
-
+        quiz = data[0]
         title = quiz.get("title", "N/A")
         display_name = quiz.get("display_name", "N/A")
-        syllabus = quiz.get("content_groups_title", "N/A")
+        raw_description = quiz.get("description", "")
+        syllabus = clean_html(raw_description) or "N/A"
 
         msg = f"""📑 *Test Info*
 
 🆔 *NID:* `{nid}`
 📝 *Title:* *{title}*
 📛 *Display Name:* *{display_name}*
-📚 *Syllabus:* *{syllabus}*
+📚 *Syllabus:*
+{syllabus}
 """
         await update.message.reply_text(msg, parse_mode="Markdown")
 
