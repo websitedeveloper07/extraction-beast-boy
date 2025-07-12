@@ -125,12 +125,16 @@ from bs4 import BeautifulSoup
 from telegram.helpers import escape_markdown  # make sure this is at the top
 
 import re
+import logging
+import requests
 from html import unescape
+from telegram import Update
+from telegram.ext import ContextTypes
 
 def escape_markdown(text):
     if not text:
         return ""
-    return re.sub(r'([_*\[\]()~`>#+\-=|{}.!\\])', r'\\\1', text)
+    return re.sub(r'([_*\[\]()~`>#+\-=|{}.!\\])', r'\\\1', str(text))
 
 async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
@@ -156,30 +160,36 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         display_name = quiz.get("display_name", "N/A")
         raw_description = quiz.get("description", "")
 
-        # Clean HTML entities
-        decoded = unescape(raw_description)
+        # Escape title and name
+        title_md = escape_markdown(title)
+        display_md = escape_markdown(display_name)
 
-        # Extract subject-wise syllabus using regex
+        # Try to decode HTML entities
+        decoded = unescape(raw_description or "")
+
+        # Extract subject-wise syllabus
         syllabus_blocks = []
         matches = re.findall(r'<strong>([^<:]+)\s*:\s*</strong>(.*?)<br>', decoded, re.IGNORECASE)
+
         for subject, content in matches:
             subject = escape_markdown(subject.strip())
             content = escape_markdown(content.strip())
-            block = f"> *{subject}*: {content}"
+            block = f">>> *{subject}*\n{content}"
             syllabus_blocks.append(block)
 
         if not syllabus_blocks:
-            syllabus_blocks = ["> No syllabus details available."]
+            syllabus_blocks = [">>> *Syllabus*\nNot on Server"]
 
-        # Main message
-        head_msg = f"*📘 Test Info*\n\n*📝 Title:* {escape_markdown(title)}\n*📛 Display Name:* {escape_markdown(display_name)}\n\n*📚 Syllabus:*"
-        syllabus_msg = "\n".join(syllabus_blocks)
+        # Send single message with all parts
+        msg = f"*📘 Test Info*\n\n*📝 Title:* {title_md}\n*📛 Display Name:* {display_md}\n\n"
+        msg += "\n\n".join(syllabus_blocks)
 
-        await update.message.reply_text(f"{head_msg}\n\n{syllabus_msg}", parse_mode="MarkdownV2")
+        await update.message.reply_text(msg, parse_mode="MarkdownV2")
 
     except Exception as e:
         logging.error(f"Error fetching info for NID {nid}: {e}")
         await update.message.reply_text(f"❌ Failed to fetch info for NID {nid}.")
+
 
 
 async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
