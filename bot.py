@@ -160,35 +160,29 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         display_name = quiz.get("display_name", "N/A")
         raw_description = quiz.get("description", "")
 
-        # Escape title and name
-        title_md = escape_markdown(title)
-        display_md = escape_markdown(display_name)
+        # Start message with test info
+        msg = f"*📘 Test Info*\n\n"
+        msg += f"*📝 Title:* {escape_markdown(title)}\n"
+        msg += f"*📛 Display Name:* {escape_markdown(display_name)}\n\n"
 
-        # Try to decode HTML entities
+        # Decode and extract syllabus
         decoded = unescape(raw_description or "")
-
-        # Extract subject-wise syllabus
-        syllabus_blocks = []
         matches = re.findall(r'<strong>([^<:]+)\s*:\s*</strong>(.*?)<br>', decoded, re.IGNORECASE)
 
-        for subject, content in matches:
-            subject = escape_markdown(subject.strip())
-            content = escape_markdown(content.strip())
-            block = f">>> *{subject}*\n{content}"
-            syllabus_blocks.append(block)
+        if not matches:
+            msg += "*📚 Syllabus:*\n>>> Not on Server"
+        else:
+            for subject, content in matches:
+                subject_md = escape_markdown(subject.strip())
+                content_md = escape_markdown(content.strip())
+                msg += f"*{subject_md}*\n>>> {content_md}\n\n"
 
-        if not syllabus_blocks:
-            syllabus_blocks = [">>> *Syllabus*\nNot on Server"]
-
-        # Send single message with all parts
-        msg = f"*📘 Test Info*\n\n*📝 Title:* {title_md}\n*📛 Display Name:* {display_md}\n\n"
-        msg += "\n\n".join(syllabus_blocks)
-
-        await update.message.reply_text(msg, parse_mode="MarkdownV2")
+        await update.message.reply_text(msg.strip(), parse_mode="MarkdownV2")
 
     except Exception as e:
         logging.error(f"Error fetching info for NID {nid}: {e}")
         await update.message.reply_text(f"❌ Failed to fetch info for NID {nid}.")
+
 
 
 
