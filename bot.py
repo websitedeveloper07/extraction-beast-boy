@@ -89,10 +89,11 @@ async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 🧠 CPU Usage: *{cpu}%*
 💾 RAM Usage: *{ram.percent}%*
 👥 Authorized Users: *{len(AUTHORIZED_USER_IDS)}*
-🪪 Plan: *{PRO PLAN}*
+🪪 Plan: *{PLAN}*
 👑 Owner: *『𝗥ᴏᴄ𝗄𝑦』*
 """
     await update.message.reply_text(msg, parse_mode='Markdown')
+
 
 
 
