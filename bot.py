@@ -83,14 +83,15 @@ async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     cpu = psutil.cpu_percent()
     ram = psutil.virtual_memory()
-msg = f"""📊 *Bot Status*
+    msg = f"""📊 *Bot Status*
 • Extracted Papers: `{extracted_papers_count}`
 • CPU Usage: `{cpu}%`
 • RAM Usage: `{ram.percent}%`
 • Authorized Users: `{len(AUTHORIZED_USER_IDS)}`
 • Plan: `{PLAN}`
 """
-await update.message.reply_text(msg, parse_mode='Markdown')
+    await update.message.reply_text(msg, parse_mode='Markdown')
+
 
 
 async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
