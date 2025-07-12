@@ -119,13 +119,16 @@ def extract_syllabus(description):
             subjects["Mathematics"] = line.replace("Mathematics :", "").strip()
     return subjects
 
+from html import unescape
+from bs4 import BeautifulSoup
+
 async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
         await send_unauthorized_message(update)
         return
 
     if not context.args:
-        await update.message.reply_text("❌ Please provide a NID. Example: /info 4382000229")
+        await update.message.reply_text("❌ Please provide a NID. Example: `/info 4385527980`", parse_mode='Markdown')
         return
 
     nid = context.args[0]
@@ -141,32 +144,45 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         quiz = data[0]
         title = quiz.get("title", "N/A")
         display_name = quiz.get("display_name", "N/A")
-        description = quiz.get("description", "")
+        raw_desc = quiz.get("description", "")
 
-        syllabus = extract_syllabus(description)
+        # Parse syllabus from description using BeautifulSoup
+        soup = BeautifulSoup(unescape(raw_desc), "html.parser")
+        text = soup.get_text(separator="\n").strip()
 
-        msg = (
-            f"> 📑 *Test Title:* {title}\n"
-            f"> 🏷️ *Display Name:* {display_name}\n\n"
-        )
+        # Extract subject-wise blocks
+        blocks = {}
+        current_subject = None
+        for line in text.splitlines():
+            line = line.strip()
+            if line.lower().startswith("physics"):
+                current_subject = "Physics"
+                blocks[current_subject] = line.split(":", 1)[-1].strip()
+            elif line.lower().startswith("chemistry"):
+                current_subject = "Chemistry"
+                blocks[current_subject] = line.split(":", 1)[-1].strip()
+            elif line.lower().startswith("mathematics"):
+                current_subject = "Mathematics"
+                blocks[current_subject] = line.split(":", 1)[-1].strip()
+            elif current_subject and line:
+                blocks[current_subject] += f" {line}"
 
-        for subject, topics in syllabus.items():
-            if subject == "Physics":
-                emoji = "📘"
-            elif subject == "Chemistry":
-                emoji = "🧪"
-            elif subject == "Mathematics":
-                emoji = "🧮"
-            else:
-                emoji = "📚"
+        # Build reply message
+        msg = f"""📄 *Test Info*
 
-            msg += f"> {emoji} *{subject}:*\n> {topics}\n\n"
+📝 *Title:* {title}
+📛 *Display Name:* {display_name}
+"""
 
-        await update.message.reply_text(msg.strip(), parse_mode="Markdown")
+        for subject, syllabus in blocks.items():
+            msg += f"\n> *{subject}* 📘\n> {syllabus}\n"
+
+        await update.message.reply_text(msg, parse_mode='Markdown')
 
     except Exception as e:
         await update.message.reply_text(f"❌ Failed to fetch info for NID {nid}.")
-        print(f"Error in /info for nid {nid}:", e)
+        print("INFO DEBUG ERROR:", e)
+
 
 
 
