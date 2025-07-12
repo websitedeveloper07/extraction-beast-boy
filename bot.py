@@ -39,7 +39,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     await update.message.reply_text(
-        """🤖 *HTML Extractor Bot*
+        """🤖 *Paper Extractor Bot*
 
 Commands:
 • `/extract` - Extracts and sends all 3 HTML formats for a given NID.
