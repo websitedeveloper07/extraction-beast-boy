@@ -102,13 +102,30 @@ def clean_html(html):
     """Convert HTML to clean plain text."""
     return BeautifulSoup(html or "", "html.parser").get_text(separator="\n", strip=True)
 
+from html import unescape
+from bs4 import BeautifulSoup
+
+def extract_syllabus(description):
+    soup = BeautifulSoup(description, 'html.parser')
+    lines = soup.get_text(separator="\n").splitlines()
+    subjects = {"Physics": "", "Chemistry": "", "Mathematics": ""}
+
+    for line in lines:
+        if "Physics" in line:
+            subjects["Physics"] = line.replace("Physics :", "").strip()
+        elif "Chemistry" in line:
+            subjects["Chemistry"] = line.replace("Chemistry :", "").strip()
+        elif "Mathematics" in line:
+            subjects["Mathematics"] = line.replace("Mathematics :", "").strip()
+    return subjects
+
 async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
         await send_unauthorized_message(update)
         return
 
     if not context.args:
-        await update.message.reply_text("❌ Please provide a NID. Example: /info 4385527980")
+        await update.message.reply_text("❌ Please provide a NID. Example: /info 4382000229")
         return
 
     nid = context.args[0]
@@ -118,28 +135,39 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         response.raise_for_status()
         data = response.json()
 
-        if not isinstance(data, list) or not data:
-            raise ValueError("Empty or invalid API response")
+        if not data or not isinstance(data, list):
+            raise ValueError("Invalid response format")
 
         quiz = data[0]
         title = quiz.get("title", "N/A")
         display_name = quiz.get("display_name", "N/A")
-        raw_description = quiz.get("description", "")
-        syllabus = clean_html(raw_description) or "N/A"
+        description = quiz.get("description", "")
 
-        msg = f"""📑 *Test Info*
+        syllabus = extract_syllabus(description)
 
-🆔 *NID:* `{nid}`
-📝 *Title:* *{title}*
-📛 *Display Name:* *{display_name}*
-📚 *Syllabus:*
-{syllabus}
-"""
-        await update.message.reply_text(msg, parse_mode="Markdown")
+        msg = (
+            f"> 📑 *Test Title:* {title}\n"
+            f"> 🏷️ *Display Name:* {display_name}\n\n"
+        )
+
+        for subject, topics in syllabus.items():
+            if subject == "Physics":
+                emoji = "📘"
+            elif subject == "Chemistry":
+                emoji = "🧪"
+            elif subject == "Mathematics":
+                emoji = "🧮"
+            else:
+                emoji = "📚"
+
+            msg += f"> {emoji} *{subject}:*\n> {topics}\n\n"
+
+        await update.message.reply_text(msg.strip(), parse_mode="Markdown")
 
     except Exception as e:
-        print("INFO ERROR:", e)
-        await update.message.reply_text(f"❌ Failed to fetch info for NID `{nid}`.", parse_mode="Markdown")
+        await update.message.reply_text(f"❌ Failed to fetch info for NID {nid}.")
+        print(f"Error in /info for nid {nid}:", e)
+
 
 
 
