@@ -96,10 +96,6 @@ async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 
-
-
-
-
 async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
         await send_unauthorized_message(update)
@@ -129,18 +125,11 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Only_Question_Paper.html": generate_html_only_questions(data, title, desc)
     }
 
-   docs = []
-for filename, html in htmls.items():
-    bio = BytesIO(html.encode("utf-8"))
-    bio.name = filename
-    docs.append(bio)
+      for filename, html in htmls.items():
+        bio = BytesIO(html.encode("utf-8"))
+        bio.name = filename
+        await update.message.reply_document(bio, filename=filename)
 
-await update.message.reply_media_group(
-    [ 
-        InputMediaDocument(media=doc, filename=doc.name)
-        for doc in docs
-    ]
-)
 
     extracted_papers_count += 1
     await update.message.reply_text("✅ All HTML files sent!")
