@@ -110,12 +110,20 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         url = f"https://learn.aakashitutor.com/api/getquizfromid?nid={nid}"
         response = requests.get(url, timeout=10)
         response.raise_for_status()
+        
+        # DEBUG: Print full raw response
+        print("INFO DEBUG:", response.text)
+
         data = response.json()
 
-        if not data or not isinstance(data, list):
-            raise ValueError("Invalid response format")
+        # Handle both dict and list response
+        if isinstance(data, list) and data:
+            quiz = data[0]
+        elif isinstance(data, dict) and "nid" in data:
+            quiz = data
+        else:
+            raise ValueError("Invalid or empty response format")
 
-        quiz = data[0]
         title = quiz.get("title", "N/A")
         display_name = quiz.get("display_name", "N/A")
         subjects = quiz.get("subject_displayname", [])
@@ -124,14 +132,17 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         msg = f"""📑 *Test Info*
 
-📝 *Title:* {title}
-📛 *Display Name:* {display_name}
-📚 *Subjects:* {subject_line}
+🆔 *NID:* `{nid}`
+📝 *Title:* *{title}*
+📛 *Display Name:* *{display_name}*
+📚 *Subjects:* *{subject_line}*
 """
         await update.message.reply_text(msg, parse_mode="Markdown")
 
     except Exception as e:
-        await update.message.reply_text(f"❌ Failed to fetch info for NID {nid}.")
+        print(f"INFO ERROR: {e}")
+        await update.message.reply_text(f"❌ Failed to fetch info for NID `{nid}`.", parse_mode="Markdown")
+
 
 
 async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
