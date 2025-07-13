@@ -160,7 +160,22 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ Please provide a CODE. Example: /info (CODE)")
         return
 
-    nid = context.args[0]
+   nid_input = context.args[0]
+user_id = update.effective_user.id
+
+# Decode if encrypted user or owner
+if user_id in ENCRYPTED_AUTH_USERS or user_id == OWNER_ID:
+    try:
+        decoded = base64.b64decode(nid_input).decode("utf-8").strip()
+        if decoded.isdigit():
+            nid = decoded
+        else:
+            nid = nid_input  # fallback to plain
+    except:
+        nid = nid_input  # not base64, fallback
+else:
+    nid = nid_input
+
     try:
         url = f"https://learn.aakashitutor.com/api/getquizfromid?nid={nid}"
         response = requests.get(url, timeout=10)
