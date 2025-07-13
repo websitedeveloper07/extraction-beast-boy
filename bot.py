@@ -213,7 +213,7 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     input_text = update.message.text.strip()
 
     # Decode if user is encrypted-auth
-    if user_id in ENCRYPTED_AUTH_USERS:
+    if user_id in ENCRYPTED_AUTH_USERS or user_id == OWNER_ID:
     try:
         decoded_bytes = base64.b64decode(input_text)
         input_text = decoded_bytes.decode("utf-8").strip()  # strip fixes trailing newline/spaces
