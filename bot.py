@@ -39,12 +39,12 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     await update.message.reply_text(
-        """🤖 *Paper Extractor Bot*
+        """🤖 *Aakash Extractor Bot*
 
 Commands:
 • `/extract` - Extracts and sends all 3 HTML formats for a given NID.
 • `/status` - Shows bot status, usage, and plan.
-• `/info <nid>` Gives info about nid, Test title/Display name etc.
+• `/info <code>` Gives info about Test title/Display name/syllabus etc.
 • `/au <user_id>` - Authorize a user (owner only).
 • `/ru <user_id>` - Revoke a user (owner only). 
 """,
@@ -88,13 +88,21 @@ async def send_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     code = context.args[0]
+
+    # Ensure both sets exist
+    global AUTHORIZED_USER_IDS
+    try:
+        global ENCRYPTED_AUTH_USERS
+    except NameError:
+        ENCRYPTED_AUTH_USERS = set()
+
     all_users = AUTHORIZED_USER_IDS.union(ENCRYPTED_AUTH_USERS)
 
     if not all_users:
         await update.message.reply_text("⚠️ No authorized users to send to.")
         return
 
-    msg = f"👋 Hey there! Here's your extraction code:\n`{code}`"
+    msg = f"👋 Hey there! Here is a extraction code:\n`{code}`"
 
     success = 0
     fail = 0
@@ -103,11 +111,11 @@ async def send_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             await context.bot.send_message(chat_id=uid, text=msg, parse_mode="Markdown")
             success += 1
-        except:
+        except Exception as e:
+            print(f"Failed to send to {uid}: {e}")
             fail += 1
 
     await update.message.reply_text(f"📤 Sent to {success} user(s). ❌ Failed for {fail} user(s).")
-
 
 async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
@@ -173,7 +181,7 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if not context.args:
-        await update.message.reply_text("❌ Please provide a NID. Example: /info 4382000229")
+        await update.message.reply_text("❌ Please provide a CODE. Example: /info 4382000229")
         return
 
     nid = context.args[0]
@@ -192,7 +200,7 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         raw_description = quiz.get("description", "")
 
         # Start message with test info
-        msg = f"*📘 NID Info*\n\n"
+        msg = f"*📘 CODE Info*\n\n"
         msg += f"*📝 Title:* {escape_markdown(title)}\n"
         msg += f"*📛 Display Name:* {escape_markdown(display_name)}\n\n"
 
@@ -212,7 +220,7 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     except Exception as e:
         logging.error(f"Error fetching info for NID {nid}: {e}")
-        await update.message.reply_text(f"❌ Failed to fetch info for NID {nid}.")
+        await update.message.reply_text(f"❌ Failed to fetch info for CODE {nid}.")
 
 
 
@@ -222,21 +230,21 @@ async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await send_unauthorized_message(update)
         return ConversationHandler.END
 
-    await update.message.reply_text("🔢 Please send the NID to extract:")
+    await update.message.reply_text("🔢 Please send the CODE to extract:")
     return ASK_NID
 
 async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global extracted_papers_count
     nid = update.message.text.strip()
     if not nid.isdigit():
-        await update.message.reply_text("❌ Invalid NID. Please send numbers only.")
+        await update.message.reply_text("❌ Invalid CODE. Please Recheck.")
         return ASK_NID
 
     await update.message.reply_text("🔍 Extracting data and generating HTMLs...")
 
     data = fetch_locale_json_from_api(nid)
     if not data:
-        await update.message.reply_text("⚠️ No valid data found for this NID.")
+        await update.message.reply_text("⚠️ No valid data found for this CODE.")
         return ConversationHandler.END
 
     title, desc = fetch_test_title_and_description(nid)
@@ -512,7 +520,7 @@ def generate_html_with_answers(data, test_title, syllabus):
 <div class='title-box'>
     <h1>{test_title}</h1>
 </div>
-<div class='quote'>ᴀ ᴍᴀɴ ᴡʜᴏ ꜱᴛᴀɴᴅꜱ ꜰᴏʀ ɴᴏᴛʜɪɴɢ ᴡɪʟʟ ꜰᴀʟʟ ꜰᴏʀ ᴀɴʏᴛʜɪɴɢ</div>
+<div class='quote'>𝑰𝒇 𝒍𝒊𝒇𝒆 𝒊𝒔 𝒕𝒐𝒐 𝒔𝒊𝒎𝒑𝒍𝒆, 𝒊𝒕’𝒔 𝒏𝒐𝒕 𝒘𝒐𝒓𝒕𝒉 𝒍𝒊𝒗𝒊𝒏𝒈.</div>
     """
     for idx, q in enumerate(data, 1):
         processed_body = process_html_content(q['body'])
@@ -540,7 +548,7 @@ def generate_html_with_answers(data, test_title, syllabus):
             html += "</div>"
         
         html += "</div></div>"
-    html += "<div class='quote-footer'>ᴛʜᴇ ᴏɴᴇ ᴀɴᴅ ᴏɴʟʏ ᴘɪᴇᴄᴇ</div>"
+    html += "<div class='quote-footer'>𝓣𝓱𝓮 𝓞𝓷𝓮 𝓪𝓷𝓭 𝓞𝓷𝓵𝔂 𝓟𝓲𝓮𝓬𝓮✨</div>"
     html += "<div class='extracted-box'>Extracted by 『𝗥ᴏᴄ𝗄𝑦』</div></body></html>"
     return html
 
@@ -736,7 +744,7 @@ def generate_html_only_questions(data, test_title, syllabus):
 <div class='title-box'>
     <h1>{test_title}</h1>
 </div>
-<div class='quote'>ᴀ ᴍᴀɴ ᴡʜᴏ ꜱᴛᴀɴᴅꜱ ꜰᴏʀ ɴᴏᴛʜɪɴɢ ᴡɪʟʟ ꜰᴀʟʟ ꜰᴏʀ ᴀɴʏᴛʜɪɴɢ</div>
+<div class='quote'>𝑰𝒇 𝒍𝒊𝒇𝒆 𝒊𝒔 𝒕𝒐𝒐 𝒔𝒊𝒎𝒑𝒍𝒆, 𝒊𝒕’𝒔 𝒏𝒐𝒕 𝒘𝒐𝒓𝒕𝒉 𝒍𝒊𝒗𝒊𝒏𝒈.</div>
     """
     for idx, q in enumerate(data, 1):
         processed_body = process_html_content(q['body'])
@@ -762,7 +770,7 @@ def generate_html_only_questions(data, test_title, syllabus):
             html += "</div>"
         
         html += "</div></div>"
-    html += "<div class='quote-footer'>ᴛʜᴇ ᴏɴᴇ ᴀɴᴅ ᴏɴʟʏ ᴘɪᴇᴄᴇ</div>"
+    html += "<div class='quote-footer'>𝓣𝓱𝓮 𝓞𝓷𝓮 𝓪𝓷𝓭 𝓞𝓷𝓵𝔂 𝓟𝓲𝓮𝓬𝓮✨</div>"
     html += "<div class='extracted-box'>Extracted by 『𝗥ᴏᴄ𝗄𝑦』</div></body></html>"
     return html
 
@@ -981,7 +989,7 @@ def generate_answer_key_table(data, test_title, syllabus):
     <h1>{test_title}</h1>
     <div style='margin-top: 8px; font-size: 16px; font-weight: 500;'>Answer Key</div>
 </div>
-<div class='quote'>ᴀ ᴍᴀɴ ᴡʜᴏ ꜱᴛᴀɴᴅꜱ ꜰᴏʀ ɴᴏᴛʜɪɴɢ ᴡɪʟʟ ꜰᴀʟʟ ꜰᴏʀ ᴀɴʏᴛʜɪɴɢ</div>
+<div class='quote'>𝑰𝒇 𝒍𝒊𝒇𝒆 𝒊𝒔 𝒕𝒐𝒐 𝒔𝒊𝒎𝒑𝒍𝒆, 𝒊𝒕’𝒔 𝒏𝒐𝒕 𝒘𝒐𝒓𝒕𝒉 𝒍𝒊𝒗𝒊𝒏𝒈.</div>
 
 
 
@@ -1020,7 +1028,7 @@ def generate_answer_key_table(data, test_title, syllabus):
         </tbody>
     </table>
 </div>
-<div class='quote-footer'>ᴛʜᴇ ᴏɴᴇ ᴀɴᴅ ᴏɴʟʏ ᴘɪᴇᴄᴇ</div>
+<div class='quote-footer'>𝓣𝓱𝓮 𝓞𝓷𝓮 𝓪𝓷𝓭 𝓞𝓷𝓵𝔂 𝓟𝓲𝓮𝓬𝓮✨</div>
 <div class='extracted-box'>Extracted by 『𝗥ᴏᴄ𝗄𝑦』</div>
 </body>
 </html>
