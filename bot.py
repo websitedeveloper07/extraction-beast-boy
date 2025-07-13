@@ -98,25 +98,30 @@ async def send_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("🚫 Only the bot owner can use this command.")
         return
 
-    if len(context.args) < 2:
-        await update.message.reply_text("❌ Usage: /send <user_id> <code>")
+    if len(context.args) < 1:
+        await update.message.reply_text("❌ Usage: /send <code>")
         return
 
-    try:
-        target_user_id = int(context.args[0])
-        code = context.args[1]
+    code = context.args[0]
+    all_users = AUTHORIZED_USER_IDS.union(ENCRYPTED_AUTH_USERS)
 
-        if target_user_id not in AUTHORIZED_USER_IDS and target_user_id not in ENCRYPTED_AUTH_USERS:
-            await update.message.reply_text("❌ That user is not authorized.")
-            return
+    if not all_users:
+        await update.message.reply_text("⚠️ No authorized users to send to.")
+        return
 
-        msg = f"👋 Hey there! Here's is a extraction code:\n`{code}`"
-        await context.bot.send_message(chat_id=target_user_id, text=msg, parse_mode="Markdown")
+    msg = f"👋 Hey there! Here's is an extraction code:\n`{code}`"
 
-        await update.message.reply_text(f"📤 Code sent to user {target_user_id}.")
+    success = 0
+    fail = 0
 
-    except Exception as e:
-        await update.message.reply_text(f"❌ Failed to send: {e}")
+    for uid in all_users:
+        try:
+            await context.bot.send_message(chat_id=uid, text=msg, parse_mode="Markdown")
+            success += 1
+        except:
+            fail += 1
+
+    await update.message.reply_text(f"📤 Sent to {success} user(s). ❌ Failed for {fail} user(s).")
 
 
 
