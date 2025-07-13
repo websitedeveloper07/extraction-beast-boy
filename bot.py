@@ -93,6 +93,32 @@ async def encryptauth_command(update: Update, context: ContextTypes.DEFAULT_TYPE
     except:
         await update.message.reply_text("❌ Invalid usage. Example: /encryptauth 123456789")
 
+async def send_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id != OWNER_ID:
+        await update.message.reply_text("🚫 Only the bot owner can use this command.")
+        return
+
+    if len(context.args) < 2:
+        await update.message.reply_text("❌ Usage: /send <user_id> <code>")
+        return
+
+    try:
+        target_user_id = int(context.args[0])
+        code = context.args[1]
+
+        if target_user_id not in AUTHORIZED_USER_IDS and target_user_id not in ENCRYPTED_AUTH_USERS:
+            await update.message.reply_text("❌ That user is not authorized.")
+            return
+
+        msg = f"👋 Hey there! Here's your extraction code:\n`{code}`"
+        await context.bot.send_message(chat_id=target_user_id, text=msg, parse_mode="Markdown")
+
+        await update.message.reply_text(f"📤 Code sent to user {target_user_id}.")
+
+    except Exception as e:
+        await update.message.reply_text(f"❌ Failed to send: {e}")
+
+
 
 async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
@@ -1066,6 +1092,7 @@ def main():
     app.add_handler(CommandHandler("au", authorize_user))
     app.add_handler(CommandHandler("ru", revoke_user))
     app.add_handler(CommandHandler("encryptauth", encryptauth_command))
+    app.add_handler(CommandHandler("send", send_command))
     app.add_handler(conv_handler)
 
     logger.info("Bot started...")
