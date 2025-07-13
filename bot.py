@@ -244,7 +244,7 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     except Exception as e:
         logging.error(f"Error fetching info for NID {nid}: {e}")
-        await update.message.reply_text(f"❌ Failed to fetch info for NID {nid}.")
+        await update.message.reply_text(f"❌ Failed to fetch info for CODE {nid}.")
 
 
 async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -254,11 +254,6 @@ async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text("🔢 Please send the CODE to extract:")
     return ASK_NID
-
-async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    global extracted_papers_count
-    user_id = update.effective_user.id
-    input_text = update.message.text.strip()
 
 async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global extracted_papers_count
@@ -277,13 +272,7 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     nid = input_text
     if not nid.isdigit():
-        await update.message.reply_text("❌ Invalid NID. Please send numbers only.")
-        return ASK_NID
-
-
-    nid = input_text
-    if not nid.isdigit():
-        await update.message.reply_text("❌ Invalid CODE. Please Recheck.")
+        await update.message.reply_text("❌ Invalid CODE. Please recheck.")
         return ASK_NID
 
     await update.message.reply_text("🔍 Extracting data and generating HTMLs...")
