@@ -214,12 +214,13 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Decode if user is encrypted-auth
     if user_id in ENCRYPTED_AUTH_USERS:
-        try:
-            decoded_bytes = base64.b64decode(input_text)
-            input_text = decoded_bytes.decode("utf-8")
-        except Exception as e:
-            await update.message.reply_text("❌ Invalid CODE input. Please check the format.")
-            return ASK_NID
+    try:
+        decoded_bytes = base64.b64decode(input_text)
+        input_text = decoded_bytes.decode("utf-8").strip()  # strip fixes trailing newline/spaces
+    except Exception as e:
+        await update.message.reply_text("❌ Invalid encrypted input. Please check the format.")
+        return ASK_NID
+
 
     nid = input_text
     if not nid.isdigit():
