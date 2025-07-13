@@ -89,14 +89,8 @@ async def send_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     code = context.args[0]
 
-    # Ensure both sets exist
     global AUTHORIZED_USER_IDS
-    try:
-        global ENCRYPTED_AUTH_USERS
-    except NameError:
-        ENCRYPTED_AUTH_USERS = set()
-
-    all_users = AUTHORIZED_USER_IDS.union(ENCRYPTED_AUTH_USERS)
+    all_users = AUTHORIZED_USER_IDS
 
     if not all_users:
         await update.message.reply_text("⚠️ No authorized users to send to.")
@@ -116,6 +110,7 @@ async def send_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             fail += 1
 
     await update.message.reply_text(f"📤 Sent to {success} user(s). ❌ Failed for {fail} user(s).")
+
 
 async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
