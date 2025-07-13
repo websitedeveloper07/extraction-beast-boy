@@ -110,7 +110,7 @@ async def send_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text("❌ That user is not authorized.")
             return
 
-        msg = f"👋 Hey there! Here's your extraction code:\n`{code}`"
+        msg = f"👋 Hey there! Here's is a extraction code:\n`{code}`"
         await context.bot.send_message(chat_id=target_user_id, text=msg, parse_mode="Markdown")
 
         await update.message.reply_text(f"📤 Code sent to user {target_user_id}.")
