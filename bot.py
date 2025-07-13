@@ -515,7 +515,7 @@ def generate_html_with_answers(data, test_title, syllabus):
 <div class='title-box'>
     <h1>{test_title}</h1>
 </div>
-<div class='quote'>𝑰𝒇 𝒍𝒊𝒇𝒆 𝒊𝒔 𝒕𝒐𝒐 𝒔𝒊𝒎𝒑𝒍𝒆, 𝒊𝒕’𝒔 𝒏𝒐𝒕 𝒘𝒐𝒓𝒕𝒉 𝒍𝒊𝒗𝒊𝒏𝒈.</div>
+<div class='quote'>𝕴𝖋 𝖑𝖎𝖋𝖊 𝖎𝖘 𝖙𝖔𝖔 𝖘𝖎𝖒𝖕𝖑𝖊 𝖎𝖙𝖘 𝖓𝖔𝖙 𝖜𝖔𝖗𝖙𝖍 𝖑𝖎𝖛𝖎𝖓𝖌</div>
     """
     for idx, q in enumerate(data, 1):
         processed_body = process_html_content(q['body'])
@@ -739,7 +739,7 @@ def generate_html_only_questions(data, test_title, syllabus):
 <div class='title-box'>
     <h1>{test_title}</h1>
 </div>
-<div class='quote'>𝑰𝒇 𝒍𝒊𝒇𝒆 𝒊𝒔 𝒕𝒐𝒐 𝒔𝒊𝒎𝒑𝒍𝒆, 𝒊𝒕’𝒔 𝒏𝒐𝒕 𝒘𝒐𝒓𝒕𝒉 𝒍𝒊𝒗𝒊𝒏𝒈.</div>
+<div class='quote'>𝕴𝖋 𝖑𝖎𝖋𝖊 𝖎𝖘 𝖙𝖔𝖔 𝖘𝖎𝖒𝖕𝖑𝖊 𝖎𝖙𝖘 𝖓𝖔𝖙 𝖜𝖔𝖗𝖙𝖍 𝖑𝖎𝖛𝖎𝖓𝖌</div>
     """
     for idx, q in enumerate(data, 1):
         processed_body = process_html_content(q['body'])
@@ -984,7 +984,7 @@ def generate_answer_key_table(data, test_title, syllabus):
     <h1>{test_title}</h1>
     <div style='margin-top: 8px; font-size: 16px; font-weight: 500;'>Answer Key</div>
 </div>
-<div class='quote'>𝑰𝒇 𝒍𝒊𝒇𝒆 𝒊𝒔 𝒕𝒐𝒐 𝒔𝒊𝒎𝒑𝒍𝒆, 𝒊𝒕’𝒔 𝒏𝒐𝒕 𝒘𝒐𝒓𝒕𝒉 𝒍𝒊𝒗𝒊𝒏𝒈.</div>
+<div class='quote'>𝕴𝖋 𝖑𝖎𝖋𝖊 𝖎𝖘 𝖙𝖔𝖔 𝖘𝖎𝖒𝖕𝖑𝖊 𝖎𝖙𝖘 𝖓𝖔𝖙 𝖜𝖔𝖗𝖙𝖍 𝖑𝖎𝖛𝖎𝖓𝖌</div>
 
 
 
