@@ -1,4 +1,5 @@
 import os
+import base64
 import json
 import logging
 import requests
@@ -17,6 +18,7 @@ from telegram.ext import (
 BOT_TOKEN = "8163450084:AAFCadeMAzxD6Rb6nfYwJ5Ke5IR8HcCIhWM"  # Replace with your token
 OWNER_ID = 7796598050
 AUTHORIZED_USER_IDS = {OWNER_ID}
+ENCRYPTED_AUTH_USERS = set()
 PLAN = "PRO PLAN⚡"
 
 ASK_NID = 0
@@ -42,9 +44,9 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         """🤖 *Paper Extractor Bot*
 
 Commands:
-• `/extract` - Extracts and sends all 3 HTML formats for a given NID.
+• `/extract` - Extracts and sends all 3 HTML formats for a given CODE.
 • `/status` - Shows bot status, usage, and plan.
-• `/info <nid>` Gives info about nid, Test title/Display name etc.
+• `/info <CODE>` Gives info about CODE, Test title/Display name etc.
 • `/au <user_id>` - Authorize a user (owner only).
 • `/ru <user_id>` - Revoke a user (owner only). 
 """,
@@ -77,6 +79,19 @@ async def revoke_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"🗑️ User ID {user_id} revoked.")
     except:
         await update.message.reply_text("❌ Invalid usage. Example: /ru 123456789")
+
+async def encryptauth_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id != OWNER_ID:
+        await update.message.reply_text("🚫 Only the bot owner can use this command.")
+        return
+
+    try:
+        user_id = int(context.args[0])
+        ENCRYPTED_AUTH_USERS.add(user_id)
+        await update.message.reply_text(f"🔐 User ID {user_id} granted encrypted auth access.")
+    except:
+        await update.message.reply_text("❌ Invalid usage. Example: /encryptauth 123456789")
+
 
 async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
@@ -142,7 +157,7 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if not context.args:
-        await update.message.reply_text("❌ Please provide a NID. Example: /info 4382000229")
+        await update.message.reply_text("❌ Please provide a CODE. Example: /info (CODE)")
         return
 
     nid = context.args[0]
@@ -161,7 +176,7 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         raw_description = quiz.get("description", "")
 
         # Start message with test info
-        msg = f"*📘 NID Info*\n\n"
+        msg = f"*📘 CODE Info*\n\n"
         msg += f"*📝 Title:* {escape_markdown(title)}\n"
         msg += f"*📛 Display Name:* {escape_markdown(display_name)}\n\n"
 
@@ -184,28 +199,38 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"❌ Failed to fetch info for NID {nid}.")
 
 
-
-
 async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
         await send_unauthorized_message(update)
         return ConversationHandler.END
 
-    await update.message.reply_text("🔢 Please send the NID to extract:")
+    await update.message.reply_text("🔢 Please send the CODE to extract:")
     return ASK_NID
 
 async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global extracted_papers_count
-    nid = update.message.text.strip()
+    user_id = update.effective_user.id
+    input_text = update.message.text.strip()
+
+    # Decode if user is encrypted-auth
+    if user_id in ENCRYPTED_AUTH_USERS:
+        try:
+            decoded_bytes = base64.b64decode(input_text)
+            input_text = decoded_bytes.decode("utf-8")
+        except Exception as e:
+            await update.message.reply_text("❌ Invalid CODE input. Please check the format.")
+            return ASK_NID
+
+    nid = input_text
     if not nid.isdigit():
-        await update.message.reply_text("❌ Invalid NID. Please send numbers only.")
+        await update.message.reply_text("❌ Invalid CODE. Please Recheck.")
         return ASK_NID
 
     await update.message.reply_text("🔍 Extracting data and generating HTMLs...")
 
     data = fetch_locale_json_from_api(nid)
     if not data:
-        await update.message.reply_text("⚠️ No valid data found for this NID.")
+        await update.message.reply_text("⚠️ No valid data found for this CODE.")
         return ConversationHandler.END
 
     title, desc = fetch_test_title_and_description(nid)
@@ -1011,6 +1036,7 @@ def main():
     app.add_handler(CommandHandler("info", info_command))
     app.add_handler(CommandHandler("au", authorize_user))
     app.add_handler(CommandHandler("ru", revoke_user))
+    app.add_handler(CommandHandler("encryptauth", encryptauth_command))
     app.add_handler(conv_handler)
 
     logger.info("Bot started...")
