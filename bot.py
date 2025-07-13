@@ -515,7 +515,7 @@ def generate_html_with_answers(data, test_title, syllabus):
 <div class='title-box'>
     <h1>{test_title}</h1>
 </div>
-<div class='quote'>𝕴𝖋 𝖑𝖎𝖋𝖊 𝖎𝖘 𝖙𝖔𝖔 𝖘𝖎𝖒𝖕𝖑𝖊 𝖎𝖙𝖘 𝖓𝖔𝖙 𝖜𝖔𝖗𝖙𝖍 𝖑𝖎𝖛𝖎𝖓𝖌</div>
+<div class='quote'>𝐈𝐟 𝐥𝐢𝐟𝐞 𝐢𝐬 𝐭𝐨𝐨 𝐬𝐢𝐦𝐩𝐥𝐞 𝐢𝐭’𝐬 𝐧𝐨𝐭 𝐰𝐨𝐫𝐭𝐡 𝐥𝐢𝐯𝐢𝐧𝐠✨</div>
     """
     for idx, q in enumerate(data, 1):
         processed_body = process_html_content(q['body'])
@@ -543,7 +543,7 @@ def generate_html_with_answers(data, test_title, syllabus):
             html += "</div>"
         
         html += "</div></div>"
-    html += "<div class='quote-footer'>𝓣𝓱𝓮 𝓞𝓷𝓮 𝓪𝓷𝓭 𝓞𝓷𝓵𝔂 𝓟𝓲𝓮𝓬𝓮✨</div>"
+    html += "<div class='quote-footer'>𝕋𝕙𝕖 𝕆𝕟𝕖 𝕒𝕟𝕕 𝕆𝕟𝕝𝕪 ℙ𝕚𝕖𝕔𝕖</div>"
     html += "<div class='extracted-box'>Extracted by 『𝗥ᴏᴄ𝗄𝑦』</div></body></html>"
     return html
 
@@ -739,7 +739,7 @@ def generate_html_only_questions(data, test_title, syllabus):
 <div class='title-box'>
     <h1>{test_title}</h1>
 </div>
-<div class='quote'>𝕴𝖋 𝖑𝖎𝖋𝖊 𝖎𝖘 𝖙𝖔𝖔 𝖘𝖎𝖒𝖕𝖑𝖊 𝖎𝖙𝖘 𝖓𝖔𝖙 𝖜𝖔𝖗𝖙𝖍 𝖑𝖎𝖛𝖎𝖓𝖌</div>
+<div class='quote'>𝐈𝐟 𝐥𝐢𝐟𝐞 𝐢𝐬 𝐭𝐨𝐨 𝐬𝐢𝐦𝐩𝐥𝐞 𝐢𝐭’𝐬 𝐧𝐨𝐭 𝐰𝐨𝐫𝐭𝐡 𝐥𝐢𝐯𝐢𝐧𝐠✨</div>
     """
     for idx, q in enumerate(data, 1):
         processed_body = process_html_content(q['body'])
@@ -765,7 +765,7 @@ def generate_html_only_questions(data, test_title, syllabus):
             html += "</div>"
         
         html += "</div></div>"
-    html += "<div class='quote-footer'>𝓣𝓱𝓮 𝓞𝓷𝓮 𝓪𝓷𝓭 𝓞𝓷𝓵𝔂 𝓟𝓲𝓮𝓬𝓮✨</div>"
+    html += "<div class='quote-footer'>𝕋𝕙𝕖 𝕆𝕟𝕖 𝕒𝕟𝕕 𝕆𝕟𝕝𝕪 ℙ𝕚𝕖𝕔𝕖</div>"
     html += "<div class='extracted-box'>Extracted by 『𝗥ᴏᴄ𝗄𝑦』</div></body></html>"
     return html
 
@@ -984,7 +984,7 @@ def generate_answer_key_table(data, test_title, syllabus):
     <h1>{test_title}</h1>
     <div style='margin-top: 8px; font-size: 16px; font-weight: 500;'>Answer Key</div>
 </div>
-<div class='quote'>𝕴𝖋 𝖑𝖎𝖋𝖊 𝖎𝖘 𝖙𝖔𝖔 𝖘𝖎𝖒𝖕𝖑𝖊 𝖎𝖙𝖘 𝖓𝖔𝖙 𝖜𝖔𝖗𝖙𝖍 𝖑𝖎𝖛𝖎𝖓𝖌</div>
+<div class='quote'>𝐈𝐟 𝐥𝐢𝐟𝐞 𝐢𝐬 𝐭𝐨𝐨 𝐬𝐢𝐦𝐩𝐥𝐞 𝐢𝐭’𝐬 𝐧𝐨𝐭 𝐰𝐨𝐫𝐭𝐡 𝐥𝐢𝐯𝐢𝐧𝐠✨</div>
 
 
 
@@ -1023,7 +1023,7 @@ def generate_answer_key_table(data, test_title, syllabus):
         </tbody>
     </table>
 </div>
-<div class='quote-footer'>𝓣𝓱𝓮 𝓞𝓷𝓮 𝓪𝓷𝓭 𝓞𝓷𝓵𝔂 𝓟𝓲𝓮𝓬𝓮✨</div>
+<div class='quote-footer'>𝕋𝕙𝕖 𝕆𝕟𝕖 𝕒𝕟𝕕 𝕆𝕟𝕝𝕪 ℙ𝕚𝕖𝕔𝕖</div>
 <div class='extracted-box'>Extracted by 『𝗥ᴏᴄ𝗄𝑦』</div>
 </body>
 </html>
