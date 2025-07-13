@@ -1,5 +1,4 @@
 import os
-import base64
 import json
 import logging
 import requests
@@ -18,7 +17,6 @@ from telegram.ext import (
 BOT_TOKEN = "8163450084:AAFCadeMAzxD6Rb6nfYwJ5Ke5IR8HcCIhWM"  # Replace with your token
 OWNER_ID = 7796598050
 AUTHORIZED_USER_IDS = {OWNER_ID}
-ENCRYPTED_AUTH_USERS = set()
 PLAN = "PRO PLAN⚡"
 
 ASK_NID = 0
@@ -44,12 +42,11 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         """🤖 *Paper Extractor Bot*
 
 Commands:
-• `/extract` - Extracts and sends all 3 HTML formats for a given CODE.
+• `/extract` - Extracts and sends all 3 HTML formats for a given NID.
 • `/status` - Shows bot status, usage, and plan.
-• `/info <CODE>` Gives info about CODE, Test title/Display name etc.
+• `/info <nid>` Gives info about nid, Test title/Display name etc.
 • `/au <user_id>` - Authorize a user (owner only).
 • `/ru <user_id>` - Revoke a user (owner only). 
-• `/encryptauth <user_id>` - Give a user encrypted auth (owner only).
 """,
         parse_mode='Markdown'
     )
@@ -81,18 +78,6 @@ async def revoke_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except:
         await update.message.reply_text("❌ Invalid usage. Example: /ru 123456789")
 
-async def encryptauth_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != OWNER_ID:
-        await update.message.reply_text("🚫 Only the bot owner can use this command.")
-        return
-
-    try:
-        user_id = int(context.args[0])
-        ENCRYPTED_AUTH_USERS.add(user_id)
-        await update.message.reply_text(f"🔐 User ID {user_id} granted encrypted auth access.")
-    except:
-        await update.message.reply_text("❌ Invalid usage. Example: /encryptauth 123456789")
-
 async def send_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != OWNER_ID:
         await update.message.reply_text("🚫 Only the bot owner can use this command.")
@@ -109,7 +94,7 @@ async def send_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ No authorized users to send to.")
         return
 
-    msg = f"👋 Hey there! Here's is an extraction code:\n`{code}`"
+    msg = f"👋 Hey there! Here's your extraction code:\n`{code}`"
 
     success = 0
     fail = 0
@@ -122,7 +107,6 @@ async def send_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             fail += 1
 
     await update.message.reply_text(f"📤 Sent to {success} user(s). ❌ Failed for {fail} user(s).")
-
 
 
 async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -189,26 +173,10 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if not context.args:
-        await update.message.reply_text("❌ Please provide a CODE. Example: /info (CODE)")
+        await update.message.reply_text("❌ Please provide a NID. Example: /info 4382000229")
         return
 
-    nid_input = context.args[0]
-    user_id = update.effective_user.id
-
-    # Decode base64 if encrypted user or owner
-    if user_id in ENCRYPTED_AUTH_USERS or user_id == OWNER_ID:
-        try:
-            decoded = base64.b64decode(nid_input).decode("utf-8").strip()
-            if decoded.isdigit():
-                nid = decoded
-            else:
-                nid = nid_input
-        except:
-            nid = nid_input
-    else:
-        nid = nid_input
-
-
+    nid = context.args[0]
     try:
         url = f"https://learn.aakashitutor.com/api/getquizfromid?nid={nid}"
         response = requests.get(url, timeout=10)
@@ -224,7 +192,7 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         raw_description = quiz.get("description", "")
 
         # Start message with test info
-        msg = f"*📘 CODE Info*\n\n"
+        msg = f"*📘 NID Info*\n\n"
         msg += f"*📝 Title:* {escape_markdown(title)}\n"
         msg += f"*📛 Display Name:* {escape_markdown(display_name)}\n\n"
 
@@ -244,7 +212,9 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     except Exception as e:
         logging.error(f"Error fetching info for NID {nid}: {e}")
-        await update.message.reply_text(f"❌ Failed to fetch info for CODE {nid}.")
+        await update.message.reply_text(f"❌ Failed to fetch info for NID {nid}.")
+
+
 
 
 async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -252,34 +222,21 @@ async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await send_unauthorized_message(update)
         return ConversationHandler.END
 
-    await update.message.reply_text("🔢 Please send the CODE to extract:")
+    await update.message.reply_text("🔢 Please send the NID to extract:")
     return ASK_NID
 
 async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global extracted_papers_count
-    user_id = update.effective_user.id
-    input_text = update.message.text.strip()
-
-    # Handle both numeric and base64 input for owner and encrypted users
-    if user_id in ENCRYPTED_AUTH_USERS or user_id == OWNER_ID:
-        try:
-            decoded_bytes = base64.b64decode(input_text)
-            decoded_text = decoded_bytes.decode("utf-8").strip()
-            if decoded_text.isdigit():
-                input_text = decoded_text
-        except:
-            pass  # If not base64, fall through to treat as plain NID
-
-    nid = input_text
+    nid = update.message.text.strip()
     if not nid.isdigit():
-        await update.message.reply_text("❌ Invalid CODE. Please recheck.")
+        await update.message.reply_text("❌ Invalid NID. Please send numbers only.")
         return ASK_NID
 
     await update.message.reply_text("🔍 Extracting data and generating HTMLs...")
 
     data = fetch_locale_json_from_api(nid)
     if not data:
-        await update.message.reply_text("⚠️ No valid data found for this CODE.")
+        await update.message.reply_text("⚠️ No valid data found for this NID.")
         return ConversationHandler.END
 
     title, desc = fetch_test_title_and_description(nid)
@@ -1085,7 +1042,6 @@ def main():
     app.add_handler(CommandHandler("info", info_command))
     app.add_handler(CommandHandler("au", authorize_user))
     app.add_handler(CommandHandler("ru", revoke_user))
-    app.add_handler(CommandHandler("encryptauth", encryptauth_command))
     app.add_handler(CommandHandler("send", send_command))
     app.add_handler(conv_handler)
 
