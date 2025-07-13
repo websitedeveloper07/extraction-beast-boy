@@ -49,6 +49,7 @@ Commands:
 • `/info <CODE>` Gives info about CODE, Test title/Display name etc.
 • `/au <user_id>` - Authorize a user (owner only).
 • `/ru <user_id>` - Revoke a user (owner only). 
+• `/encryptauth <user_id>` - Give a user encrypted auth (owner only).
 """,
         parse_mode='Markdown'
     )
