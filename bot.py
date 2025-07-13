@@ -212,13 +212,24 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     input_text = update.message.text.strip()
 
-    # Decode if user is encrypted-auth
+async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global extracted_papers_count
+    user_id = update.effective_user.id
+    input_text = update.message.text.strip()
+
+    # Handle both numeric and base64 input for owner and encrypted users
     if user_id in ENCRYPTED_AUTH_USERS or user_id == OWNER_ID:
-    try:
-        decoded_bytes = base64.b64decode(input_text)
-        input_text = decoded_bytes.decode("utf-8").strip()  # strip fixes trailing newline/spaces
-    except Exception as e:
-        await update.message.reply_text("❌ Invalid encrypted input. Please check the format.")
+        try:
+            decoded_bytes = base64.b64decode(input_text)
+            decoded_text = decoded_bytes.decode("utf-8").strip()
+            if decoded_text.isdigit():
+                input_text = decoded_text
+        except:
+            pass  # If not base64, fall through to treat as plain NID
+
+    nid = input_text
+    if not nid.isdigit():
+        await update.message.reply_text("❌ Invalid NID. Please send numbers only.")
         return ASK_NID
 
 
