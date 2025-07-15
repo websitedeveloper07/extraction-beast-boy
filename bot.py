@@ -252,7 +252,7 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
 title, desc = fetch_test_title_and_description(nid)
 user_id = update.effective_user.id
 
-if user_id == 7138086137:  # Replace this with Harsh's actual Telegram user ID
+if user_id == 7138086137:
     htmls = {
         "QP_with_Answers.html": generate_html_with_answers_user2(data, title, desc),
         "Only_Answer_Key.html": generate_answer_key_table_user2(data, title, desc),
@@ -265,7 +265,6 @@ else:
         "Only_Question_Paper.html": generate_html_only_questions(data, title, desc)
     }
 
-# 🔧 This part should be **outside** of if/else block — for all users
 docs = []
 for filename, html in htmls.items():
     bio = BytesIO(html.encode("utf-8"))
@@ -276,9 +275,13 @@ await update.message.reply_media_group(
     [InputMediaDocument(media=doc, filename=doc.name) for doc in docs]
 )
 
-    extracted_papers_count += 1
-    await update.message.reply_text("✅ All HTML files sent!")
-    return ConversationHandler.END
+# ✅ Properly increment the counter
+extracted_papers_count += 1
+
+# ✅ Notify user and end conversation
+await update.message.reply_text("✅ All HTML files sent!")
+return ConversationHandler.END
+
 
 # === Utility Functions ===
 def fetch_locale_json_from_api(nid):
