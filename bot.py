@@ -249,10 +249,10 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ No valid data found for this CODE.")
         return ConversationHandler.END
 
-    title, desc = fetch_test_title_and_description(nid)
+title, desc = fetch_test_title_and_description(nid)
 user_id = update.effective_user.id
 
-if user_id == 123456789:  # Replace this with Harsh's actual Telegram user ID
+if user_id == 7138086137:  # Replace this with Harsh's actual Telegram user ID
     htmls = {
         "QP_with_Answers.html": generate_html_with_answers_user2(data, title, desc),
         "Only_Answer_Key.html": generate_answer_key_table_user2(data, title, desc),
@@ -265,16 +265,16 @@ else:
         "Only_Question_Paper.html": generate_html_only_questions(data, title, desc)
     }
 
+# 🔧 This part should be **outside** of if/else block — for all users
+docs = []
+for filename, html in htmls.items():
+    bio = BytesIO(html.encode("utf-8"))
+    bio.name = filename
+    docs.append(bio)
 
-    docs = []
-    for filename, html in htmls.items():
-        bio = BytesIO(html.encode("utf-8"))
-        bio.name = filename
-        docs.append(bio)
-
-    await update.message.reply_media_group(
-        [InputMediaDocument(media=doc, filename=doc.name) for doc in docs]
-    )
+await update.message.reply_media_group(
+    [InputMediaDocument(media=doc, filename=doc.name) for doc in docs]
+)
 
     extracted_papers_count += 1
     await update.message.reply_text("✅ All HTML files sent!")
