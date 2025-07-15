@@ -235,12 +235,13 @@ async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🔢 Please send the CODE to extract:")
     return ASK_NID
 
+
 async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global extracted_papers_count
-    nid = update.message.text.strip()
 
+    nid = update.message.text.strip()
     if not nid.isdigit():
-        await update.message.reply_text("❌ Invalid CODE. Please Recheck.")
+        await update.message.reply_text("❌ Invalid CODE. Please recheck.")
         return ASK_NID
 
     await update.message.reply_text("🔍 Extracting data and generating HTMLs...")
@@ -253,7 +254,7 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     title, desc = fetch_test_title_and_description(nid)
     user_id = update.effective_user.id
 
-    if user_id == 7138086137:  # Harsh's Telegram ID
+    if user_id == 7138086137:
         htmls = {
             "QP_with_Answers.html": generate_html_with_answers_user2(data, title, desc),
             "Only_Answer_Key.html": generate_answer_key_table_user2(data, title, desc),
@@ -265,6 +266,9 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "Only_Answer_Key.html": generate_answer_key_table(data, title, desc),
             "Only_Question_Paper.html": generate_html_only_questions(data, title, desc)
         }
+
+    from telegram import InputMediaDocument
+    from io import BytesIO
 
     docs = []
     for filename, html in htmls.items():
@@ -1052,12 +1056,14 @@ def generate_answer_key_table(data, test_title, syllabus):
 # === Main ===
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
+conv_handler = ConversationHandler(
+    entry_points=[CommandHandler("extract", extract_command)],
+    states={ASK_NID: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_nid)]},
+    fallbacks=[]
+)
 
-    conv_handler = ConversationHandler(
-        entry_points=[CommandHandler("extract", extract_command)],
-        states={ASK_NID: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_nid)]},
-        fallbacks=[]
-    )
+app.add_handler(conv_handler)
+
 
     app.add_handler(CommandHandler("start", start_command))
     app.add_handler(CommandHandler("status", status_command))
