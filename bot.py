@@ -13,6 +13,13 @@ from telegram.ext import (
     ConversationHandler, ContextTypes, filters
 )
 
+from user2_layout import (
+    generate_html_with_answers as generate_html_with_answers_user2,
+    generate_html_only_questions as generate_html_only_questions_user2,
+    generate_answer_key_table as generate_answer_key_table_user2
+)
+
+
 # === CONFIG ===
 BOT_TOKEN = "8163450084:AAFCadeMAzxD6Rb6nfYwJ5Ke5IR8HcCIhWM"  # Replace with your token
 OWNER_ID = 7796598050
@@ -243,11 +250,21 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return ConversationHandler.END
 
     title, desc = fetch_test_title_and_description(nid)
+user_id = update.effective_user.id
+
+if user_id == 123456789:  # Replace this with Harsh's actual Telegram user ID
+    htmls = {
+        "QP_with_Answers.html": generate_html_with_answers_user2(data, title, desc),
+        "Only_Answer_Key.html": generate_answer_key_table_user2(data, title, desc),
+        "Only_Question_Paper.html": generate_html_only_questions_user2(data, title, desc)
+    }
+else:
     htmls = {
         "QP_with_Answers.html": generate_html_with_answers(data, title, desc),
         "Only_Answer_Key.html": generate_answer_key_table(data, title, desc),
         "Only_Question_Paper.html": generate_html_only_questions(data, title, desc)
     }
+
 
     docs = []
     for filename, html in htmls.items():
