@@ -1,3 +1,16 @@
+from bs4 import BeautifulSoup
+
+def process_html_content(html):
+    if not html:
+        return ""
+    soup = BeautifulSoup(html, 'html.parser')
+    for img in soup.find_all('img'):
+        src = img.get('src')
+        if src and src.startswith('//'):
+            img['src'] = f"https:{src}"
+    return str(soup)
+
+
 # === HTML Generators ===
 def generate_html_with_answers(data, test_title, syllabus):
     html = f"""
