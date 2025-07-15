@@ -266,10 +266,10 @@ def generate_html_only_questions(data, test_title, syllabus):
         html += "</div></div>"
 
     html += "<div class='quote-footer'>𝕋𝕙𝕖 𝕆𝕟𝕖 𝕒𝕟𝕕 𝕆𝕟𝕝𝕪 ℙ𝕚𝕖𝕔𝕖</div>"
-    Html += "<div class='extracted-box'>Extracted by Harsh</div>"
-</body>
-</html>"
+    html += "<div class='extracted-box'>Extracted by Harsh</div>"
+    html += "</body></html>"
     return html
+
 
 def generate_answer_key_table(data, test_title, syllabus):
     html = f"""
