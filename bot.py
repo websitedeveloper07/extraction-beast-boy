@@ -249,38 +249,42 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ No valid data found for this CODE.")
         return ConversationHandler.END
 
-title, desc = fetch_test_title_and_description(nid)
-user_id = update.effective_user.id
+from telegram import InputMediaDocument
+from io import BytesIO
+from telegram.ext import ConversationHandler
 
-if user_id == 7138086137:
-    htmls = {
-        "QP_with_Answers.html": generate_html_with_answers_user2(data, title, desc),
-        "Only_Answer_Key.html": generate_answer_key_table_user2(data, title, desc),
-        "Only_Question_Paper.html": generate_html_only_questions_user2(data, title, desc)
-    }
-else:
-    htmls = {
-        "QP_with_Answers.html": generate_html_with_answers(data, title, desc),
-        "Only_Answer_Key.html": generate_answer_key_table(data, title, desc),
-        "Only_Question_Paper.html": generate_html_only_questions(data, title, desc)
-    }
+async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    title, desc = fetch_test_title_and_description(nid)
+    user_id = update.effective_user.id
 
-docs = []
-for filename, html in htmls.items():
-    bio = BytesIO(html.encode("utf-8"))
-    bio.name = filename
-    docs.append(bio)
+    if user_id == 7138086137:  # Harsh's Telegram ID
+        htmls = {
+            "QP_with_Answers.html": generate_html_with_answers_user2(data, title, desc),
+            "Only_Answer_Key.html": generate_answer_key_table_user2(data, title, desc),
+            "Only_Question_Paper.html": generate_html_only_questions_user2(data, title, desc)
+        }
+    else:
+        htmls = {
+            "QP_with_Answers.html": generate_html_with_answers(data, title, desc),
+            "Only_Answer_Key.html": generate_answer_key_table(data, title, desc),
+            "Only_Question_Paper.html": generate_html_only_questions(data, title, desc)
+        }
 
-await update.message.reply_media_group(
-    [InputMediaDocument(media=doc, filename=doc.name) for doc in docs]
-)
+    docs = []
+    for filename, html in htmls.items():
+        bio = BytesIO(html.encode("utf-8"))
+        bio.name = filename
+        docs.append(bio)
 
-# ✅ Properly increment the counter
-extracted_papers_count += 1
+    await update.message.reply_media_group(
+        [InputMediaDocument(media=doc, filename=doc.name) for doc in docs]
+    )
 
-# ✅ Notify user and end conversation
-await update.message.reply_text("✅ All HTML files sent!")
-return ConversationHandler.END
+    global extracted_papers_count
+    extracted_papers_count += 1
+
+    await update.message.reply_text("✅ All HTML files sent!")
+    return ConversationHandler.END
 
 
 # === Utility Functions ===
@@ -1066,6 +1070,7 @@ def main():
     app.add_handler(CommandHandler("au", authorize_user))
     app.add_handler(CommandHandler("ru", revoke_user))
     app.add_handler(CommandHandler("send", send_command))
+    application.add_handler(CommandHandler("extract", extract_command))
     app.add_handler(conv_handler)
 
     logger.info("Bot started...")
