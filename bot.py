@@ -1056,14 +1056,12 @@ def generate_answer_key_table(data, test_title, syllabus):
 # === Main ===
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
-conv_handler = ConversationHandler(
-    entry_points=[CommandHandler("extract", extract_command)],
-    states={ASK_NID: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_nid)]},
-    fallbacks=[]
-)
 
-app.add_handler(conv_handler)
-
+    conv_handler = ConversationHandler(
+        entry_points=[CommandHandler("extract", extract_command)],
+        states={ASK_NID: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_nid)]},
+        fallbacks=[]
+    )
 
     app.add_handler(CommandHandler("start", start_command))
     app.add_handler(CommandHandler("status", status_command))
@@ -1076,6 +1074,7 @@ app.add_handler(conv_handler)
 
     logger.info("Bot started...")
     app.run_polling()
+
 
 if __name__ == '__main__':
     main()
