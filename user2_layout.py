@@ -22,28 +22,28 @@ def generate_html_with_answers(data, test_title, syllabus):
 <style>
     body {{
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f4faff;
-        color: #1c1c1c;
+        background-color: #121212;
+        color: #e0e0e0;
         padding: 30px;
         line-height: 1.8;
     }}
     .title-box {{
-        background: linear-gradient(to right, #00c6ff, #0072ff);
-        color: white;
+        background: linear-gradient(to right, #8e2de2, #4a00e0);
+        color: #ffffff;
         padding: 25px;
         border-radius: 14px;
         text-align: center;
         font-size: 28px;
-        font-weight: 700;
+        font-weight: 800;
         margin-bottom: 30px;
-        box-shadow: 0 4px 14px rgba(0, 114, 255, 0.3);
+        box-shadow: 0 8px 25px rgba(138, 43, 226, 0.4);
         text-transform: uppercase;
-        letter-spacing: 1.5px;
+        letter-spacing: 1.2px;
     }}
     .quote {{
         text-align: center;
-        background: #ffe0b2;
-        color: #5d4037;
+        background: #2c2c2c;
+        color: #ffcc80;
         font-style: italic;
         font-size: 17px;
         font-weight: 600;
@@ -52,32 +52,40 @@ def generate_html_with_answers(data, test_title, syllabus):
         max-width: 800px;
         border-radius: 12px;
         border-left: 6px solid #ff7043;
-        box-shadow: 0 3px 10px rgba(255, 112, 67, 0.2);
+        box-shadow: 0 4px 16px rgba(255, 112, 67, 0.15);
     }}
     .question {{
-        background: #ffffff;
-        border: 1px solid #dce3ed;
+        background: #1e1e1e;
+        border: 1px solid #333;
         border-radius: 12px;
         padding: 24px;
         margin-bottom: 30px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         position: relative;
     }}
     .watermark {{
         position: absolute;
         top: 12px;
         right: 16px;
-        background: #e3f2fd;
-        color: #0277bd;
-        padding: 5px 12px;
+        background: #212121;
+        padding: 6px 12px;
         border-radius: 6px;
         font-size: 13px;
         font-weight: 600;
         font-family: monospace;
+        color: #90caf9;
+    }}
+    .watermark a {{
+        color: #90caf9;
+        text-decoration: none;
+    }}
+    .watermark a:hover {{
+        text-decoration: underline;
+        color: #bbdefb;
     }}
     .question h3 {{
-        color: #01579b;
-        font-size: 20px;
+        color: #64b5f6;
+        font-size: 21px;
         margin-bottom: 14px;
     }}
     .question-body {{
@@ -85,30 +93,37 @@ def generate_html_with_answers(data, test_title, syllabus):
     }}
     .options {{
         display: flex;
-        flex-direction: column;
-        gap: 14px;
+        flex-wrap: wrap;
+        gap: 16px;
     }}
     .option {{
+        flex: 1 1 calc(50% - 10px);
+        background: #2a2a2a;
+        border-left: 4px solid #616161;
         padding: 14px 18px;
         border-radius: 8px;
-        background: #f0f4f8;
-        border-left: 5px solid #90a4ae;
-        transition: background 0.2s ease;
+        transition: all 0.3s ease;
+        word-wrap: break-word;
+        font-weight: 500;
     }}
     .option.correct {{
-        background: #d0f8ce;
-        border-left-color: #388e3c;
+        background: #1b5e20;
+        border-left-color: #66bb6a;
+        color: #c8e6c9;
+        font-weight: 600;
+        box-shadow: 0 0 10px rgba(102, 187, 106, 0.3);
     }}
     .quote-footer {{
         text-align: center;
-        margin-top: 35px;
-        padding: 14px 20px;
+        margin-top: 40px;
+        padding: 16px 24px;
         font-style: italic;
-        background: #dcedc8;
-        color: #33691e;
+        background: linear-gradient(to right, #3f51b5, #1a237e);
+        color: #ffffff;
         border-radius: 12px;
         font-size: 16px;
         font-weight: 600;
+        box-shadow: 0 4px 20px rgba(63, 81, 181, 0.3);
         max-width: fit-content;
         margin-left: auto;
         margin-right: auto;
@@ -116,13 +131,13 @@ def generate_html_with_answers(data, test_title, syllabus):
     .extracted-box {{
         margin-top: 20px;
         text-align: center;
-        background: linear-gradient(to right, #a7ffeb, #64ffda);
+        background: linear-gradient(to right, #26c6da, #00acc1);
         padding: 14px 20px;
         border-radius: 12px;
         font-size: 15px;
         font-weight: bold;
-        color: #00695c;
-        box-shadow: 0 3px 10px rgba(0, 150, 136, 0.2);
+        color: #e0f7fa;
+        box-shadow: 0 3px 10px rgba(0, 188, 212, 0.3);
     }}
 </style>
 </head>
@@ -132,7 +147,7 @@ def generate_html_with_answers(data, test_title, syllabus):
 """
     for idx, q in enumerate(data, 1):
         processed_body = process_html_content(q['body'])
-        html += f"<div class='question'><div class='watermark'>@Harsh</div>"
+        html += f"<div class='question'><div class='watermark'><a href='https://t.me/RockyLeakss' target='_blank'>@Hая$н</a></div>"
         html += f"<h3>Question {idx}</h3><div class='question-body'>{processed_body}</div><div class='options'>"
 
         alternatives = q['alternatives'][:4]
