@@ -233,15 +233,16 @@ async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return ConversationHandler.END
 
     await update.message.reply_text("🔢 Please send the CODE to extract:")
-    return ASK_NID
+    return ASK_NID  # <-- This tells ConversationHandler to wait for input
+
 
 
 async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global extracted_papers_count
-
     nid = update.message.text.strip()
+
     if not nid.isdigit():
-        await update.message.reply_text("❌ Invalid CODE. Please recheck.")
+        await update.message.reply_text("❌ Invalid CODE. Please Recheck.")
         return ASK_NID
 
     await update.message.reply_text("🔍 Extracting data and generating HTMLs...")
@@ -254,7 +255,7 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     title, desc = fetch_test_title_and_description(nid)
     user_id = update.effective_user.id
 
-    if user_id == 7138086137:
+    if user_id == 7138086137:  # Harsh's ID
         htmls = {
             "QP_with_Answers.html": generate_html_with_answers_user2(data, title, desc),
             "Only_Answer_Key.html": generate_answer_key_table_user2(data, title, desc),
@@ -266,9 +267,6 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "Only_Answer_Key.html": generate_answer_key_table(data, title, desc),
             "Only_Question_Paper.html": generate_html_only_questions(data, title, desc)
         }
-
-    from telegram import InputMediaDocument
-    from io import BytesIO
 
     docs = []
     for filename, html in htmls.items():
@@ -283,7 +281,6 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     extracted_papers_count += 1
     await update.message.reply_text("✅ All HTML files sent!")
     return ConversationHandler.END
-
 
 
 # === Utility Functions ===
@@ -1057,11 +1054,14 @@ def generate_answer_key_table(data, test_title, syllabus):
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    conv_handler = ConversationHandler(
-        entry_points=[CommandHandler("extract", extract_command)],
-        states={ASK_NID: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_nid)]},
-        fallbacks=[]
-    )
+conv_handler = ConversationHandler(
+    entry_points=[CommandHandler("extract", extract_command)],
+    states={ASK_NID: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_nid)]},
+    fallbacks=[]
+)
+
+app.add_handler(conv_handler)
+
 
     app.add_handler(CommandHandler("start", start_command))
     app.add_handler(CommandHandler("status", status_command))
@@ -1069,7 +1069,6 @@ def main():
     app.add_handler(CommandHandler("au", authorize_user))
     app.add_handler(CommandHandler("ru", revoke_user))
     app.add_handler(CommandHandler("send", send_command))
-    app.add_handler(CommandHandler("extract", extract_command))
     app.add_handler(conv_handler)
 
     logger.info("Bot started...")
