@@ -1070,7 +1070,7 @@ def main():
     app.add_handler(CommandHandler("au", authorize_user))
     app.add_handler(CommandHandler("ru", revoke_user))
     app.add_handler(CommandHandler("send", send_command))
-    application.add_handler(CommandHandler("extract", extract_command))
+    app.add_handler(CommandHandler("extract", extract_command))
     app.add_handler(conv_handler)
 
     logger.info("Bot started...")
