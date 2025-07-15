@@ -266,7 +266,7 @@ def generate_html_only_questions(data, test_title, syllabus):
         html += "</div></div>"
 
     html += "<div class='quote-footer'>𝕋𝕙𝕖 𝕆𝕟𝕖 𝕒𝕟𝕕 𝕆𝕟𝕝𝕪 ℙ𝕚𝕖𝕔𝕖</div>"
-    html += "<div class='extracted-box'>Extracted by Harsh</div>
+    Html += "<div class='extracted-box'>Extracted by Harsh</div>"
 </body>
 </html>"
     return html
