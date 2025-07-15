@@ -238,6 +238,7 @@ async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global extracted_papers_count
     nid = update.message.text.strip()
+
     if not nid.isdigit():
         await update.message.reply_text("❌ Invalid CODE. Please Recheck.")
         return ASK_NID
@@ -249,11 +250,6 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ No valid data found for this CODE.")
         return ConversationHandler.END
 
-from telegram import InputMediaDocument
-from io import BytesIO
-from telegram.ext import ConversationHandler
-
-async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     title, desc = fetch_test_title_and_description(nid)
     user_id = update.effective_user.id
 
@@ -280,11 +276,10 @@ async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InputMediaDocument(media=doc, filename=doc.name) for doc in docs]
     )
 
-    global extracted_papers_count
     extracted_papers_count += 1
-
     await update.message.reply_text("✅ All HTML files sent!")
     return ConversationHandler.END
+
 
 
 # === Utility Functions ===
