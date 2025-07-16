@@ -169,6 +169,7 @@ import re
 import logging
 import requests
 from html import unescape
+from datetime import datetime, timezone, timedelta
 from telegram import Update
 from telegram.ext import ContextTypes
 
@@ -176,6 +177,10 @@ def escape_markdown(text):
     if not text:
         return ""
     return re.sub(r'([_*\[\]()~`>#+\-=|{}.!\\])', r'\\\1', str(text))
+
+def unix_to_ist(unix_timestamp):
+    ist = timezone(timedelta(hours=5, minutes=30))
+    return datetime.fromtimestamp(unix_timestamp, ist).strftime("%d %B %Y, %I:%M %p")
 
 async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
@@ -200,11 +205,19 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         title = quiz.get("title", "N/A")
         display_name = quiz.get("display_name", "N/A")
         raw_description = quiz.get("description", "")
+        quiz_open = quiz.get("quiz_open")
+        quiz_close = quiz.get("quiz_close")
+
+        # Convert timestamps to IST
+        test_open = unix_to_ist(int(quiz_open)) if quiz_open else "N/A"
+        test_close = unix_to_ist(int(quiz_close)) if quiz_close else "N/A"
 
         # Start message with test info
         msg = f"*📘 CODE Info*\n\n"
         msg += f"*📝 Title:* {escape_markdown(title)}\n"
-        msg += f"*📛 Display Name:* {escape_markdown(display_name)}\n\n"
+        msg += f"*📛 Display Name:* {escape_markdown(display_name)}\n"
+        msg += f"*🟢 Test Opens:* {escape_markdown(test_open)}\n"
+        msg += f"*🔴 Test Closes:* {escape_markdown(test_close)}\n\n"
 
         # Decode and extract syllabus
         decoded = unescape(raw_description or "")
@@ -223,8 +236,6 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         logging.error(f"Error fetching info for NID {nid}: {e}")
         await update.message.reply_text(f"❌ Failed to fetch info for CODE {nid}.")
-
-
 
 
 async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
