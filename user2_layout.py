@@ -11,8 +11,9 @@ def process_html_content(html):
     return str(soup)
 
 
-# === HTML Generators ===
+# === HTML Generators - Black Theme ===
 def generate_html_with_answers(data, test_title, syllabus):
+    """Generate HTML with questions and highlighted correct answers - Black theme"""
     html = f"""
 <!DOCTYPE html>
 <html>
@@ -21,285 +22,177 @@ def generate_html_with_answers(data, test_title, syllabus):
 <title>{test_title}</title>
 <style>
     body {{
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #121212;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
         color: #e0e0e0;
-        padding: 30px;
-        line-height: 1.8;
+        padding: 20px;
+        line-height: 1.6;
+        margin: 0;
+        min-height: 100vh;
     }}
     .title-box {{
-        background: linear-gradient(to right, #8e2de2, #4a00e0);
-        color: #ffffff;
-        padding: 25px;
-        border-radius: 14px;
-        text-align: center;
-        font-size: 28px;
-        font-weight: 800;
-        margin-bottom: 30px;
-        box-shadow: 0 8px 25px rgba(138, 43, 226, 0.4);
-        text-transform: uppercase;
-        letter-spacing: 1.2px;
-    }}
-    .quote {{
-        text-align: center;
-        background: #2c2c2c;
-        color: #ffcc80;
-        font-style: italic;
-        font-size: 17px;
-        font-weight: 600;
-        padding: 18px 22px;
-        margin: 20px auto;
-        max-width: 800px;
+        background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+        color: #00bfff;
+        padding: 20px;
         border-radius: 12px;
-        border-left: 6px solid #ff7043;
-        box-shadow: 0 4px 16px rgba(255, 112, 67, 0.15);
+        text-align: center;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0, 191, 255, 0.3);
+        border: 2px solid #00bfff;
     }}
-    .question {{
-        background: #1e1e1e;
-        border: 1px solid #333;
-        border-radius: 12px;
-        padding: 24px;
-        margin-bottom: 30px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    .title-box h1 {{
+        margin: 0;
+        font-size: 26px;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+    }}
+    .question-card {{
         position: relative;
+        background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
+        border: 1px solid #333;
+        border-radius: 10px;
+        padding: 18px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }}
-    .watermark {{
+    .question-watermark {{
         position: absolute;
-        top: 12px;
-        right: 16px;
-        background: #212121;
-        padding: 6px 12px;
+        top: 8px;
+        right: 12px;
+        background: rgba(0, 191, 255, 0.1);
+        border: 1px solid #00bfff;
+        padding: 4px 8px;
         border-radius: 6px;
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 14px;
+        font-weight: bold;
+        color: #00bfff;
         font-family: monospace;
-        color: #90caf9;
     }}
-    .watermark a {{
-        color: #90caf9;
+    .question-watermark a {{
+        color: #00bfff;
         text-decoration: none;
     }}
-    .watermark a:hover {{
-        text-decoration: underline;
-        color: #bbdefb;
-    }}
-    .question h3 {{
-        color: #64b5f6;
-        font-size: 21px;
-        margin-bottom: 14px;
-    }}
-    .question-body {{
-        margin-bottom: 18px;
-    }}
-    .options {{
-        display: flex;
-        flex-wrap: wrap;
-        gap: 16px;
-    }}
-    .option {{
-        flex: 1 1 calc(50% - 10px);
-        background: #2a2a2a;
-        border-left: 4px solid #616161;
-        padding: 14px 18px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        word-wrap: break-word;
-        font-weight: 500;
-    }}
-    .option.correct {{
-        background: #1b5e20;
-        border-left-color: #66bb6a;
-        color: #c8e6c9;
-        font-weight: 600;
-        box-shadow: 0 0 10px rgba(102, 187, 106, 0.3);
-    }}
-    .quote-footer {{
-        text-align: center;
-        margin-top: 40px;
-        padding: 16px 24px;
-        font-style: italic;
-        background: linear-gradient(to right, #3f51b5, #1a237e);
-        color: #ffffff;
-        border-radius: 12px;
-        font-size: 16px;
-        font-weight: 600;
-        box-shadow: 0 4px 20px rgba(63, 81, 181, 0.3);
-        max-width: fit-content;
-        margin-left: auto;
-        margin-right: auto;
-    }}
-    .extracted-box {{
-        margin-top: 20px;
-        text-align: center;
-        background: linear-gradient(to right, #26c6da, #00acc1);
-        padding: 14px 20px;
-        border-radius: 12px;
-        font-size: 15px;
+    .question-title {{
+        font-size: 18px;
         font-weight: bold;
-        color: #e0f7fa;
-        box-shadow: 0 3px 10px rgba(0, 188, 212, 0.3);
-    }}
-</style>
-</head>
-<body>
-<div class='title-box'>{test_title}</div>
-<div class='quote'>“Don’t limit your challenges. Challenge your limits.”</div>
-"""
-    for idx, q in enumerate(data, 1):
-        processed_body = process_html_content(q['body'])
-        html += f"<div class='question'><div class='watermark'><a href='https://t.me/RockyLeakss' target='_blank'>@Hая$н</a></div>"
-        html += f"<h3>Question {idx}</h3><div class='question-body'>{processed_body}</div><div class='options'>"
-
-        alternatives = q['alternatives'][:4]
-        labels = ['A', 'B', 'C', 'D']
-        for i, opt in enumerate(alternatives):
-            label = labels[i]
-            is_correct = str(opt.get("score_if_chosen")) == "1"
-            css_class = "option correct" if is_correct else "option"
-            processed = process_html_content(opt['answer'])
-            html += f"<div class='{css_class}'>{label}) {processed}</div>"
-
-        html += "</div></div>"
-
-    html += "<div class='quote-footer'>𝕋𝕙𝕖 𝕆𝕟𝕖 𝕒𝕟𝕕 𝕆𝕟𝕝𝕪 ℙ𝕚𝕖𝕔𝕖</div>"
-    html += "<div class='extracted-box'>Extracted by Harsh</div>\n</body>\n</html>"
-    return html
-
-
-def generate_html_only_questions(data, test_title, syllabus):
-    html = f"""
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset='UTF-8'>
-<title>{test_title}</title>
-<style>
-    body {{
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f4faff;
-        color: #1c1c1c;
-        padding: 30px;
-        line-height: 1.8;
-    }}
-    .title-box {{
-        background: linear-gradient(to right, #00c6ff, #0072ff);
-        color: white;
-        padding: 25px;
-        border-radius: 14px;
-        text-align: center;
-        font-size: 28px;
-        font-weight: 700;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 14px rgba(0, 114, 255, 0.3);
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-    }}
-    .quote {{
-        text-align: center;
-        background: #ffe0b2;
-        color: #5d4037;
-        font-style: italic;
-        font-size: 17px;
-        font-weight: 600;
-        padding: 18px 22px;
-        margin: 20px auto;
-        max-width: 800px;
-        border-radius: 12px;
-        border-left: 6px solid #ff7043;
-        box-shadow: 0 3px 10px rgba(255, 112, 67, 0.2);
-    }}
-    .question {{
-        background: #ffffff;
-        border: 1px solid #dce3ed;
-        border-radius: 12px;
-        padding: 24px;
-        margin-bottom: 30px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-        position: relative;
-    }}
-    .watermark {{
-        position: absolute;
-        top: 12px;
-        right: 16px;
-        background: #e3f2fd;
-        color: #0277bd;
-        padding: 5px 12px;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 600;
-        font-family: monospace;
-    }}
-    .question h3 {{
-        color: #01579b;
-        font-size: 20px;
-        margin-bottom: 14px;
+        color: #00bfff;
+        margin-bottom: 10px;
     }}
     .question-body {{
-        margin-bottom: 18px;
+        color: #d0d0d0;
+        margin-bottom: 15px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
     }}
     .options {{
         display: flex;
         flex-direction: column;
-        gap: 14px;
+        gap: 8px;
+    }}
+    .option-row {{
+        display: flex;
+        gap: 8px;
     }}
     .option {{
-        padding: 14px 18px;
+        background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
+        border: 1px solid #444;
+        padding: 10px 14px;
         border-radius: 8px;
-        background: #f0f4f8;
-        border-left: 5px solid #90a4ae;
+        font-size: 14px;
+        font-weight: 500;
+        color: #d0d0d0;
+        width: 50%;
+        box-sizing: border-box;
     }}
-    .quote-footer {{
+    .option.correct {{
+        background: linear-gradient(135deg, #1a4d1a 0%, #2d5a2d 100%);
+        border-color: #4caf50;
+        color: #90ee90;
+        box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+    }}
+    .quote {{
         text-align: center;
-        margin-top: 35px;
-        padding: 14px 20px;
+        margin: 20px 0;
+        padding: 16px;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        color: #ffd700;
+        border-radius: 10px;
         font-style: italic;
-        background: #dcedc8;
-        color: #33691e;
-        border-radius: 12px;
-        font-size: 16px;
-        font-weight: 600;
-        max-width: fit-content;
-        margin-left: auto;
-        margin-right: auto;
-    }}
-    .extracted-box {{
-        margin-top: 20px;
-        text-align: center;
-        background: linear-gradient(to right, #a7ffeb, #64ffda);
-        padding: 14px 20px;
-        border-radius: 12px;
         font-size: 15px;
         font-weight: bold;
-        color: #00695c;
-        box-shadow: 0 3px 10px rgba(0, 150, 136, 0.2);
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+        border: 1px solid #ffd700;
+    }}
+    .quote-footer, .extracted-box {{
+        text-align: center;
+        margin: 20px auto;
+        padding: 12px 16px;
+        background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+        color: #00bfff;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 14px;
+        box-shadow: 0 4px 15px rgba(0, 191, 255, 0.2);
+        border: 1px solid #00bfff;
+        max-width: fit-content;
+    }}
+    @media print {{
+        body {{ background: #000 !important; }}
+        .question-card {{ page-break-inside: avoid; }}
     }}
 </style>
 </head>
 <body>
-<div class='title-box'>{test_title}</div>
-<div class='quote'>“Don’t limit your challenges. Challenge your limits.”</div>
+<div class='title-box'>
+    <h1>{test_title}</h1>
+</div>
+<div class='quote'>𝐈𝐟 𝐥𝐢𝐟𝐞 𝐢𝐬 𝐭𝐨𝐨 𝐬𝐢𝐦𝐩𝐥𝐞 𝐢𝐭'𝐬 𝐧𝐨𝐭 𝐰𝐨𝐫𝐭𝐡 𝐥𝐢𝐯𝐢𝐧𝐠✨</div>
 """
+    
     for idx, q in enumerate(data, 1):
         processed_body = process_html_content(q['body'])
-        html += f"<div class='question'><div class='watermark'>@Harsh</div>"
-        html += f"<h3>Question {idx}</h3><div class='question-body'>{processed_body}</div><div class='options'>"
-
-        alternatives = q['alternatives'][:4]
-        labels = ['A', 'B', 'C', 'D']
-        for i, opt in enumerate(alternatives):
-            label = labels[i]
-            processed = process_html_content(opt['answer'])
-            html += f"<div class='option'>{label}) {processed}</div>"
-
+        html += f"""
+<div class='question-card'>
+    <div class='question-watermark'><a href='https://t.me/rockyleakss' target='_blank'>@𝓗𝓐𝓡𝓢𝓗</a></div>
+    <div class='question-title'>Question {idx}</div>
+    <div class='question-body'>{processed_body}</div>
+    <div class='options'>"""
+        
+        alternatives = q["alternatives"][:4]
+        labels = ["A", "B", "C", "D"]
+        
+        for row in range(2):
+            html += "<div class='option-row'>"
+            for col in range(2):
+                opt_idx = row * 2 + col
+                if opt_idx < len(alternatives):
+                    opt = alternatives[opt_idx]
+                    is_correct = str(opt.get("score_if_chosen")) == "1"
+                    class_name = "option correct" if is_correct else "option"
+                    processed_answer = process_html_content(opt['answer'])
+                    html += f"<div class='{class_name}'>{labels[opt_idx]}) {processed_answer}</div>"
+            html += "</div>"
+        
         html += "</div></div>"
-
-    html += "<div class='quote-footer'>𝕋𝕙𝕖 𝕆𝕟𝕖 𝕒𝕟𝕕 𝕆𝕟𝕝𝕪 ℙ𝕚𝕖𝕔𝕖</div>"
-    html += "<div class='extracted-box'>Extracted by Harsh</div>"
-    html += "</body></html>"
+    
+    html += """
+<div class='quote-footer'>𝕋𝕙𝕖 𝕆𝕟𝕖 𝕒𝕟𝕕 𝕆𝕟𝕝𝕪 ℙ𝕚𝕖𝕔𝕖</div>
+<div class='extracted-box'>Extracted by 『𝗛ᴀʀsʜ』</div>
+</body>
+</html>"""
     return html
 
+def generate_html_only_questions(data, test_title, syllabus):
+    """Generate HTML with only questions (no answer highlighting) - Black theme"""
+    return generate_html_with_answers(data, test_title, syllabus).replace(
+        "class='option correct'", "class='option'"
+    ).replace(
+        "background: linear-gradient(135deg, #1a4d1a 0%, #2d5a2d 100%);",
+        "background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);"
+    )
 
 def generate_answer_key_table(data, test_title, syllabus):
+    """Generate HTML answer key table - Black theme"""
     html = f"""
 <!DOCTYPE html>
 <html>
@@ -308,144 +201,133 @@ def generate_answer_key_table(data, test_title, syllabus):
 <title>{test_title} - Answer Key</title>
 <style>
     body {{
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f4faff;
-        color: #1c1c1c;
-        padding: 30px;
-        line-height: 1.8;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        color: #e0e0e0;
+        padding: 20px;
+        margin: 0;
+        min-height: 100vh;
     }}
     .title-box {{
-        background: linear-gradient(to right, #00c6ff, #0072ff);
-        color: white;
-        padding: 25px;
-        border-radius: 14px;
-        text-align: center;
-        font-size: 28px;
-        font-weight: 700;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 14px rgba(0, 114, 255, 0.3);
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-    }}
-    .quote {{
-        text-align: center;
-        background: #ffe0b2;
-        color: #5d4037;
-        font-style: italic;
-        font-size: 17px;
-        font-weight: 600;
-        padding: 18px 22px;
-        margin: 20px auto;
-        max-width: 800px;
-        border-radius: 12px;
-        border-left: 6px solid #ff7043;
-        box-shadow: 0 3px 10px rgba(255, 112, 67, 0.2);
-    }}
-    .answer-key-container {{
-        background: white;
+        background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+        color: #00bfff;
         padding: 20px;
         border-radius: 12px;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-        margin-bottom: 30px;
+        text-align: center;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0, 191, 255, 0.3);
+        border: 2px solid #00bfff;
     }}
-    table {{
+    .title-box h1 {{
+        margin: 0;
+        font-size: 24px;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+    }}
+    .answer-key-table {{
         width: 100%;
         border-collapse: collapse;
-        margin-top: 10px;
+        background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }}
-    th, td {{
-        padding: 14px;
-        border: 1px solid #e0e0e0;
+    .answer-key-table th {{
+        background: linear-gradient(135deg, #333 0%, #1a1a1a 100%);
+        color: #00bfff;
+        padding: 12px;
         text-align: center;
-        font-size: 15px;
+        font-weight: bold;
+        border-bottom: 2px solid #00bfff;
     }}
-    th {{
-        background-color: #0072ff;
-        color: white;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+    .answer-key-table td {{
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #333;
+        color: #d0d0d0;
     }}
-    tr:nth-child(even) {{
-        background-color: #f0f4f8;
+    .answer-key-table tr:nth-child(even) {{
+        background: rgba(255, 255, 255, 0.05);
+    }}
+    .answer-key-table tr:hover {{
+        background: rgba(0, 191, 255, 0.1);
     }}
     .question-number {{
-        font-weight: 600;
-        color: #1565c0;
+        background: linear-gradient(135deg, #00bfff 0%, #0080ff 100%);
+        color: #000;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-weight: bold;
     }}
     .correct-option {{
-        background: #42a5f5;
-        color: white;
-        padding: 6px 10px;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 14px;
-        display: inline-block;
+        background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-weight: bold;
     }}
     .answer-text {{
         text-align: left;
-        font-size: 14px;
-        color: #37474f;
+        color: #d0d0d0;
+        background: rgba(0, 191, 255, 0.1);
+        padding: 8px;
+        border-radius: 6px;
+        border-left: 3px solid #00bfff;
     }}
-    .quote-footer {{
+    .quote, .quote-footer, .extracted-box {{
         text-align: center;
-        margin-top: 35px;
-        padding: 14px 20px;
-        font-style: italic;
-        background: #dcedc8;
-        color: #33691e;
-        border-radius: 12px;
-        font-size: 16px;
-        font-weight: 600;
-        max-width: fit-content;
-        margin-left: auto;
-        margin-right: auto;
-    }}
-    .extracted-box {{
-        margin-top: 20px;
-        text-align: center;
-        background: linear-gradient(to right, #a7ffeb, #64ffda);
-        padding: 14px 20px;
-        border-radius: 12px;
-        font-size: 15px;
+        margin: 20px auto;
+        padding: 16px;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        color: #ffd700;
+        border-radius: 10px;
         font-weight: bold;
-        color: #00695c;
-        box-shadow: 0 3px 10px rgba(0, 150, 136, 0.2);
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+        border: 1px solid #ffd700;
+        max-width: fit-content;
     }}
+    .extracted-box {{ color: #00bfff; border-color: #00bfff; }}
 </style>
 </head>
 <body>
-<div class='title-box'>{test_title}</div>
-<div class='quote'>“Don’t limit your challenges. Challenge your limits.”</div>
-<div class='answer-key-container'>
-<table>
-<thead>
-<tr><th>Question No.</th><th>Correct Option</th><th>Answer Text</th></tr>
-</thead>
-<tbody>
-"""
+<div class='title-box'>
+    <h1>{test_title}</h1>
+    <div>Answer Key</div>
+</div>
+<div class='quote'>𝐈𝐟 𝐥𝐢𝐟𝐞 𝐢𝐬 𝐭𝐨𝐨 𝐬𝐢𝐦𝐩𝐥𝐞 𝐢𝐭'𝐬 𝐧𝐨𝐭 𝐰𝐨𝐫𝐭𝐡 𝐥𝐢𝐯𝐢𝐧𝐠✨</div>
+
+<table class='answer-key-table'>
+    <thead>
+        <tr>
+            <th>Question No.</th>
+            <th>Correct Option</th>
+            <th>Answer Text</th>
+        </tr>
+    </thead>
+    <tbody>"""
+    
     for idx, q in enumerate(data, 1):
         correct_option = ""
         correct_answer = ""
-        for i, opt in enumerate(q['alternatives'][:4]):
+        
+        for i, opt in enumerate(q["alternatives"][:4]):
             if str(opt.get("score_if_chosen")) == "1":
                 correct_option = ["A", "B", "C", "D"][i]
                 correct_answer = process_html_content(opt['answer'])
                 break
+        
         html += f"""
-<tr>
-    <td class='question-number'>{idx}</td>
-    <td><span class='correct-option'>{correct_option}</span></td>
-    <td class='answer-text'>{correct_answer}</td>
-</tr>
-"""
-
+        <tr>
+            <td><span class='question-number'>{idx}</span></td>
+            <td><span class='correct-option'>{correct_option}</span></td>
+            <td><div class='answer-text'>{correct_answer}</div></td>
+        </tr>"""
+    
     html += """
-</tbody>
+    </tbody>
 </table>
-</div>
-<div class='quote-footer'>Curated with precision by Harsh's Extractor</div>
-<div class='extracted-box'>Extracted by Harsh</div>
+<div class='quote-footer'>𝕋𝕙𝕖 𝕆𝕟𝕖 𝕒𝕟𝕕 𝕆𝕟𝕝𝕪 ℙ𝕚𝕖𝕔𝕖</div>
+<div class='extracted-box'>Extracted by 『𝗛ᴀʀsʜ』</div>
 </body>
-</html>
-"""
+</html>"""
     return html
