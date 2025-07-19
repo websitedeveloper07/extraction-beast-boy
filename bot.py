@@ -551,7 +551,7 @@ def generate_html_with_answers(data, test_title, syllabus):
     for idx, q in enumerate(data, 1):
         processed_body = process_html_content(q['body'])
         html += "<div class='question-card'>"
-        html += "<div class='question-watermark'><a href='https://t.me/rockyleakss' target='_blank'>@𝘎𝘰𝘴𝘸𝘢𝘮𝘪 𝘫𝘪</a></div>"
+        html += "<div class='question-watermark'><a href='https://t.me/rockyleakss' target='_blank'>@𝓡𝓞𝑪𝓚𝓨</a></div>"
         html += f"<div class='question-title'>Question {idx}</div>"
         html += f"<div class='question-body'>{processed_body}</div>"
         html += "<div class='options'>"
@@ -575,7 +575,7 @@ def generate_html_with_answers(data, test_title, syllabus):
         
         html += "</div></div>"
     html += "<div class='quote-footer'>𝕋𝕙𝕖 𝕆𝕟𝕖 𝕒𝕟𝕕 𝕆𝕟𝕝𝕪 ℙ𝕚𝕖𝕔𝕖</div>"
-    html += "<div class='extracted-box'>Extracted by 𝘎𝘰𝘴𝘸𝘢𝘮𝘪 𝘫𝘪</div></body></html>"
+    html += "<div class='extracted-box'>Extracted by 𝓡𝓞𝑪𝓚𝓨</div></body></html>"
     return html
 
 def generate_html_only_questions(data, test_title, syllabus):
@@ -775,7 +775,7 @@ def generate_html_only_questions(data, test_title, syllabus):
     for idx, q in enumerate(data, 1):
         processed_body = process_html_content(q['body'])
         html += "<div class='question-card'>"
-        html += "<div class='question-watermark'><a href='https://t.me/rockyleakss' target='_blank'>@𝘎𝘰𝘴𝘸𝘢𝘮𝘪 𝘫𝘪</a></div>"
+        html += "<div class='question-watermark'><a href='https://t.me/rockyleakss' target='_blank'>@𝓡𝓞𝑪𝓚𝓨</a></div>"
         html += f"<div class='question-title'>Question {idx}</div>"
         html += f"<div class='question-body'>{processed_body}</div>"
         html += "<div class='options'>"
@@ -797,7 +797,7 @@ def generate_html_only_questions(data, test_title, syllabus):
         
         html += "</div></div>"
     html += "<div class='quote-footer'>𝕋𝕙𝕖 𝕆𝕟𝕖 𝕒𝕟𝕕 𝕆𝕟𝕝𝕪 ℙ𝕚𝕖𝕔𝕖</div>"
-    html += "<div class='extracted-box'>Extracted by 𝘎𝘰𝘴𝘸𝘢𝘮𝘪 𝘫𝘪</div></body></html>"
+    html += "<div class='extracted-box'>Extracted by 𝓡𝓞𝑪𝓚𝓨</div></body></html>"
     return html
 
 def generate_answer_key_table(data, test_title, syllabus):
@@ -1055,7 +1055,7 @@ def generate_answer_key_table(data, test_title, syllabus):
     </table>
 </div>
 <div class='quote-footer'>𝕋𝕙𝕖 𝕆𝕟𝕖 𝕒𝕟𝕕 𝕆𝕟𝕝𝕪 ℙ𝕚𝕖𝕔𝕖</div>
-<div class='extracted-box'>Extracted by 𝘎𝘰𝘴𝘸𝘢𝘮𝘪 𝘫𝘪</div>
+<div class='extracted-box'>Extracted by 𝓡𝓞𝑪𝓚𝓨</div>
 </body>
 </html>
     """
