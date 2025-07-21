@@ -618,7 +618,7 @@ def generate_html_with_answers(data, test_title, syllabus):
 <div class='title-box'>
     <h1>{test_title}</h1>
 </div>
-<div class='quote'>"𝙏𝙝𝙚 𝙤𝙣𝙡𝙮 𝙞𝙢𝙥𝙤𝙨𝙨𝙞𝙗𝙡𝙚 𝙟𝙤𝙪𝙧𝙣𝙚𝙮 𝙞𝙨 𝙩𝙝𝙚 𝙤𝙣𝙚 𝙮𝙤𝙪 𝙣𝙚𝙫𝙚𝙧 𝙗𝙚𝙜𝙞𝙣"</div>
+<div class='quote'>"𝕋𝕙𝕖 𝕠𝕟𝕝𝕪 𝕚𝕞𝕡𝕠𝕤𝕤𝕚𝕓𝕝𝕖 𝕛𝕠𝕦𝕣𝕟𝕖𝕪 𝕚𝕤 𝕥𝕙𝕖 𝕠𝕟𝕖 𝕪𝕠𝕦 𝕟𝕖𝕧𝕖𝕣 𝕓𝕖𝕘𝕚𝕟"</div>
 """
     
     for idx, q in enumerate(data, 1):
@@ -648,8 +648,8 @@ def generate_html_with_answers(data, test_title, syllabus):
         html += "</div></div>"
     
     html += """
-<div class='quote-footer'>"𝔼𝕩𝕔𝕖𝕝𝕝𝔼𝔫𝔠𝔢 𝐢𝐬 𝐧𝑜𝐭 𝐚 𝐬𝐤𝐢𝐥𝐥, 𝐢𝐭'𝐬 𝐚𝐧 𝐚𝐭𝐭𝐢𝐭𝐮𝐝𝐞"</div>
-<div class='extracted-box'>🚀Extracted by 『𝗛ᴀʀsʜ』</div>
+<div class='quote-footer'>"𝕂𝕟𝕠𝕨𝕝𝕖𝕕𝕘𝕖 𝕚𝕤 𝕡𝕠𝕨𝕖𝕣, 𝕒𝕡𝕡𝕝𝕪 𝕚𝕥 𝕨𝕚𝕤𝕖𝕝𝕪"</div>
+<div class='extracted-box'>"𝒢𝐸𝒩𝐸𝑅𝒜𝒯𝐸𝒟 𝐵𝒴 𝐻𝒜𝑅𝒮𝐻"</div>
 </body>
 </html>"""
     return html
@@ -873,7 +873,7 @@ def generate_answer_key_table(data, test_title, syllabus):
     }}
     
     .quote::before {{
-        content: '📚';
+        content: ;
         position: absolute;
         top: -10px;
         left: 20px;
@@ -926,7 +926,7 @@ def generate_answer_key_table(data, test_title, syllabus):
     <h1>{test_title}</h1>
     <div>🎯Answer Key & Solutions</div>
 </div>
-<div class='quote'>"𝙎𝙪𝙘𝙘𝙚𝙨𝙨 𝙞𝙨 𝙬𝙝𝙚𝙧𝙚 𝙥𝙧𝙚𝙥𝙖𝙧𝙖𝙩𝙞𝙤𝙣 𝙢𝙚𝙚𝙩𝙨 𝙤𝙥𝙥𝙤𝙧𝙩𝙪𝙣𝙞𝙩𝙮" </div>
+<div class='quote'>"𝕋𝕙𝕖 𝕠𝕟𝕝𝕪 𝕚𝕞𝕡𝕠𝕤𝕤𝕚𝕓𝕝𝕖 𝕛𝕠𝕦𝕣𝕟𝕖𝕪 𝕚𝕤 𝕥𝕙𝕖 𝕠𝕟𝕖 𝕪𝕠𝕦 𝕟𝕖𝕧𝕖𝕣 𝕓𝕖𝕘𝕚𝕟" </div>
 
 <div class='answer-key-container'>
 <table class='answer-key-table'>
@@ -960,8 +960,8 @@ def generate_answer_key_table(data, test_title, syllabus):
     </tbody>
 </table>
 </div>
-<div class='quote-footer'>"𝕂𝕟𝕠𝕨𝕝𝕖𝕕𝕘𝕖 𝐢𝐬 𝐩𝐨𝐰𝐞𝐫, 𝒶𝓅𝓅𝓁𝓎 𝒾𝓉 𝓌𝒾𝓈𝑒𝓁𝓎"</div>
-<div class='extracted-box'>Masterfully Designed by 『𝗛ᴀʀsʜ</div>
+<div class='quote-footer'>"𝕂𝕟𝕠𝕨𝕝𝕖𝕕𝕘𝕖 𝕚𝕤 𝕡𝕠𝕨𝕖𝕣, 𝕒𝕡𝕡𝕝𝕪 𝕚𝕥 𝕨𝕚𝕤𝕖𝕝𝕪"</div>
+<div class='extracted-box'>"𝒢𝐸𝒩𝐸𝑅𝒜𝒯𝐸𝒟 𝐵𝒴 𝐻𝒜𝑅𝒮𝐻"</div>
 </body>
 </html>"""
     return html
