@@ -618,14 +618,14 @@ def generate_html_with_answers(data, test_title, syllabus):
 <div class='title-box'>
     <h1>{test_title}</h1>
 </div>
-<div class='quote'>"𝕋𝕙𝕖 𝕠𝕟𝕝𝕪 𝕚𝕞𝕡𝕠𝕤𝕤𝕚𝕓𝕝𝕖 𝕛𝕠𝕦𝕣𝕟𝕖𝕪 𝕚𝕤 𝕥𝕙𝕖 𝕠𝕟𝕖 𝕪𝕠𝕦 𝕟𝕖𝕧𝕖𝕣 𝕓𝕖𝕘𝕚𝕟"</div>
+<div class='quote'>"𝑻𝒉𝒆 𝒐𝒏𝒍𝒚 𝒊𝒎𝒑𝒐𝒔𝒔𝒊𝒃𝒍𝒆 𝒋𝒐𝒖𝒓𝒏𝒆𝒚 𝒊𝒔 𝒕𝒉𝒆 𝒐𝒏𝒆 𝒚𝒐𝒖 𝒏𝒆𝒗𝒆𝒓 𝒃𝒆𝒈𝒊𝒏"</div>
 """
     
     for idx, q in enumerate(data, 1):
         processed_body = process_html_content(q['body'])
         html += f"""
 <div class='question-card'>
-    <div class='question-watermark'><a href='https://t.me/rockyleakss' target='_blank'>@𝓗𝓐𝓡𝓢𝓗</a></div>
+    <div class='question-watermark'><a href='https://t.me/rockyleakss' target='_blank'>@𝑯𝒂𝒓𝒔𝒉</a></div>
     <div class='question-title'>Question {idx}</div>
     <div class='question-body'>{processed_body}</div>
     <div class='options'>"""
@@ -926,7 +926,7 @@ def generate_answer_key_table(data, test_title, syllabus):
     <h1>{test_title}</h1>
     <div>🎯Answer Key & Solutions</div>
 </div>
-<div class='quote'>"𝕋𝕙𝕖 𝕠𝕟𝕝𝕪 𝕚𝕞𝕡𝕠𝕤𝕤𝕚𝕓𝕝𝕖 𝕛𝕠𝕦𝕣𝕟𝕖𝕪 𝕚𝕤 𝕥𝕙𝕖 𝕠𝕟𝕖 𝕪𝕠𝕦 𝕟𝕖𝕧𝕖𝕣 𝕓𝕖𝕘𝕚𝕟" </div>
+<div class='quote'>"𝑻𝒉𝒆 𝒐𝒏𝒍𝒚 𝒊𝒎𝒑𝒐𝒔𝒔𝒊𝒃𝒍𝒆 𝒋𝒐𝒖𝒓𝒏𝒆𝒚 𝒊𝒔 𝒕𝒉𝒆 𝒐𝒏𝒆 𝒚𝒐𝒖 𝒏𝒆𝒗𝒆𝒓 𝒃𝒆𝒈𝒊𝒏" </div>
 
 <div class='answer-key-container'>
 <table class='answer-key-table'>
