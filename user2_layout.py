@@ -302,7 +302,7 @@ def generate_html_with_answers(data, test_title, syllabus):
         processed_body = process_html_content(q['body'])
         html += f"""
 <div class='question-card'>
-    <div class='question-watermark'><a href='https://t.me/rockyleakss' target='_blank'>@𝑯𝒂𝒓𝒔𝒉</a></div>
+    <div class='question-watermark'><a href='https://t.me/Harshleaks' target='_blank'>@𝑯𝒂𝒓𝒔𝒉</a></div>
     <div class='question-title'>Question {idx}</div>
     <div class='question-body'>{processed_body}</div>
     <div class='options'>"""
