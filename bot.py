@@ -22,8 +22,8 @@ from user2_layout import (
 
 # === CONFIG ===
 BOT_TOKEN = "8163450084:AAFCadeMAzxD6Rb6nfYwJ5Ke5IR8HcCIhWM"  # Replace with your token
-OWNER_IDS = (7796598050, 7412579712)  # Tuple of owner IDs
-AUTHORIZED_USER_IDS = set(OWNER_IDS)  # Set of authorized user IDs
+OWNER_ID = (7796598050, 7412579712)  # Tuple of owner IDs
+AUTHORIZED_USER_IDS = set(OWNER_ID)  # Set of authorized user IDs
 PLAN = "PRO PLAN⚡"
 
 
