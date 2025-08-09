@@ -21,7 +21,7 @@ from user2_layout import (
 
 
 # === CONFIG ===
-BOT_TOKEN = "INSERT YOUR"  # Replace with your token
+BOT_TOKEN = "8163450084:AAFCadeMAzxD6Rb6nfYwJ5Ke5IR8HcCIhWM"  # Replace with your token
 
 # Multiple owner IDs
 OWNER_IDS = {7796598050, 7412579712}  # Replace with both your Telegram numeric IDs
