@@ -22,7 +22,7 @@ from user2_layout import (
 
 # === CONFIG ===
 BOT_TOKEN = "8163450084:AAFCadeMAzxD6Rb6nfYwJ5Ke5IR8HcCIhWM"  # Replace with your token
-OWNER_ID = 7796598050
+OWNER_ID = 7796598050 , 7412579712
 AUTHORIZED_USER_IDS = {OWNER_ID}
 PLAN = "PRO PLAN⚡"
 
