@@ -21,10 +21,16 @@ from user2_layout import (
 
 
 # === CONFIG ===
-BOT_TOKEN = "8163450084:AAFCadeMAzxD6Rb6nfYwJ5Ke5IR8HcCIhWM"  # Replace with your token
-OWNER_ID = (7796598050, 7412579712)  # Tuple of owner IDs
-AUTHORIZED_USER_IDS = set(OWNER_ID)  # Set of authorized user IDs
+BOT_TOKEN = "INSERT YOUR"  # Replace with your token
+
+# Multiple owner IDs
+OWNER_IDS = {7796598050, 7412579712}  # Replace with both your Telegram numeric IDs
+
+# Initially authorized users (both owners are auto-authorized)
+AUTHORIZED_USER_IDS = set(OWNER_IDS)
+
 PLAN = "PRO PLAN⚡"
+
 
 
 ASK_NID = 0
@@ -60,7 +66,7 @@ Commands:
     )
 
 async def authorize_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != OWNER_ID:
+    if update.effective_user.id not in OWNER_IDS:
         await update.message.reply_text("🚫 Only the bot owner can use this command.")
         return
 
@@ -72,7 +78,7 @@ async def authorize_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ Invalid usage. Example: /au 123456789")
 
 async def revoke_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != OWNER_ID:
+    if update.effective_user.id not in OWNER_IDS:
         await update.message.reply_text("🚫 Only the bot owner can use this command.")
         return
 
@@ -87,7 +93,7 @@ async def revoke_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ Invalid usage. Example: /ru 123456789")
 
 async def send_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != OWNER_ID:
+    if update.effective_user.id not in OWNER_IDS:
         await update.message.reply_text("🚫 Only the bot owner can use this command.")
         return
 
