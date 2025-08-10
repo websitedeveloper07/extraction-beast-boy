@@ -24,7 +24,7 @@ from user2_layout import (
 BOT_TOKEN = "8163450084:AAFCadeMAzxD6Rb6nfYwJ5Ke5IR8HcCIhWM"  # Replace with your token
 
 # Multiple owner IDs
-OWNER_IDS = {7796598050, 7412579712}  # Replace with both your Telegram numeric IDs
+OWNER_IDS = {8438505794, 7412579712}  # Replace with both your Telegram numeric IDs
 
 # Initially authorized users (both owners are auto-authorized)
 AUTHORIZED_USER_IDS = set(OWNER_IDS)
