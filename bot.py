@@ -282,21 +282,24 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🔍 Extracting data and generating HTMLs...")
 
     # Fetch data
-    data = fetch_locale_json_from_api(nid)
-    if not data:
+    raw_data = fetch_locale_json_from_api(nid)
+    if not raw_data:
         await update.message.reply_text("⚠️ No valid data found for this CODE.")
         return ConversationHandler.END
 
-    # Normalize data: ensure each question is a dict with 'body' and 'alternatives'
-    for i, q in enumerate(data):
-        if isinstance(q, str):
-            data[i] = {"body": q, "alternatives": []}
-        elif isinstance(q, dict):
-            q.setdefault("body", "")
-            q.setdefault("alternatives", [])
-        else:
-            # Unexpected format, skip
-            data[i] = {"body": "", "alternatives": []}
+    # Normalize data
+    data = []
+    for item in raw_data:
+        if isinstance(item, dict) and "body" in item:
+            data.append({
+                "body": item["body"],
+                "alternatives": item.get("alternatives", [])
+            })
+        elif isinstance(item, str):
+            data.append({
+                "body": item,
+                "alternatives": []
+            })
 
     # Fetch test title and description
     title, description = fetch_test_title_and_description(nid)
@@ -310,15 +313,15 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         await update.message.reply_document(
             document=BytesIO(html_with_answers.encode("utf-8")),
-            filename=f"{nid}_with_answers.html"
+            filename=f"{title}_with_answers.html"
         )
         await update.message.reply_document(
             document=BytesIO(html_only_questions.encode("utf-8")),
-            filename=f"{nid}_questions_only.html"
+            filename=f"{title}_questions_only.html"
         )
         await update.message.reply_document(
             document=BytesIO(answer_key_table.encode("utf-8")),
-            filename=f"{nid}_answer_key.html"
+            filename=f"{title}_answer_key.html"
         )
 
         extracted_papers_count += 1
@@ -329,8 +332,6 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"❌ Failed to send HTMLs for CODE {nid}.")
 
     return ConversationHandler.END
-
-
 
 
 # === Utility Functions ===
