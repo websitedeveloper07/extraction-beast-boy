@@ -96,7 +96,8 @@ async def revoke_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text("🚫 You cannot revoke yourself.")
             return
 
-        # Remove from authorized users
+        # Ensure we modify the global set
+        global AUTHORIZED_USER_IDS
         AUTHORIZED_USER_IDS.discard(user_id)
         await update.message.reply_text(f"🗑️ User ID {user_id} revoked successfully.")
 
