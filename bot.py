@@ -281,7 +281,7 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text("🔍 Extracting data and generating HTMLs...")
 
-    # Fetch data
+    # Fetch raw data
     raw_data = fetch_locale_json_from_api(nid)
     if not raw_data:
         await update.message.reply_text("⚠️ No valid data found for this CODE.")
@@ -290,27 +290,31 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Normalize data
     data = []
     for item in raw_data:
-        if isinstance(item, dict) and "body" in item:
-            data.append({
-                "body": item["body"],
-                "alternatives": item.get("alternatives", [])
-            })
+        # Ensure each item is a dict with 'body' and 'alternatives'
+        if isinstance(item, dict):
+            body = item.get("body", "")
+            alternatives = item.get("alternatives", [])
+            data.append({"body": body, "alternatives": alternatives})
         elif isinstance(item, str):
-            data.append({
-                "body": item,
-                "alternatives": []
-            })
+            data.append({"body": item, "alternatives": []})
+        else:
+            # skip invalid items
+            continue
+
+    if not data:
+        await update.message.reply_text("⚠️ No valid questions found after normalization.")
+        return ConversationHandler.END
 
     # Fetch test title and description
     title, description = fetch_test_title_and_description(nid)
 
-    # Generate HTMLs using provided layouts
-    html_with_answers = generate_html_with_answers_user2(title, description, data)
-    html_only_questions = generate_html_only_questions_user2(title, description, data)
-    answer_key_table = generate_answer_key_table_user2(title, description, data)
-
-    # Send HTMLs as files
+    # Generate HTMLs
     try:
+        html_with_answers = generate_html_with_answers_user2(title, description, data)
+        html_only_questions = generate_html_only_questions_user2(title, description, data)
+        answer_key_table = generate_answer_key_table_user2(title, description, data)
+
+        # Send HTMLs as files
         await update.message.reply_document(
             document=BytesIO(html_with_answers.encode("utf-8")),
             filename=f"{title}_with_answers.html"
@@ -328,11 +332,10 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("✅ Extraction complete!")
 
     except Exception as e:
-        logging.error(f"Failed to send HTMLs for NID {nid}: {e}")
-        await update.message.reply_text(f"❌ Failed to send HTMLs for CODE {nid}.")
+        logging.error(f"Failed to generate/send HTMLs for NID {nid}: {e}")
+        await update.message.reply_text(f"❌ Failed to generate/send HTMLs for CODE {nid}.")
 
     return ConversationHandler.END
-
 
 # === Utility Functions ===
 def fetch_locale_json_from_api(nid):
