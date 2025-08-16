@@ -281,61 +281,47 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text("🔍 Extracting data and generating HTMLs...")
 
-    # Fetch raw data
-    raw_data = fetch_locale_json_from_api(nid)
-    if not raw_data:
+    # Fetch data
+    data = fetch_locale_json_from_api(nid)
+    if not data:
         await update.message.reply_text("⚠️ No valid data found for this CODE.")
         return ConversationHandler.END
 
-    # Normalize data
-    data = []
-    for item in raw_data:
-        # Ensure each item is a dict with 'body' and 'alternatives'
-        if isinstance(item, dict):
-            body = item.get("body", "")
-            alternatives = item.get("alternatives", [])
-            data.append({"body": body, "alternatives": alternatives})
-        elif isinstance(item, str):
-            data.append({"body": item, "alternatives": []})
-        else:
-            # skip invalid items
-            continue
-
-    if not data:
-        await update.message.reply_text("⚠️ No valid questions found after normalization.")
-        return ConversationHandler.END
-
     # Fetch test title and description
-    title, description = fetch_test_title_and_description(nid)
+    title, desc = fetch_test_title_and_description(nid)
 
-    # Generate HTMLs
-    try:
-        html_with_answers = generate_html_with_answers_user2(title, description, data)
-        html_only_questions = generate_html_only_questions_user2(title, description, data)
-        answer_key_table = generate_answer_key_table_user2(title, description, data)
+    user_id = update.effective_user.id
 
-        # Send HTMLs as files
-        await update.message.reply_document(
-            document=BytesIO(html_with_answers.encode("utf-8")),
-            filename=f"{title}_with_answers.html"
-        )
-        await update.message.reply_document(
-            document=BytesIO(html_only_questions.encode("utf-8")),
-            filename=f"{title}_questions_only.html"
-        )
-        await update.message.reply_document(
-            document=BytesIO(answer_key_table.encode("utf-8")),
-            filename=f"{title}_answer_key.html"
-        )
+    if user_id == 7138086137:  # Harsh's ID
+        htmls = {
+            "QP_with_Answers.html": generate_html_with_answers_user2(data, title, desc),
+            "Only_Answer_Key.html": generate_answer_key_table_user2(data, title, desc),
+            "Only_Question_Paper.html": generate_html_only_questions_user2(data, title, desc)
+        }
+    else:
+        htmls = {
+            "QP_with_Answers.html": generate_html_with_answers(data, title, desc),
+            "Only_Answer_Key.html": generate_answer_key_table(data, title, desc),
+            "Only_Question_Paper.html": generate_html_only_questions(data, title, desc)
+        }
 
-        extracted_papers_count += 1
-        await update.message.reply_text("✅ Extraction complete!")
+    # Prepare documents to send
+    docs = []
+    for filename, html in htmls.items():
+        bio = BytesIO(html.encode("utf-8"))
+        bio.name = filename
+        docs.append(bio)
 
-    except Exception as e:
-        logging.error(f"Failed to generate/send HTMLs for NID {nid}: {e}")
-        await update.message.reply_text(f"❌ Failed to generate/send HTMLs for CODE {nid}.")
+    # Send all HTML files as a media group
+    await update.message.reply_media_group(
+        [InputMediaDocument(media=doc, filename=doc.name) for doc in docs]
+    )
+
+    extracted_papers_count += 1
+    await update.message.reply_text("✅ All HTML files sent!")
 
     return ConversationHandler.END
+
 
 # === Utility Functions ===
 def fetch_locale_json_from_api(nid):
