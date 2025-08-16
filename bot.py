@@ -158,6 +158,41 @@ async def revoke_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except ValueError:
         await update.message.reply_text("❌ Invalid user ID. Example: /ru 123456789")
 
+
+# ==================== /send Command ====================
+async def send_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id not in OWNER_IDS:
+        await update.message.reply_text("🚫 Only the bot owner can use this command.")
+        return
+
+    if not context.args or len(context.args) < 1:
+        await update.message.reply_text("❌ Please provide a CODE. Example: /send 4382000229")
+        return
+
+    code = context.args[0]
+    global AUTHORIZED_USER_IDS
+    all_users = AUTHORIZED_USER_IDS
+
+    if not all_users:
+        await update.message.reply_text("⚠️ No authorized users to send to.")
+        return
+
+    msg = f"👋 Hey there! Here is an extraction code:\n`{code}`"
+    success = 0
+    fail = 0
+
+    for uid in all_users:
+        try:
+            await context.bot.send_message(chat_id=uid, text=msg, parse_mode="Markdown")
+            success += 1
+        except Exception as e:
+            print(f"Failed to send to {uid}: {e}")
+            fail += 1
+
+    await update.message.reply_text(f"📤 Sent to {success} user(s). ❌ Failed for {fail} user(s).")
+
+
+
 async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
         await send_unauthorized_message(update)
