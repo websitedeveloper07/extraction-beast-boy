@@ -287,6 +287,17 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ No valid data found for this CODE.")
         return ConversationHandler.END
 
+    # Normalize data: ensure each question is a dict with 'body' and 'alternatives'
+    for i, q in enumerate(data):
+        if isinstance(q, str):
+            data[i] = {"body": q, "alternatives": []}
+        elif isinstance(q, dict):
+            q.setdefault("body", "")
+            q.setdefault("alternatives", [])
+        else:
+            # Unexpected format, skip
+            data[i] = {"body": "", "alternatives": []}
+
     # Fetch test title and description
     title, description = fetch_test_title_and_description(nid)
 
@@ -299,15 +310,15 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         await update.message.reply_document(
             document=BytesIO(html_with_answers.encode("utf-8")),
-            filename=f"{title}_with_answers.html"
+            filename=f"{nid}_with_answers.html"
         )
         await update.message.reply_document(
             document=BytesIO(html_only_questions.encode("utf-8")),
-            filename=f"{title}_questions_only.html"
+            filename=f"{nid}_questions_only.html"
         )
         await update.message.reply_document(
             document=BytesIO(answer_key_table.encode("utf-8")),
-            filename=f"{title}_answer_key.html"
+            filename=f"{nid}_answer_key.html"
         )
 
         extracted_papers_count += 1
