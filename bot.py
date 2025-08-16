@@ -78,28 +78,31 @@ async def authorize_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ Invalid usage. Example: /au 123456789")
 
 async def revoke_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Only owners can use /ru
     if update.effective_user.id not in OWNER_IDS:
-        await update.message.reply_text("🚫 Only the bot owner can use this command.")
+        await update.message.reply_text("🚫 Access Denied. Only the bot owner can use this command.")
+        return
+
+    # Check if user ID argument is provided
+    if not context.args or len(context.args) < 1:
+        await update.message.reply_text("❌ Invalid usage. Example: /ru 123456789")
         return
 
     try:
         user_id = int(context.args[0])
-        if user_id == OWNER_ID:
+
+        # Prevent owner from revoking themselves
+        if user_id in OWNER_IDS:
             await update.message.reply_text("🚫 You cannot revoke yourself.")
             return
+
+        # Remove from authorized users
         AUTHORIZED_USER_IDS.discard(user_id)
-        await update.message.reply_text(f"🗑️ User ID {user_id} revoked.")
-    except:
-        await update.message.reply_text("❌ Invalid usage. Example: /ru 123456789")
+        await update.message.reply_text(f"🗑️ User ID {user_id} revoked successfully.")
 
-async def send_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id not in OWNER_IDS:
-        await update.message.reply_text("🚫 Only the bot owner can use this command.")
-        return
+    except ValueError:
+        await update.message.reply_text("❌ Invalid user ID. Example: /ru 123456789")
 
-    if len(context.args) < 1:
-        await update.message.reply_text("❌ Usage: /send <code>")
-        return
 
     code = context.args[0]
 
