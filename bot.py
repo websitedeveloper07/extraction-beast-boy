@@ -281,10 +281,44 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text("🔍 Extracting data and generating HTMLs...")
 
+    # Fetch data
     data = fetch_locale_json_from_api(nid)
     if not data:
         await update.message.reply_text("⚠️ No valid data found for this CODE.")
         return ConversationHandler.END
+
+    # Fetch test title and description
+    title, description = fetch_test_title_and_description(nid)
+
+    # Generate HTMLs using provided layouts
+    html_with_answers = generate_html_with_answers_user2(title, description, data)
+    html_only_questions = generate_html_only_questions_user2(title, description, data)
+    answer_key_table = generate_answer_key_table_user2(title, description, data)
+
+    # Send HTMLs as files
+    try:
+        await update.message.reply_document(
+            document=BytesIO(html_with_answers.encode("utf-8")),
+            filename=f"{title}_with_answers.html"
+        )
+        await update.message.reply_document(
+            document=BytesIO(html_only_questions.encode("utf-8")),
+            filename=f"{title}_questions_only.html"
+        )
+        await update.message.reply_document(
+            document=BytesIO(answer_key_table.encode("utf-8")),
+            filename=f"{title}_answer_key.html"
+        )
+
+        extracted_papers_count += 1
+        await update.message.reply_text("✅ Extraction complete!")
+
+    except Exception as e:
+        logging.error(f"Failed to send HTMLs for NID {nid}: {e}")
+        await update.message.reply_text(f"❌ Failed to send HTMLs for CODE {nid}.")
+
+    return ConversationHandler.END
+
 
 
 
