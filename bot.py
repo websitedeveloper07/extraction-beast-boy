@@ -5,41 +5,35 @@ import requests
 from io import BytesIO
 from bs4 import BeautifulSoup
 import psutil
-from telegram import InputMediaDocument
-
-from telegram import Update
+from telegram import InputMediaDocument, Update
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler,
     ConversationHandler, ContextTypes, filters
 )
-
 from user2_layout import (
     generate_html_with_answers as generate_html_with_answers_user2,
     generate_html_only_questions as generate_html_only_questions_user2,
     generate_answer_key_table as generate_answer_key_table_user2
 )
-
+import re
+from html import unescape
+from datetime import datetime, timezone, timedelta
 
 # === CONFIG ===
-BOT_TOKEN = "8163450084:AAFCadeMAzxD6Rb6nfYwJ5Ke5IR8HcCIhWM"  # Replace with your token
-
-# Multiple owner IDs
-OWNER_IDS = {8438505794, 7412579712}  # Replace with both your Telegram numeric IDs
-
-# Initially authorized users (both owners are auto-authorized)
+BOT_TOKEN = "8163450084:AAFCadeMAzxD6Rb6nfYwJ5Ke5IR8HcCIhWM"
+OWNER_IDS = {8438505794, 7412579712}  # Bot owners
 AUTHORIZED_USER_IDS = set(OWNER_IDS)
-
 PLAN = "PRO PLAN⚡"
-
-
 
 ASK_NID = 0
 extracted_papers_count = 0
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# ==================== Helper Functions ====================
 def is_authorized(user_id):
-    return user_id in AUTHORIZED_USER_IDS
+    return user_id in AUTHORIZED_USER_IDS or user_id in OWNER_IDS
 
 async def send_unauthorized_message(update: Update):
     if update.message:
@@ -47,6 +41,71 @@ async def send_unauthorized_message(update: Update):
     elif update.callback_query:
         await update.callback_query.answer("❌ Access Denied!", show_alert=True)
 
+def escape_markdown(text):
+    if not text:
+        return ""
+    return re.sub(r'([_*\[\]()~`>#+\-=|{}.!\\])', r'\\\1', str(text))
+
+def unix_to_ist(unix_timestamp):
+    ist = timezone(timedelta(hours=5, minutes=30))
+    return datetime.fromtimestamp(unix_timestamp, ist).strftime("%d %B %Y, %I:%M %p")
+
+def clean_html(html):
+    return BeautifulSoup(html or "", "html.parser").get_text(separator="\n", strip=True)
+
+def extract_syllabus(description):
+    soup = BeautifulSoup(description, 'html.parser')
+    lines = soup.get_text(separator="\n").splitlines()
+    subjects = {"Physics": "", "Chemistry": "", "Mathematics": ""}
+    for line in lines:
+        if "Physics" in line:
+            subjects["Physics"] = line.replace("Physics :", "").strip()
+        elif "Chemistry" in line:
+            subjects["Chemistry"] = line.replace("Chemistry :", "").strip()
+        elif "Mathematics" in line:
+            subjects["Mathematics"] = line.replace("Mathematics :", "").strip()
+    return subjects
+
+def fetch_locale_json_from_api(nid):
+    url = f"https://learn.aakashitutor.com/quiz/{nid}/getlocalequestions"
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        raw = response.json()
+        out = []
+        for block in raw.values():
+            english = block.get("843")
+            if english and "body" in english:
+                out.append({
+                    "body": english["body"],
+                    "alternatives": english.get("alternatives", [])
+                })
+        return out
+    except:
+        return None
+
+def fetch_test_title_and_description(nid):
+    url = f"https://learn.aakashitutor.com/api/getquizfromid?nid={nid}"
+    try:
+        response = requests.get(url, timeout=10)
+        data = response.json()
+        if data:
+            return data[0].get("title", f"Test_{nid}"), data[0].get("description", "")
+    except:
+        pass
+    return f"Test_{nid}", ""
+
+def process_html_content(html):
+    if not html:
+        return ""
+    soup = BeautifulSoup(html, 'html.parser')
+    for img in soup.find_all('img'):
+        src = img.get('src')
+        if src and src.startswith('//'):
+            img['src'] = f"https:{src}"
+    return str(soup)
+
+# ==================== Command Handlers ====================
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
         await send_unauthorized_message(update)
@@ -72,63 +131,32 @@ async def authorize_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         user_id = int(context.args[0])
+        global AUTHORIZED_USER_IDS
         AUTHORIZED_USER_IDS.add(user_id)
         await update.message.reply_text(f"✅ User ID {user_id} authorized.")
     except:
         await update.message.reply_text("❌ Invalid usage. Example: /au 123456789")
 
 async def revoke_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Only owners can use /ru
     if update.effective_user.id not in OWNER_IDS:
-        await update.message.reply_text("🚫 Access Denied. Only the bot owner can use this command.")
+        await update.message.reply_text("🚫 Only the bot owner can use this command.")
         return
 
-    # Check if user ID argument is provided
     if not context.args or len(context.args) < 1:
         await update.message.reply_text("❌ Invalid usage. Example: /ru 123456789")
         return
 
     try:
         user_id = int(context.args[0])
-
-        # Prevent owner from revoking themselves
         if user_id in OWNER_IDS:
             await update.message.reply_text("🚫 You cannot revoke yourself.")
             return
 
-        # Ensure we modify the global set
         global AUTHORIZED_USER_IDS
         AUTHORIZED_USER_IDS.discard(user_id)
         await update.message.reply_text(f"🗑️ User ID {user_id} revoked successfully.")
-
     except ValueError:
         await update.message.reply_text("❌ Invalid user ID. Example: /ru 123456789")
-
-
-    code = context.args[0]
-
-    global AUTHORIZED_USER_IDS
-    all_users = AUTHORIZED_USER_IDS
-
-    if not all_users:
-        await update.message.reply_text("⚠️ No authorized users to send to.")
-        return
-
-    msg = f"👋 Hey there! Here is a extraction code:\n`{code}`"
-
-    success = 0
-    fail = 0
-
-    for uid in all_users:
-        try:
-            await context.bot.send_message(chat_id=uid, text=msg, parse_mode="Markdown")
-            success += 1
-        except Exception as e:
-            print(f"Failed to send to {uid}: {e}")
-            fail += 1
-
-    await update.message.reply_text(f"📤 Sent to {success} user(s). ❌ Failed for {fail} user(s).")
-
 
 async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
@@ -147,51 +175,6 @@ async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 👑 Owner: *『𝗥ᴏᴄ𝗄𝑦』*
 """
     await update.message.reply_text(msg, parse_mode='Markdown')
-
-from bs4 import BeautifulSoup
-
-def clean_html(html):
-    """Convert HTML to clean plain text."""
-    return BeautifulSoup(html or "", "html.parser").get_text(separator="\n", strip=True)
-
-from html import unescape
-from bs4 import BeautifulSoup
-
-def extract_syllabus(description):
-    soup = BeautifulSoup(description, 'html.parser')
-    lines = soup.get_text(separator="\n").splitlines()
-    subjects = {"Physics": "", "Chemistry": "", "Mathematics": ""}
-
-    for line in lines:
-        if "Physics" in line:
-            subjects["Physics"] = line.replace("Physics :", "").strip()
-        elif "Chemistry" in line:
-            subjects["Chemistry"] = line.replace("Chemistry :", "").strip()
-        elif "Mathematics" in line:
-            subjects["Mathematics"] = line.replace("Mathematics :", "").strip()
-    return subjects
-
-from html import unescape
-from bs4 import BeautifulSoup
-
-from telegram.helpers import escape_markdown  # make sure this is at the top
-
-import re
-import logging
-import requests
-from html import unescape
-from datetime import datetime, timezone, timedelta
-from telegram import Update
-from telegram.ext import ContextTypes
-
-def escape_markdown(text):
-    if not text:
-        return ""
-    return re.sub(r'([_*\[\]()~`>#+\-=|{}.!\\])', r'\\\1', str(text))
-
-def unix_to_ist(unix_timestamp):
-    ist = timezone(timedelta(hours=5, minutes=30))
-    return datetime.fromtimestamp(unix_timestamp, ist).strftime("%d %B %Y, %I:%M %p")
 
 async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
@@ -219,18 +202,15 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         quiz_open = quiz.get("quiz_open")
         quiz_close = quiz.get("quiz_close")
 
-        # Convert timestamps to IST
         test_open = unix_to_ist(int(quiz_open)) if quiz_open else "N/A"
         test_close = unix_to_ist(int(quiz_close)) if quiz_close else "N/A"
 
-        # Start message with test info
         msg = f"*📘 CODE Info*\n\n"
         msg += f"*📝 Title:* {escape_markdown(title)}\n"
         msg += f"*📛 Display Name:* {escape_markdown(display_name)}\n"
         msg += f"*🟢 Test Opens:* {escape_markdown(test_open)}\n"
         msg += f"*🔴 Test Closes:* {escape_markdown(test_close)}\n\n"
 
-        # Decode and extract syllabus
         decoded = unescape(raw_description or "")
         matches = re.findall(r'<strong>([^<:]+)\s*:\s*</strong>(.*?)<br>', decoded, re.IGNORECASE)
 
@@ -248,16 +228,13 @@ async def info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logging.error(f"Error fetching info for NID {nid}: {e}")
         await update.message.reply_text(f"❌ Failed to fetch info for CODE {nid}.")
 
-
 async def extract_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
         await send_unauthorized_message(update)
         return ConversationHandler.END
 
     await update.message.reply_text("🔢 Please send the CODE to extract:")
-    return ASK_NID  # <-- This tells ConversationHandler to wait for input
-
-
+    return ASK_NID
 
 async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global extracted_papers_count
@@ -274,35 +251,6 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ No valid data found for this CODE.")
         return ConversationHandler.END
 
-    title, desc = fetch_test_title_and_description(nid)
-    user_id = update.effective_user.id
-
-    if user_id == 7138086137:  # Harsh's ID
-        htmls = {
-            "QP_with_Answers.html": generate_html_with_answers_user2(data, title, desc),
-            "Only_Answer_Key.html": generate_answer_key_table_user2(data, title, desc),
-            "Only_Question_Paper.html": generate_html_only_questions_user2(data, title, desc)
-        }
-    else:
-        htmls = {
-            "QP_with_Answers.html": generate_html_with_answers(data, title, desc),
-            "Only_Answer_Key.html": generate_answer_key_table(data, title, desc),
-            "Only_Question_Paper.html": generate_html_only_questions(data, title, desc)
-        }
-
-    docs = []
-    for filename, html in htmls.items():
-        bio = BytesIO(html.encode("utf-8"))
-        bio.name = filename
-        docs.append(bio)
-
-    await update.message.reply_media_group(
-        [InputMediaDocument(media=doc, filename=doc.name) for doc in docs]
-    )
-
-    extracted_papers_count += 1
-    await update.message.reply_text("✅ All HTML files sent!")
-    return ConversationHandler.END
 
 
 # === Utility Functions ===
