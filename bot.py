@@ -20,8 +20,8 @@ from html import unescape
 from datetime import datetime, timezone, timedelta
 
 # === CONFIG ===
-BOT_TOKEN = "8163450084:AAFCadeMAzxD6Rb6nfYwJ5Ke5IR8HcCIhWM"
-OWNER_IDS = {8438505794, 7412579712}  # Bot owners
+BOT_TOKEN = "8472217377:AAEP8rNoEV-1qvzbe7DSdIzw4OMuBQ4-2hA"
+OWNER_IDS = {8438505794}  # Bot owners
 AUTHORIZED_USER_IDS = set(OWNER_IDS)
 PLAN = "PRO PLAN⚡"
 
@@ -118,8 +118,6 @@ Commands:
 • `/extract` - Extracts and sends all 3 HTML formats for a given NID.
 • `/status` - Shows bot status, usage, and plan.
 • `/info <code>` Gives info about Test title/Display name/syllabus etc.
-• `/au <user_id>` - Authorize a user (owner only).
-• `/ru <user_id>` - Revoke a user (owner only). 
 """,
         parse_mode='Markdown'
     )
