@@ -384,6 +384,7 @@ def generate_html_with_answers(data, test_title, syllabus):
 <head>
 <meta charset='UTF-8'>
 <title>{test_title}</title>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
@@ -415,6 +416,17 @@ def generate_html_with_answers(data, test_title, syllabus):
         background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><circle fill="%23ffffff" fill-opacity="0.02" cx="30" cy="30" r="1"/></g></svg>');
         z-index: -1;
         opacity: 0.4;
+    }}
+
+    table {{
+        border-collapse: collapse;
+        width: 100%;
+        margin: 10px 0;
+    }}
+    table, th, td {{
+        border: 1px solid #ccc;
+        padding: 6px;
+        text-align: center;
     }}
     
     .title-box {{
@@ -663,7 +675,10 @@ def generate_html_with_answers(data, test_title, syllabus):
 """
     
     for idx, q in enumerate(data, 1):
-        processed_body = process_html_content(q['body'])
+        processed_body = q.get('body') or ""
+        if not processed_body and q.get("image"):
+            processed_body = f"<img src='{q['image']}' style='max-width:100%; height:auto;'>"
+
         html += f"""
 <div class='question-card'>
     <div class='question-watermark'><a href='https://t.me/Harshleaks' target='_blank'>@𝑯𝒂𝒓𝒔𝒉</a></div>
@@ -671,7 +686,7 @@ def generate_html_with_answers(data, test_title, syllabus):
     <div class='question-body'>{processed_body}</div>
     <div class='options'>"""
         
-        alternatives = q["alternatives"][:4]
+        alternatives = q.get("alternatives", [])[:4]
         labels = ["A", "B", "C", "D"]
         
         for row in range(2):
@@ -682,7 +697,11 @@ def generate_html_with_answers(data, test_title, syllabus):
                     opt = alternatives[opt_idx]
                     is_correct = str(opt.get("score_if_chosen")) == "1"
                     class_name = "option correct" if is_correct else "option"
-                    processed_answer = process_html_content(opt['answer'])
+
+                    processed_answer = opt.get("answer") or ""
+                    if not processed_answer and opt.get("image"):
+                        processed_answer = f"<img src='{opt['image']}' style='max-width:100%; height:auto;'>"
+
                     html += f"<div class='{class_name}'>{labels[opt_idx]}) {processed_answer}</div>"
             html += "</div>"
         
@@ -694,6 +713,7 @@ def generate_html_with_answers(data, test_title, syllabus):
 </body>
 </html>"""
     return html
+
 
 def generate_html_only_questions(data, test_title, syllabus):
     """Generate HTML with only questions (no answer highlighting) - Modern Premium theme"""
