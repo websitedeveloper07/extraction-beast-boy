@@ -20,8 +20,8 @@ from html import unescape
 from datetime import datetime, timezone, timedelta
 
 # === CONFIG ===
-BOT_TOKEN = "8472217377:AAEP8rNoEV-1qvzbe7DSdIzw4OMuBQ4-2hA"
-OWNER_IDS = {8438505794}  # Bot owners
+BOT_TOKEN = "8042533210:AAFzHzkotAwaZrtHh_OC1ftAbfCo9htxUAk"
+OWNER_IDS = {8406230162}  # Bot owners
 AUTHORIZED_USER_IDS = set(OWNER_IDS)
 PLAN = "PRO PLAN⚡"
 
@@ -205,7 +205,7 @@ async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 💾 RAM Usage: *{ram.percent}%*
 👥 Authorized Users: *{len(AUTHORIZED_USER_IDS)}*
 🪪 Plan: *{PLAN}*
-👑 Owner: *『𝗥ᴏᴄ𝗄𝑦』*
+👑 Owner: *Linuxx*
 """
     await update.message.reply_text(msg, parse_mode='Markdown')
 
