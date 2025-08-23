@@ -734,7 +734,7 @@ def generate_html_only_questions(data, test_title, syllabus):
     )
 
 def generate_answer_key_table(data, test_title, syllabus):
-    """Generate HTML answer key table - Modern Premium theme"""
+    """Generate HTML answer key table - Modern Premium theme (with MathJax & image support)"""
     html = f"""
 <!DOCTYPE html>
 <html>
@@ -933,14 +933,6 @@ def generate_answer_key_table(data, test_title, syllabus):
         position: relative;
     }}
     
-    .quote::before {{
-        content: ;
-        position: absolute;
-        top: -10px;
-        left: 20px;
-        font-size: 24px;
-    }}
-    
     .quote-footer, .extracted-box {{
         text-align: center;
         margin: 24px auto;
@@ -981,6 +973,8 @@ def generate_answer_key_table(data, test_title, syllabus):
         .answer-text {{ max-width: 100%; }}
     }}
 </style>
+<!-- MathJax for equations -->
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 <div class='title-box'>
@@ -1007,7 +1001,10 @@ def generate_answer_key_table(data, test_title, syllabus):
         for i, opt in enumerate(q["alternatives"][:4]):
             if str(opt.get("score_if_chosen")) == "1":
                 correct_option = ["A", "B", "C", "D"][i]
-                correct_answer = process_html_content(opt['answer'])
+                # handle both text and image
+                correct_answer = process_html_content(opt.get('answer')) or ""
+                if not correct_answer and opt.get("image"):
+                    correct_answer = f"<img src='{opt['image']}' style='max-width:100%; height:auto;'>"
                 break
         
         html += f"""
@@ -1026,6 +1023,7 @@ def generate_answer_key_table(data, test_title, syllabus):
 </body>
 </html>"""
     return html
+
 # === Main ===
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
