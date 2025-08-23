@@ -66,22 +66,36 @@ def extract_syllabus(description):
             subjects["Mathematics"] = line.replace("Mathematics :", "").strip()
     return subjects
 
-def fetch_locale_json_from_api(nid):
+def fetch_locale_json_from_api(nid, prefer_lang="843"):
     url = f"https://learn.aakashitutor.com/quiz/{nid}/getlocalequestions"
     try:
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, timeout=50)
         response.raise_for_status()
         raw = response.json()
         out = []
+
         for block in raw.values():
-            english = block.get("843")
-            if english and "body" in english:
+            # Try preferred language (default = English / 843)
+            content = block.get(prefer_lang)
+
+            # Fallback: if preferred language not found, take first available
+            if not content:
+                for _, c in block.items():
+                    if isinstance(c, dict) and "body" in c:
+                        content = c
+                        break
+
+            if content and "body" in content:
                 out.append({
-                    "body": english["body"],
-                    "alternatives": english.get("alternatives", [])
+                    "body": content.get("body", ""),
+                    "alternatives": content.get("alternatives", []),
+                    "solution": content.get("solution", {}),
+                    "language": content.get("language_names", ["Unknown"])[0]
                 })
-        return out
-    except:
+
+        return out if out else None
+    except Exception as e:
+        print(f"[ERROR fetching {nid}] {e}")
         return None
 
 def fetch_test_title_and_description(nid):
