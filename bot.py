@@ -881,7 +881,7 @@ def generate_answer_key_table(data, test_title, syllabus):
 
 /* 🔹 Watermark for screen */
 body::before {
-  content: "";
+  content: '';
   position: fixed;
   top: 50%;
   left: 50%;
@@ -898,7 +898,7 @@ body::before {
 /* 🔹 Watermark for PDF/print */
 @media print {
   body::before {
-    content: "";
+    content: '';
     position: absolute;
     top: 50%;
     left: 50%;
@@ -916,6 +916,7 @@ body::before {
     print-color-adjust: exact !important;
   }
 }
+
 
     .container {{
         max-width: 1200px;
