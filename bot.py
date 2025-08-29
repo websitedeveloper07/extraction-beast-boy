@@ -851,7 +851,6 @@ def generate_html_only_questions(data, test_title, syllabus):
         ".option.correct::before {",
         ".option.correct-hidden::before {"
     )
-
 def generate_answer_key_table(data, test_title, syllabus):
     """Generate HTML answer key table - Matching the vibrant quiz layout style"""
     html = f"""
@@ -1245,26 +1244,30 @@ def generate_answer_key_table(data, test_title, syllabus):
                 answer_text = opt.get('answer', '').strip()
                 answer_image = opt.get('image', '').strip()
                 
-                # Build the correct answer display
+                # Build the correct answer display with proper image handling
                 if answer_text and answer_image:
                     # Both text and image
                     correct_answer = f"""{answer_text}<br>
+                    <div class='image-loading'>Loading image...</div>
                     <img src='{answer_image}' alt='Answer {correct_option}' class='answer-image' 
-                         onload="this.style.display='block'; this.nextElementSibling.style.display='none';" 
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
-                    <div class='image-placeholder'>Image not available: {answer_image}</div>"""
+                         style='display: none;'
+                         onload="this.style.display='block'; this.previousElementSibling.style.display='none';" 
+                         onerror="this.style.display='none'; this.previousElementSibling.style.display='none'; this.nextElementSibling.style.display='block';" />
+                    <div class='image-placeholder' style='display: none;'>❌ Image failed to load: <br><small>{answer_image}</small></div>"""
                 elif answer_image and not answer_text:
                     # Only image
-                    correct_answer = f"""<img src='{answer_image}' alt='Answer {correct_option}' class='answer-image' 
-                                       onload="this.style.display='block'; this.nextElementSibling.style.display='none';" 
-                                       onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
-                                       <div class='image-placeholder'>Image not available: {answer_image}</div>"""
+                    correct_answer = f"""<div class='image-loading'>Loading image...</div>
+                                       <img src='{answer_image}' alt='Answer {correct_option}' class='answer-image' 
+                                            style='display: none;'
+                                            onload="this.style.display='block'; this.previousElementSibling.style.display='none';" 
+                                            onerror="this.style.display='none'; this.previousElementSibling.style.display='none'; this.nextElementSibling.style.display='block';" />
+                                       <div class='image-placeholder' style='display: none;'>❌ Image failed to load: <br><small>{answer_image}</small></div>"""
                 elif answer_text:
                     # Only text
                     correct_answer = answer_text
                 else:
                     # Neither text nor image
-                    correct_answer = "No answer available"
+                    correct_answer = "<em>No answer content available</em>"
                 
                 break
         
