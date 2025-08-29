@@ -401,6 +401,51 @@ def generate_html_with_answers(data, test_title, syllabus):
         padding: 25px;
         line-height: 1.6;
         min-height: 100vh;
+        position: relative;
+    }}
+
+    /* 🔹 Watermark logo in center diagonally */
+    body::before {{
+        content: "";
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 500px;   /* adjust size if needed */
+        height: 500px;
+        background: url('https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png') no-repeat center;
+        background-size: contain;
+        opacity: 0.08;  /* transparency (0 = invisible, 1 = solid) */
+        transform: translate(-50%, -50%) rotate(-30deg);
+        z-index: -1;
+        pointer-events: none;
+    }}
+
+    .container {{
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        position: relative;
+        z-index: 1; /* keep content above watermark */
+    }}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
+    
+    * {{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }}
+    
+    body {{
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: #2d3748;
+        padding: 25px;
+        line-height: 1.6;
+        min-height: 100vh;
     }}
 
     .container {{
