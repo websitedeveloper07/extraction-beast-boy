@@ -538,52 +538,52 @@ def generate_html_with_answers(data, test_title, syllabus):
     }}
 
     .question-box {{
-        background: #ffffff;
+        background: linear-gradient(135deg, #f7fafc 0%, #ffffff 100%);
         border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        margin-bottom: 20px;
+        border-radius: 12px;
+        margin-bottom: 25px;
         overflow: hidden;
         transition: all 0.3s ease;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         page-break-inside: avoid;
         break-inside: avoid;
     }}
 
     .question-box:hover {{
         border-color: #667eea;
-        box-shadow: 0 6px 18px rgba(102, 126, 234, 0.12);
-        transform: translateY(-1px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        transform: translateY(-2px);
     }}
     
     .question-header {{
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 12px 18px;
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-        border-bottom: 1px solid #cbd5e0;
+        padding: 15px 20px;
+        background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+        border-bottom: 3px solid #cbd5e0;
     }}
     
     .question-number {{
         background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
         color: white;
-        padding: 6px 14px;
-        font-size: 14px;
+        padding: 8px 16px;
+        font-size: 15px;
         font-weight: 700;
-        border-radius: 15px;
-        box-shadow: 0 3px 8px rgba(66, 153, 225, 0.25);
+        border-radius: 20px;
+        box-shadow: 0 4px 10px rgba(66, 153, 225, 0.3);
     }}
     
     .watermark {{
         background: linear-gradient(135deg, #fc8181 0%, #e53e3e 100%);
         color: white;
-        padding: 5px 12px;
-        font-size: 11px;
+        padding: 6px 14px;
+        font-size: 12px;
         font-weight: 600;
-        border-radius: 12px;
+        border-radius: 15px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        box-shadow: 0 2px 6px rgba(252, 129, 129, 0.25);
+        box-shadow: 0 3px 8px rgba(252, 129, 129, 0.3);
     }}
     
     .watermark a {{
@@ -592,12 +592,12 @@ def generate_html_with_answers(data, test_title, syllabus):
     }}
     
     .question-content {{
-        padding: 18px;
+        padding: 25px;
     }}
     
     .question-text {{
-        font-size: 16px;
-        margin-bottom: 18px;
+        font-size: 17px;
+        margin-bottom: 20px;
         color: #2d3748;
         font-weight: 500;
         line-height: 1.6;
@@ -606,39 +606,40 @@ def generate_html_with_answers(data, test_title, syllabus):
     .question-image {{
         max-width: 100%;
         height: auto;
-        border-radius: 8px;
-        margin: 15px 0;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        margin: 20px 0;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
         display: block;
     }}
     
     .options-grid {{
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 10px;
+        gap: 15px;
     }}
     
     .option {{
-        padding: 12px 15px;
-        font-size: 14px;
+        padding: 15px 20px;
+        font-size: 15px;
         color: #4a5568;
-        border: 2px solid #cbd5e0;
+        border: 2px solid #e2e8f0;
         background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
-        border-radius: 6px;
-        transition: all 0.2s ease;
+        border-radius: 8px;
+        transition: all 0.3s ease;
         font-weight: 500;
         cursor: pointer;
         position: relative;
-        min-height: 45px;
+        min-height: 55px;
         display: flex;
         align-items: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }}
     
     .option:hover {{
         border-color: #667eea;
         background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(102, 126, 234, 0.12);
     }}
     
     .option.correct {{
@@ -646,19 +647,19 @@ def generate_html_with_answers(data, test_title, syllabus):
         border-color: #38a169;
         color: white;
         font-weight: 600;
-        box-shadow: 0 4px 15px rgba(72, 187, 120, 0.25);
+        box-shadow: 0 6px 18px rgba(72, 187, 120, 0.3);
     }}
     
     .option.correct::after {{
         content: '✓';
         position: absolute;
-        top: 8px;
-        right: 12px;
-        font-size: 16px;
+        top: 10px;
+        right: 15px;
+        font-size: 18px;
         font-weight: bold;
-        background: rgba(255, 255, 255, 0.2);
-        width: 22px;
-        height: 22px;
+        background: rgba(255, 255, 255, 0.25);
+        width: 26px;
+        height: 26px;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -667,8 +668,8 @@ def generate_html_with_answers(data, test_title, syllabus):
 
     .option-label {{
         font-weight: 700;
-        margin-right: 8px;
-        font-size: 14px;
+        margin-right: 10px;
+        font-size: 15px;
         color: #667eea;
         flex-shrink: 0;
     }}
@@ -680,8 +681,8 @@ def generate_html_with_answers(data, test_title, syllabus):
     .option-image {{
         max-width: 100%;
         height: auto;
-        border-radius: 6px;
-        margin: 8px 0;
+        border-radius: 8px;
+        margin: 10px 0;
         display: block;
     }}
     
@@ -840,7 +841,6 @@ def generate_html_with_answers(data, test_title, syllabus):
 </body>
 </html>"""
     return html
-
 
 def generate_html_only_questions(data, test_title, syllabus):
     """Generate HTML with only questions (no answer highlighting) - Modern Premium theme"""
