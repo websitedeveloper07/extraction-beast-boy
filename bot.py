@@ -1229,6 +1229,7 @@ def generate_answer_key_table(data, test_title, syllabus):
                 <div class='table-header-cell'>Correct Option</div>
                 <div class='table-header-cell'>Answer Text</div>
             </div>
+            <div class='table-content'>
 """
     
     for idx, q in enumerate(data, 1):
@@ -1285,6 +1286,7 @@ def generate_answer_key_table(data, test_title, syllabus):
             </div>"""
     
     html += """
+            </div>
         </div>
     </div>
     
