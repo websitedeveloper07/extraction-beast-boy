@@ -1216,7 +1216,6 @@ def generate_answer_key_table(data, test_title, syllabus):
     <div class='header'>
         <h1>{test_title} - Answer Key</h1>
         <div class='header-subtitle'>Master Your Knowledge with Complete Solutions</div>
-        <a href='https://t.me/Harshleaks' target='_blank' class='watermark-link'>@Harsh</a>
     </div>
     
     <div class='quote-section'>
