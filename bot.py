@@ -377,7 +377,7 @@ def process_html_content(html):
 
 # === HTML Generators - Modern Premium Theme ===
 def generate_html_with_answers(data, test_title, syllabus):
-    """Generate HTML with questions and highlighted correct answers - Simple Vibrant Compact Layout"""
+    """Generate HTML with questions and highlighted correct answers - Enhanced Vibrant Layout with Image Support"""
     html = f"""
 <!DOCTYPE html>
 <html>
@@ -386,7 +386,7 @@ def generate_html_with_answers(data, test_title, syllabus):
 <title>{test_title}</title>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
     
     * {{
         margin: 0;
@@ -396,78 +396,141 @@ def generate_html_with_answers(data, test_title, syllabus):
     
     body {{
         font-family: 'Inter', sans-serif;
-        background: #f8fafc;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         color: #2d3748;
-        padding: 20px;
-        line-height: 1.5;
+        padding: 25px;
+        line-height: 1.6;
+        min-height: 100vh;
     }}
 
     .container {{
-        max-width: 900px;
+        max-width: 1000px;
         margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
     }}
 
     .header {{
         text-align: center;
-        margin-bottom: 30px;
-        padding: 25px;
-        background: #6366f1;
+        padding: 40px 30px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        position: relative;
+    }}
+
+    .header::before {{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="90" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
     }}
     
     .header h1 {{
-        font-size: 28px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 36px;
         font-weight: 700;
         margin: 0;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }}
 
-    .quote-box {{
-        background: #fef3c7;
-        border-left: 4px solid #f59e0b;
-        padding: 15px 20px;
-        margin: 20px 0;
-        border-radius: 6px;
+    .header-subtitle {{
+        font-size: 16px;
+        margin-top: 8px;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+    }}
+
+    .quote-section {{
+        padding: 30px;
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        text-align: center;
+        border-bottom: 4px solid #ff8a65;
+    }}
+
+    .quote-text {{
+        font-family: 'Poppins', sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        color: #d84315;
         font-style: italic;
-        color: #92400e;
-        font-weight: 500;
+        position: relative;
+    }}
+
+    .quote-text::before {{
+        content: '"';
+        font-size: 40px;
+        position: absolute;
+        left: -20px;
+        top: -10px;
+        opacity: 0.6;
+    }}
+
+    .quote-text::after {{
+        content: '"';
+        font-size: 40px;
+        position: absolute;
+        right: -20px;
+        bottom: -20px;
+        opacity: 0.6;
     }}
     
+    .question-container {{
+        padding: 30px;
+    }}
+
     .question-box {{
-        background: white;
-        border-radius: 8px;
-        margin-bottom: 25px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        margin-bottom: 30px;
         overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }}
+
+    .question-box:hover {{
+        border-color: #667eea;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        transform: translateY(-2px);
     }}
     
     .question-header {{
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 15px 20px;
-        background: #f1f5f9;
-        border-bottom: 1px solid #e2e8f0;
+        padding: 18px 25px;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border-bottom: 2px solid #cbd5e0;
     }}
     
     .question-number {{
-        background: #3b82f6;
+        background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
         color: white;
-        padding: 6px 12px;
-        font-size: 14px;
-        font-weight: 600;
-        border-radius: 4px;
+        padding: 10px 18px;
+        font-size: 16px;
+        font-weight: 700;
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
     }}
     
     .watermark {{
-        background: #ef4444;
+        background: linear-gradient(135deg, #fc8181 0%, #e53e3e 100%);
         color: white;
-        padding: 4px 10px;
-        font-size: 11px;
+        padding: 8px 16px;
+        font-size: 12px;
         font-weight: 600;
-        border-radius: 3px;
+        border-radius: 15px;
         text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 3px 10px rgba(252, 129, 129, 0.3);
     }}
     
     .watermark a {{
@@ -476,98 +539,167 @@ def generate_html_with_answers(data, test_title, syllabus):
     }}
     
     .question-content {{
-        padding: 20px;
+        padding: 25px;
     }}
     
     .question-text {{
-        font-size: 16px;
-        margin-bottom: 20px;
-        color: #374151;
+        font-size: 18px;
+        margin-bottom: 25px;
+        color: #2d3748;
         font-weight: 500;
+        line-height: 1.7;
+    }}
+
+    .question-image {{
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 15px 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: block;
     }}
     
     .options-grid {{
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
+        gap: 15px;
     }}
     
     .option {{
-        padding: 12px 15px;
-        font-size: 14px;
-        color: #4b5563;
-        border: 2px solid #d1d5db;
-        background: #f9fafb;
-        border-radius: 6px;
-        transition: all 0.2s ease;
+        padding: 18px 20px;
+        font-size: 15px;
+        color: #4a5568;
+        border: 2px solid #cbd5e0;
+        background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+        border-radius: 10px;
+        transition: all 0.3s ease;
         font-weight: 500;
+        cursor: pointer;
+        position: relative;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
     }}
     
     .option:hover {{
-        border-color: #6366f1;
-        background: #eef2ff;
+        border-color: #667eea;
+        background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
     }}
     
     .option.correct {{
-        background: #10b981;
-        border-color: #059669;
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        border-color: #38a169;
         color: white;
         font-weight: 600;
-        position: relative;
+        box-shadow: 0 6px 20px rgba(72, 187, 120, 0.3);
     }}
     
     .option.correct::after {{
         content: '✓';
         position: absolute;
-        top: 8px;
-        right: 10px;
-        font-size: 16px;
+        top: 12px;
+        right: 15px;
+        font-size: 20px;
         font-weight: bold;
+        background: rgba(255, 255, 255, 0.2);
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }}
 
     .option-label {{
-        font-weight: 600;
-        margin-right: 8px;
+        font-weight: 700;
+        margin-right: 10px;
+        font-size: 16px;
+        color: #667eea;
+        flex-shrink: 0;
+    }}
+
+    .option.correct .option-label {{
+        color: rgba(255, 255, 255, 0.9);
+    }}
+
+    .option-image {{
+        max-width: 100%;
+        height: auto;
+        border-radius: 6px;
+        margin: 8px 0;
+        display: block;
     }}
     
-    .footer {{
-        text-align: center;
-        margin: 30px 0 20px;
-        padding: 20px;
-        background: #6366f1;
+    .footer-section {{
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        border-radius: 8px;
+        text-align: center;
+        padding: 30px;
+    }}
+    
+    .footer-text {{
+        font-size: 20px;
         font-weight: 600;
+        margin-bottom: 15px;
+        font-family: 'Poppins', sans-serif;
     }}
     
     .signature {{
-        text-align: center;
-        padding: 10px;
-        background: #10b981;
-        color: white;
-        border-radius: 6px;
+        font-size: 14px;
         font-weight: 600;
         text-transform: uppercase;
-        font-size: 12px;
         letter-spacing: 1px;
+        opacity: 0.9;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px 16px;
+        border-radius: 20px;
+        display: inline-block;
+    }}
+
+    /* Enhanced Image Support */
+    img {{
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin: 10px 0;
+        display: block;
+    }}
+
+    .image-placeholder {{
+        background: #f7fafc;
+        border: 2px dashed #cbd5e0;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        color: #a0aec0;
+        font-style: italic;
+        margin: 10px 0;
     }}
     
     @media (max-width: 768px) {{
         body {{ padding: 15px; }}
-        .header {{ padding: 20px; }}
-        .header h1 {{ font-size: 24px; }}
+        .header {{ padding: 30px 20px; }}
+        .header h1 {{ font-size: 28px; }}
+        .question-container {{ padding: 20px; }}
         .question-header {{ 
             flex-direction: column; 
-            gap: 10px;
+            gap: 12px;
             text-align: center;
         }}
         .options-grid {{ 
             grid-template-columns: 1fr; 
+            gap: 12px;
         }}
         .option {{ 
-            padding: 15px; 
+            padding: 16px 18px; 
             font-size: 15px;
+            min-height: 50px;
         }}
+        .quote-section {{ padding: 20px; }}
+        .quote-text {{ font-size: 18px; }}
     }}
 </style>
 </head>
@@ -575,29 +707,38 @@ def generate_html_with_answers(data, test_title, syllabus):
 <div class='container'>
     <div class='header'>
         <h1>{test_title}</h1>
+        <div class='header-subtitle'>Master Your Knowledge</div>
     </div>
     
-    <div class='quote-box'>
-        "The only impossible journey is the one you never begin"
+    <div class='quote-section'>
+        <div class='quote-text'>The only impossible journey is the one you never begin</div>
     </div>
+
+    <div class='question-container'>
 """
     
     for idx, q in enumerate(data, 1):
         processed_body = q.get('body') or ""
+        
+        # Enhanced image handling
         if not processed_body and q.get("image"):
-            processed_body = f"<img src='{q['image']}' style='max-width:100%; height:auto; margin: 10px 0; border-radius: 4px;'>"
+            image_url = q['image']
+            processed_body = f"<img src='{image_url}' alt='Question {idx} Image' class='question-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
+        elif q.get("image"):
+            image_url = q['image']
+            processed_body += f"<br><img src='{image_url}' alt='Question {idx} Image' class='question-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
 
         html += f"""
-    <div class='question-box'>
-        <div class='question-header'>
-            <div class='question-number'>Question {idx}</div>
-            <div class='watermark'>
-                <a href='https://t.me/Harshleaks' target='_blank'>@Harsh</a>
+        <div class='question-box'>
+            <div class='question-header'>
+                <div class='question-number'>Question {idx}</div>
+                <div class='watermark'>
+                    <a href='https://t.me/Harshleaks' target='_blank'>@Harsh</a>
+                </div>
             </div>
-        </div>
-        <div class='question-content'>
-            <div class='question-text'>{processed_body}</div>
-            <div class='options-grid'>"""
+            <div class='question-content'>
+                <div class='question-text'>{processed_body}</div>
+                <div class='options-grid'>"""
         
         alternatives = q.get("alternatives", [])[:4]
         labels = ["A", "B", "C", "D"]
@@ -607,22 +748,33 @@ def generate_html_with_answers(data, test_title, syllabus):
             class_name = "option correct" if is_correct else "option"
 
             processed_answer = opt.get("answer") or ""
+            
+            # Enhanced image handling for options
             if not processed_answer and opt.get("image"):
-                processed_answer = f"<img src='{opt['image']}' style='max-width:100%; height:auto; border-radius: 4px;'>"
+                image_url = opt['image']
+                processed_answer = f"<img src='{image_url}' alt='Option {labels[opt_idx]}' class='option-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
+            elif opt.get("image"):
+                image_url = opt['image']
+                processed_answer += f"<br><img src='{image_url}' alt='Option {labels[opt_idx]}' class='option-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
 
             html += f"""
                 <div class='{class_name}'>
-                    <span class='option-label'>{labels[opt_idx]})</span>{processed_answer}
+                    <span class='option-label'>{labels[opt_idx]})</span>
+                    <div>{processed_answer}</div>
                 </div>"""
         
         html += """
+                </div>
             </div>
-        </div>
-    </div>"""
+        </div>"""
     
     html += """
-    <div class='footer'>Knowledge is power, apply it wisely</div>
-    <div class='signature'>Generated by Harsh</div>
+    </div>
+    
+    <div class='footer-section'>
+        <div class='footer-text'>Knowledge is power, apply it wisely</div>
+        <div class='signature'>Generated by Harsh</div>
+    </div>
 </div>
 </body>
 </html>"""
