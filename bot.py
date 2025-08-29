@@ -377,7 +377,7 @@ def process_html_content(html):
 
 # === HTML Generators - Modern Premium Theme ===
 def generate_html_with_answers(data, test_title, syllabus):
-    """Generate HTML with questions and highlighted correct answers - Fresh Vibrant Theme"""
+    """Generate HTML with questions and highlighted correct answers - Simple Vibrant Layout"""
     html = f"""
 <!DOCTYPE html>
 <html>
@@ -386,7 +386,7 @@ def generate_html_with_answers(data, test_title, syllabus):
 <title>{test_title}</title>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
     
     * {{
         margin: 0;
@@ -395,423 +395,236 @@ def generate_html_with_answers(data, test_title, syllabus):
     }}
     
     body {{
-        font-family: 'Poppins', sans-serif;
-        background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4, #FECA57, #FF9FF3, #54A0FF);
-        background-size: 300% 300%;
-        animation: rainbow 8s ease infinite;
-        color: #2c3e50;
-        padding: 20px;
+        font-family: 'Roboto', sans-serif;
+        background: #f0f4f8;
+        color: #2d3748;
+        padding: 40px 20px;
         line-height: 1.6;
         min-height: 100vh;
-        position: relative;
-    }}
-    
-    @keyframes rainbow {{
-        0% {{ background-position: 0% 50%; }}
-        50% {{ background-position: 100% 50%; }}
-        100% {{ background-position: 0% 50%; }}
-    }}
-    
-    body::before {{
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: 
-            radial-gradient(circle at 20% 20%, rgba(255, 107, 107, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(78, 205, 196, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 40% 60%, rgba(84, 160, 255, 0.1) 0%, transparent 50%);
-        pointer-events: none;
-        z-index: 0;
     }}
 
     .container {{
-        max-width: 1200px;
+        max-width: 1000px;
         margin: 0 auto;
-        position: relative;
-        z-index: 1;
     }}
 
     table {{
         border-collapse: collapse;
         width: 100%;
-        margin: 20px 0;
+        margin: 30px 0;
         background: #ffffff;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
     }}
+    
     table, th, td {{
-        border: none;
+        border: 1px solid #e2e8f0;
         padding: 15px;
         text-align: center;
     }}
     
     th {{
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #3182ce;
         color: white;
         font-weight: 600;
-        font-family: 'Poppins', sans-serif;
     }}
     
-    td {{
-        border-bottom: 1px solid #f1f3f4;
-    }}
-    
-    .hero-section {{
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 60px 40px;
-        border-radius: 30px;
+    .header {{
         text-align: center;
-        margin-bottom: 40px;
-        box-shadow: 0 30px 60px rgba(102, 126, 234, 0.3);
-        position: relative;
-        overflow: hidden;
+        margin-bottom: 50px;
+        padding: 50px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
     }}
     
-    .hero-section::before {{
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-        animation: heroShine 3s infinite;
-        pointer-events: none;
-    }}
-    
-    @keyframes heroShine {{
-        0% {{ transform: translateX(-100%) translateY(-100%) rotate(45deg); }}
-        100% {{ transform: translateX(100%) translateY(100%) rotate(45deg); }}
-    }}
-    
-    .hero-section h1 {{
-        position: relative;
-        z-index: 2;
-        font-size: 48px;
-        font-weight: 800;
-        color: #ffffff;
+    .header h1 {{
+        font-size: 42px;
+        font-weight: 700;
         margin: 0;
-        text-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        letter-spacing: -1px;
     }}
     
-    .question-container {{
-        background: #ffffff;
-        border-radius: 25px;
-        padding: 35px;
-        margin-bottom: 30px;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.02);
-        position: relative;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    .question-section {{
+        margin-bottom: 40px;
+        padding: 30px 0;
+        border-bottom: 3px solid #e2e8f0;
     }}
     
-    .question-container::before {{
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 6px;
-        background: linear-gradient(90deg, 
-            #FF6B6B 0%, 
-            #4ECDC4 16.66%, 
-            #45B7D1 33.33%, 
-            #96CEB4 50%, 
-            #FECA57 66.66%, 
-            #FF9FF3 83.33%, 
-            #54A0FF 100%);
-        border-radius: 25px 25px 0 0;
-    }}
-    
-    .question-container:hover {{
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 35px 70px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.03);
-    }}
-    
-    .question-badge {{
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, #FF6B6B 0%, #FF9FF3 100%);
-        color: white;
-        padding: 12px 20px;
-        border-radius: 50px;
-        font-size: 13px;
-        font-weight: 600;
-        font-family: 'JetBrains Mono', monospace;
-        box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
-        z-index: 5;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }}
-    
-    .question-badge a {{
-        color: white;
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }}
-    
-    .question-badge:hover {{
-        transform: scale(1.1);
-        box-shadow: 0 12px 30px rgba(255, 107, 107, 0.4);
-    }}
-    
-    .question-badge a:hover {{
-        text-shadow: 0 0 10px rgba(255,255,255,0.8);
+    .question-header {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
     }}
     
     .question-number {{
-        display: inline-block;
-        background: linear-gradient(135deg, #54A0FF 0%, #5F27CD 100%);
+        background: #3182ce;
         color: white;
         padding: 12px 24px;
-        border-radius: 50px;
         font-size: 18px;
         font-weight: 700;
-        margin-bottom: 25px;
-        box-shadow: 0 10px 25px rgba(84, 160, 255, 0.3);
+        border-radius: 6px;
+    }}
+    
+    .watermark {{
+        background: #e53e3e;
+        color: white;
+        padding: 8px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: 4px;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
+    }}
+    
+    .watermark a {{
+        color: white;
+        text-decoration: none;
     }}
     
     .question-text {{
-        color: #2c3e50;
+        font-size: 18px;
         margin-bottom: 30px;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        font-weight: 400;
-        line-height: 1.8;
-        font-size: 17px;
-        padding: 0 10px;
+        color: #4a5568;
+        line-height: 1.7;
     }}
     
-    .answers-grid {{
+    .options-container {{
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 18px;
+        gap: 20px;
         margin-top: 25px;
     }}
     
-    .answer-option {{
-        background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
-        border: 3px solid #e1e8f7;
-        padding: 20px 24px;
-        border-radius: 18px;
+    .option {{
+        padding: 20px;
         font-size: 16px;
-        font-weight: 500;
-        color: #34495e;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        position: relative;
-        cursor: pointer;
-        overflow: hidden;
-        min-height: 70px;
-        display: flex;
-        align-items: center;
+        color: #2d3748;
+        border: 2px solid #cbd5e0;
+        background: #f7fafc;
+        transition: all 0.2s ease;
     }}
     
-    .answer-option::before {{
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-        transition: left 0.6s;
+    .option:hover {{
+        border-color: #3182ce;
+        background: #edf2f7;
     }}
     
-    .answer-option:hover {{
-        transform: translateY(-3px);
-        background: linear-gradient(135deg, #e8f2ff 0%, #dbeafe 100%);
-        border-color: #60a5fa;
-        box-shadow: 0 15px 35px rgba(96, 165, 250, 0.2);
-    }}
-    
-    .answer-option:hover::before {{
-        left: 100%;
-    }}
-    
-    .answer-option.correct {{
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        border-color: #34d399;
+    .option.correct {{
+        background: #38a169;
+        border-color: #38a169;
         color: white;
-        box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
         font-weight: 600;
         position: relative;
     }}
     
-    .answer-option.correct::after {{
+    .option.correct::after {{
         content: '✓';
         position: absolute;
         top: 15px;
         right: 20px;
-        font-size: 24px;
+        font-size: 20px;
         font-weight: bold;
-        color: white;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        animation: checkmark 0.6s ease-out;
     }}
     
-    @keyframes checkmark {{
-        0% {{ transform: scale(0) rotate(180deg); opacity: 0; }}
-        100% {{ transform: scale(1) rotate(0deg); opacity: 1; }}
-    }}
-    
-    .answer-option.correct:hover {{
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 20px 45px rgba(16, 185, 129, 0.5);
-    }}
-    
-    .inspirational-quote {{
+    .inspirational {{
         text-align: center;
-        margin: 50px auto;
-        padding: 40px 50px;
-        background: linear-gradient(135deg, #FECA57 0%, #FF9FF3 100%);
-        color: white;
-        border-radius: 25px;
+        margin: 60px 0;
+        padding: 40px 20px;
+        background: #fed7d7;
+        color: #c53030;
         font-style: italic;
-        font-size: 24px;
+        font-size: 20px;
         font-weight: 600;
-        box-shadow: 0 20px 40px rgba(254, 202, 87, 0.3);
-        max-width: 800px;
-        position: relative;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }}
     
-    .inspirational-quote::before {{
-        content: '"';
-        position: absolute;
-        top: -20px;
-        left: 30px;
-        font-size: 100px;
-        color: rgba(255,255,255,0.3);
-        font-family: serif;
-        line-height: 1;
-    }}
-    
-    .footer-brand {{
+    .footer-text {{
         text-align: center;
-        margin: 40px auto;
-        padding: 25px 35px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        margin: 40px 0;
+        padding: 25px;
+        background: #667eea;
         color: white;
-        border-radius: 20px;
-        font-weight: 700;
+        font-weight: 600;
         font-size: 18px;
-        box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
-        max-width: fit-content;
-        letter-spacing: 1px;
-        text-transform: uppercase;
     }}
     
-    .creator-signature {{
+    .signature {{
         text-align: center;
-        margin: 30px auto;
-        padding: 25px 35px;
-        background: linear-gradient(135deg, #5F27CD 0%, #341f97 100%);
+        margin: 20px 0;
+        padding: 20px;
+        background: #38a169;
         color: white;
-        border-radius: 20px;
-        font-weight: 700;
-        font-size: 18px;
-        box-shadow: 0 15px 30px rgba(95, 39, 205, 0.3);
-        max-width: fit-content;
-        letter-spacing: 1px;
+        font-weight: 600;
+        font-size: 16px;
         text-transform: uppercase;
-        font-family: 'JetBrains Mono', monospace;
-    }}
-    
-    @media print {{
-        body {{ 
-            background: #f5f7fa !important; 
-            -webkit-print-color-adjust: exact;
-        }}
-        .question-container {{ 
-            page-break-inside: avoid; 
-            background: #ffffff !important;
-            box-shadow: none !important;
-            border: 2px solid #e1e8f7 !important;
-        }}
+        letter-spacing: 1px;
     }}
     
     @media (max-width: 768px) {{
-        body {{ padding: 15px; }}
-        .hero-section {{ padding: 40px 25px; }}
-        .hero-section h1 {{ font-size: 32px; }}
-        .question-container {{ padding: 25px; }}
-        .answers-grid {{ 
+        body {{ padding: 20px 15px; }}
+        .header {{ padding: 40px 20px; }}
+        .header h1 {{ font-size: 32px; }}
+        .question-section {{ padding: 25px 0; }}
+        .question-header {{ 
+            flex-direction: column; 
+            align-items: flex-start;
+            gap: 15px;
+        }}
+        .options-container {{ 
             grid-template-columns: 1fr; 
             gap: 15px; 
         }}
-        .inspirational-quote {{ 
-            padding: 30px 25px; 
-            font-size: 20px; 
-            margin: 30px auto;
+        .option {{ padding: 18px; }}
+        .inspirational {{ 
+            margin: 40px 0; 
+            padding: 30px 20px; 
+            font-size: 18px; 
         }}
-        .question-badge {{
-            position: relative;
-            top: auto;
-            right: auto;
-            margin-bottom: 20px;
-            display: inline-block;
-        }}
-    }}
-    
-    @media (max-width: 480px) {{
-        .hero-section h1 {{ font-size: 24px; }}
-        .question-container {{ padding: 20px; }}
-        .answer-option {{ padding: 16px 20px; font-size: 15px; }}
     }}
 </style>
 </head>
 <body>
 <div class='container'>
-    <div class='hero-section'>
+    <div class='header'>
         <h1>{test_title}</h1>
     </div>
     
-    <div class='inspirational-quote'>
-        The only impossible journey is the one you never begin
+    <div class='inspirational'>
+        "The only impossible journey is the one you never begin"
     </div>
 """
     
     for idx, q in enumerate(data, 1):
         processed_body = q.get('body') or ""
         if not processed_body and q.get("image"):
-            processed_body = f"<img src='{q['image']}' style='max-width:100%; height:auto; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin: 15px 0;'>"
+            processed_body = f"<img src='{q['image']}' style='max-width:100%; height:auto; margin: 15px 0;'>"
 
         html += f"""
-<div class='question-container'>
-    <div class='question-badge'>
-        <a href='https://t.me/Harshleaks' target='_blank'>@Harsh</a>
+<div class='question-section'>
+    <div class='question-header'>
+        <div class='question-number'>Question {idx}</div>
+        <div class='watermark'>
+            <a href='https://t.me/Harshleaks' target='_blank'>@Harsh</a>
+        </div>
     </div>
-    <div class='question-number'>Question {idx}</div>
     <div class='question-text'>{processed_body}</div>
-    <div class='answers-grid'>"""
+    <div class='options-container'>"""
         
         alternatives = q.get("alternatives", [])[:4]
         labels = ["A", "B", "C", "D"]
         
         for opt_idx, opt in enumerate(alternatives):
             is_correct = str(opt.get("score_if_chosen")) == "1"
-            class_name = "answer-option correct" if is_correct else "answer-option"
+            class_name = "option correct" if is_correct else "option"
 
             processed_answer = opt.get("answer") or ""
             if not processed_answer and opt.get("image"):
-                processed_answer = f"<img src='{opt['image']}' style='max-width:100%; height:auto; border-radius: 10px;'>"
+                processed_answer = f"<img src='{opt['image']}' style='max-width:100%; height:auto;'>"
 
             html += f"<div class='{class_name}'><strong>{labels[opt_idx]})</strong> {processed_answer}</div>"
         
         html += "</div></div>"
     
     html += """
-    <div class='footer-brand'>Knowledge is power, apply it wisely</div>
-    <div class='creator-signature'>Generated by Harsh</div>
+    <div class='footer-text'>Knowledge is power, apply it wisely</div>
+    <div class='signature'>Generated by Harsh</div>
 </div>
 </body>
 </html>"""
