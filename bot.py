@@ -852,7 +852,7 @@ def generate_html_only_questions(data, test_title, syllabus):
         ".option.correct-hidden::before {"
     )
 def generate_answer_key_table(data, test_title, syllabus):
-    """Generate HTML answer key table - Matching the vibrant quiz layout style with watermark logo"""
+    """Generate HTML answer key table with watermark and repeating headers"""
     html = f"""
 <!DOCTYPE html>
 <html>
@@ -879,7 +879,7 @@ def generate_answer_key_table(data, test_title, syllabus):
         position: relative;
     }}
 
-    /* 🔹 Watermark logo in center diagonally */
+    /* 🔹 Watermark for screen */
     body::before {{
         content: "";
         position: fixed;
@@ -889,10 +889,20 @@ def generate_answer_key_table(data, test_title, syllabus):
         height: 500px;
         background: url('https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png') no-repeat center;
         background-size: contain;
-        opacity: 0.85;  /* 85% visible */
+        opacity: 0.25;  /* medium transparency */
         transform: translate(-50%, -50%) rotate(-30deg);
         z-index: -1;
         pointer-events: none;
+    }}
+
+    /* 🔹 Watermark for PDF/print */
+    @media print {{
+        body {{
+            background: url('https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png') no-repeat center;
+            background-size: 500px 500px;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }}
     }}
 
     .container {{
@@ -903,7 +913,7 @@ def generate_answer_key_table(data, test_title, syllabus):
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         overflow: hidden;
         position: relative;
-        z-index: 1; /* keeps content above watermark */
+        z-index: 1;
     }}
 
     .header {{
@@ -914,32 +924,18 @@ def generate_answer_key_table(data, test_title, syllabus):
         position: relative;
     }}
 
-    .header::before {{
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="90" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
-    }}
-    
     .header h1 {{
         font-family: 'Poppins', sans-serif;
         font-size: 28px;
         font-weight: 700;
         margin: 0;
-        position: relative;
         z-index: 1;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }}
 
     .header-subtitle {{
         font-size: 14px;
         margin-top: 6px;
         opacity: 0.9;
-        position: relative;
-        z-index: 1;
     }}
 
     .quote-section {{
@@ -955,160 +951,71 @@ def generate_answer_key_table(data, test_title, syllabus):
         font-weight: 600;
         color: #d84315;
         font-style: italic;
-        position: relative;
     }}
 
-    .quote-text::before {{
-        content: '"';
-        font-size: 28px;
-        position: absolute;
-        left: -15px;
-        top: -6px;
-        opacity: 0.6;
-    }}
-
-    .quote-text::after {{
-        content: '"';
-        font-size: 28px;
-        position: absolute;
-        right: -15px;
-        bottom: -12px;
-        opacity: 0.6;
-    }}
-    
     .answer-key-container {{
         padding: 20px;
     }}
 
-    /* PDF Print Styles */
-    @media print {{
-        body {{
-            background: white;
-            padding: 10px;
-        }}
-        
-        .container {{
-            box-shadow: none;
-            border-radius: 0;
-        }}
-        
-        .answer-key-table {{
-            box-shadow: none;
-        }}
-        
-        .answer-row:hover {{
-            transform: none;
-            box-shadow: none;
-        }}
-        
-        .header {{
-            page-break-after: avoid;
-        }}
-        
-        .quote-section {{
-            page-break-after: avoid;
-            margin-bottom: 20px;
-        }}
-    }}
-
-    .answer-key-table {{
+    /* ✅ Use real table so headers repeat on page breaks */
+    table.answer-key-table {{
         width: 100%;
-        background: #ffffff;
+        border-collapse: collapse;
+        border: 2px solid #e2e8f0;
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        border: 2px solid #e2e8f0;
     }}
 
-    .table-header {{
+    thead {{
+        display: table-header-group; /* repeat headers on new page */
         background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
         color: white;
-        display: grid;
-        grid-template-columns: 120px 120px 1fr;
-        gap: 0;
     }}
 
-    .table-header-cell {{
-        padding: 18px 15px;
+    thead th {{
+        padding: 14px;
         font-family: 'Poppins', sans-serif;
         font-weight: 600;
         font-size: 14px;
-        text-align: center;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         border-right: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: center;
     }}
 
-    .table-header-cell:last-child {{
+    thead th:last-child {{
         border-right: none;
-        text-align: left;
     }}
 
-    .answer-row {{
-        display: grid;
-        grid-template-columns: 120px 120px 1fr;
-        gap: 0;
+    tbody td {{
         border-bottom: 1px solid #e2e8f0;
-        transition: all 0.3s ease;
+        padding: 12px;
+        font-size: 14px;
         background: #ffffff;
+        text-align: center;
     }}
 
-    .answer-row:nth-child(even) {{
+    tbody tr:nth-child(even) td {{
         background: #f8fafc;
     }}
 
-    .answer-row:hover {{
-        background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
-    }}
-
-    .answer-cell {{
-        padding: 16px 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-right: 1px solid #e2e8f0;
-        min-height: 60px;
-    }}
-
-    .answer-cell:last-child {{
-        border-right: none;
-        justify-content: flex-start;
-        text-align: left;
-    }}
-    
     .question-number {{
         background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
         color: white;
-        padding: 8px 16px;
-        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 12px;
         font-weight: 700;
-        border-radius: 15px;
-        box-shadow: 0 3px 8px rgba(66, 153, 225, 0.25);
-        min-width: 50px;
-        text-align: center;
     }}
-    
+
     .correct-option {{
         background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
         color: white;
-        padding: 8px 16px;
-        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 12px;
         font-weight: 700;
-        border-radius: 15px;
-        box-shadow: 0 3px 8px rgba(72, 187, 120, 0.25);
-        min-width: 50px;
-        text-align: center;
-        position: relative;
     }}
 
-    .correct-option::before {{
-        content: '✓';
-        margin-right: 4px;
-        font-size: 12px;
-    }}
-    
     .answer-text {{
         color: #2d3748;
         font-weight: 500;
@@ -1117,18 +1024,12 @@ def generate_answer_key_table(data, test_title, syllabus):
         background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
         border-radius: 8px;
         border-left: 3px solid #667eea;
-        margin: 4px 0;
-        min-height: 40px;
-        display: flex;
-        align-items: center;
-        flex: 1;
+        text-align: left;
     }}
 
     .answer-image {{
         max-width: 200px;
         max-height: 100px;
-        width: auto;
-        height: auto;
         border-radius: 6px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         margin: 5px 0;
@@ -1138,33 +1039,31 @@ def generate_answer_key_table(data, test_title, syllabus):
         background: #f7fafc;
         border: 2px dashed #cbd5e0;
         border-radius: 6px;
-        padding: 15px;
+        padding: 10px;
         text-align: center;
         color: #a0aec0;
-        font-style: italic;
-        margin: 5px 0;
         font-size: 12px;
+        margin: 5px 0;
     }}
-    
+
     .footer-section {{
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         text-align: center;
         padding: 30px;
     }}
-    
+
     .footer-text {{
         font-size: 20px;
         font-weight: 600;
         margin-bottom: 15px;
         font-family: 'Poppins', sans-serif;
     }}
-    
+
     .signature {{
         font-size: 14px;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 1px;
         opacity: 0.9;
         background: rgba(255, 255, 255, 0.1);
         padding: 8px 16px;
@@ -1185,53 +1084,51 @@ def generate_answer_key_table(data, test_title, syllabus):
     </div>
 
     <div class='answer-key-container'>
-        <div class='answer-key-table'>
-            <div class='table-header'>
-                <div class='table-header-cell'>Question No.</div>
-                <div class='table-header-cell'>Correct Option</div>
-                <div class='table-header-cell'>Answer Text</div>
-            </div>
-            <div class='table-content'>
+        <table class='answer-key-table'>
+            <thead>
+                <tr>
+                    <th>Question No.</th>
+                    <th>Correct Option</th>
+                    <th>Answer Text</th>
+                </tr>
+            </thead>
+            <tbody>
 """
-    # Loop through questions
+    # loop for rows
     for idx, q in enumerate(data, 1):
         correct_option = ""
-        correct_answer = ""
+        correct_answer = "<em>No answer</em>"
         
         for i, opt in enumerate(q.get("alternatives", [])[:4]):
             if str(opt.get("score_if_chosen")) == "1":
                 correct_option = ["A", "B", "C", "D"][i]
-                
-                answer_text = opt.get('answer', '').strip()
-                answer_image = opt.get('image', '').strip()
-                
+                answer_text = opt.get("answer", "").strip()
+                answer_image = opt.get("image", "").strip()
                 if answer_text and answer_image:
                     correct_answer = f"""{answer_text}<br>
-                    <img src='{answer_image}' alt='Answer {correct_option}' class='answer-image' onerror="this.style.display='none';">"""
-                elif answer_image and not answer_text:
-                    correct_answer = f"""<img src='{answer_image}' alt='Answer {correct_option}' class='answer-image' onerror="this.style.display='none';">"""
+                    <img src='{answer_image}' class='answer-image' 
+                         alt='Answer {correct_option}' 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"/>
+                    <div class='image-placeholder' style='display:none;'>Image not available</div>"""
+                elif answer_image:
+                    correct_answer = f"""<img src='{answer_image}' class='answer-image' 
+                         alt='Answer {correct_option}' 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"/>
+                    <div class='image-placeholder' style='display:none;'>Image not available</div>"""
                 elif answer_text:
                     correct_answer = answer_text
-                else:
-                    correct_answer = "<em>No answer content available</em>"
                 break
-        
+
         html += f"""
-            <div class='answer-row'>
-                <div class='answer-cell'>
-                    <span class='question-number'>{idx}</span>
-                </div>
-                <div class='answer-cell'>
-                    <span class='correct-option'>{correct_option}</span>
-                </div>
-                <div class='answer-cell'>
-                    <div class='answer-text'>{correct_answer}</div>
-                </div>
-            </div>"""
-    
+            <tr>
+                <td><span class='question-number'>{idx}</span></td>
+                <td><span class='correct-option'>{correct_option}</span></td>
+                <td><div class='answer-text'>{correct_answer}</div></td>
+            </tr>"""
+
     html += """
-            </div>
-        </div>
+            </tbody>
+        </table>
     </div>
     
     <div class='footer-section'>
@@ -1241,8 +1138,8 @@ def generate_answer_key_table(data, test_title, syllabus):
 </div>
 </body>
 </html>"""
-    
     return html
+
 
 # === Main ===
 def main():
