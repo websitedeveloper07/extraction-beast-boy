@@ -1214,8 +1214,8 @@ def generate_answer_key_table(data, test_title, syllabus):
 <body>
 <div class='container'>
     <div class='header'>
-        <h1>{test_title} - Answer Key</h1>
-        <div class='header-subtitle'>Master Your Knowledge with Complete Solutions</div>
+        <h1>{test_title}</h1>
+        <div class='header-subtitle'>Answer Key</div>
     </div>
     
     <div class='quote-section'>
