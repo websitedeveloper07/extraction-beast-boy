@@ -879,31 +879,43 @@ def generate_answer_key_table(data, test_title, syllabus):
         position: relative;
     }}
 
-    /* 🔹 Watermark for screen */
-    body::before {{
-        content: "";
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        width: 500px;
-        height: 500px;
-        background: url('https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png') no-repeat center;
-        background-size: contain;
-        opacity: 0.25;  /* medium transparency */
-        transform: translate(-50%, -50%) rotate(-30deg);
-        z-index: -1;
-        pointer-events: none;
-    }}
+/* 🔹 Watermark for screen */
+body::before {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 300px;      /* smaller size */
+  height: 300px;
+  background: url('https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png') no-repeat center;
+  background-size: contain;
+  opacity: 0.2;      /* lighter transparency */
+  transform: translate(-50%, -50%) rotate(-30deg);
+  z-index: -1;
+  pointer-events: none;
+}
 
-    /* 🔹 Watermark for PDF/print */
-    @media print {{
-        body {{
-            background: url('https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png') no-repeat center;
-            background-size: 500px 500px;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }}
-    }}
+/* 🔹 Watermark for PDF/print */
+@media print {
+  body::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;   /* same small size */
+    height: 300px;
+    background: url('https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png') no-repeat center;
+    background-size: contain;
+    opacity: 0.2;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    z-index: -1;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
 
     .container {{
         max-width: 1200px;
