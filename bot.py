@@ -852,15 +852,16 @@ def generate_html_only_questions(data, test_title, syllabus):
     )
 
 def generate_answer_key_table(data, test_title, syllabus):
-    """Generate HTML answer key table - Modern Premium theme (with MathJax & image support)"""
+    """Generate HTML answer key table - Matching the vibrant quiz layout style"""
     html = f"""
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset='UTF-8'>
 <title>{test_title} - Answer Key</title>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
     
     * {{
         margin: 0;
@@ -869,151 +870,220 @@ def generate_answer_key_table(data, test_title, syllabus):
     }}
     
     body {{
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        background: radial-gradient(circle at 80% 20%, #1e3a8a 0%, #000000 50%, #312e81 100%);
-        background-attachment: fixed;
-        color: #f8fafc;
-        padding: 24px;
-        margin: 0;
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: #2d3748;
+        padding: 25px;
+        line-height: 1.6;
         min-height: 100vh;
+    }}
+
+    .container {{
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }}
+
+    .header {{
+        text-align: center;
+        padding: 25px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
         position: relative;
     }}
-    
-    body::before {{
+
+    .header::before {{
         content: '';
-        position: fixed;
+        position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        background: url('data:image/svg+xml,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><circle fill="%23ffffff" fill-opacity="0.03" cx="20" cy="20" r="1"/></g></svg>');
-        z-index: -1;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="90" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+    }}
+    
+    .header h1 {{
+        font-family: 'Poppins', sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }}
+
+    .header-subtitle {{
+        font-size: 14px;
+        margin-top: 6px;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+    }}
+
+    .quote-section {{
+        padding: 18px 25px;
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        text-align: center;
+        border-bottom: 3px solid #ff8a65;
+    }}
+
+    .quote-text {{
+        font-family: 'Poppins', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        color: #d84315;
+        font-style: italic;
+        position: relative;
+    }}
+
+    .quote-text::before {{
+        content: '"';
+        font-size: 28px;
+        position: absolute;
+        left: -15px;
+        top: -6px;
+        opacity: 0.6;
+    }}
+
+    .quote-text::after {{
+        content: '"';
+        font-size: 28px;
+        position: absolute;
+        right: -15px;
+        bottom: -12px;
         opacity: 0.6;
     }}
     
-    .title-box {{
-        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-        backdrop-filter: blur(20px);
-        padding: 32px;
-        border-radius: 20px;
-        text-align: center;
-        margin-bottom: 32px;
-        box-shadow: 0 20px 40px rgba(59, 130, 246, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        position: relative;
-        overflow: hidden;
-    }}
-    
-    .title-box::before {{
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-        animation: shine 3s infinite;
-    }}
-    
-    @keyframes shine {{
-        0% {{ transform: translateX(-100%) translateY(-100%); }}
-        100% {{ transform: translateX(100%) translateY(100%); }}
-    }}
-    
-    .title-box h1 {{
-        position: relative;
-        z-index: 1;
-        font-size: 28px;
-        font-weight: 700;
-        background: linear-gradient(135deg, #ffffff 0%, #dbeafe 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin: 0 0 8px 0;
-    }}
-    
-    .title-box div {{
-        position: relative;
-        z-index: 1;
-        font-size: 16px;
-        color: #bfdbfe;
-        font-weight: 500;
-    }}
-    
     .answer-key-container {{
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
-        backdrop-filter: blur(20px);
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(148, 163, 184, 0.2);
+        padding: 20px;
     }}
-    
+
+    /* PDF Print Styles */
+    @media print {{
+        body {{
+            background: white;
+            padding: 10px;
+        }}
+        
+        .container {{
+            box-shadow: none;
+            border-radius: 0;
+        }}
+        
+        .answer-key-table {{
+            box-shadow: none;
+        }}
+        
+        .answer-row:hover {{
+            transform: none;
+            box-shadow: none;
+        }}
+        
+        .header {{
+            page-break-after: avoid;
+        }}
+        
+        .quote-section {{
+            page-break-after: avoid;
+            margin-bottom: 20px;
+        }}
+    }}
+
     .answer-key-table {{
         width: 100%;
-        border-collapse: collapse;
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border: 2px solid #e2e8f0;
     }}
-    
-    .answer-key-table th {{
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(29, 78, 216, 0.3) 100%);
-        color: #dbeafe;
-        padding: 18px 16px;
-        text-align: center;
+
+    .table-header {{
+        background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+        color: white;
+        display: grid;
+        grid-template-columns: 120px 120px 1fr;
+        gap: 0;
+    }}
+
+    .table-header-cell {{
+        padding: 18px 15px;
+        font-family: 'Poppins', sans-serif;
         font-weight: 600;
         font-size: 14px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        border-bottom: 2px solid rgba(59, 130, 246, 0.5);
-    }}
-    
-    .answer-key-table td {{
-        padding: 16px;
         text-align: center;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-        color: #cbd5e1;
-        font-weight: 400;
-        vertical-align: middle;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
     }}
-    
-    .answer-key-table tr:nth-child(even) {{
-        background: rgba(255, 255, 255, 0.02);
+
+    .table-header-cell:last-child {{
+        border-right: none;
+        text-align: left;
     }}
-    
-    .answer-key-table tr:hover {{
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(29, 78, 216, 0.1) 100%);
-        transform: scale(1.001);
+
+    .answer-row {{
+        display: grid;
+        grid-template-columns: 120px 120px 1fr;
+        gap: 0;
+        border-bottom: 1px solid #e2e8f0;
         transition: all 0.3s ease;
+        background: #ffffff;
+    }}
+
+    .answer-row:nth-child(even) {{
+        background: #f8fafc;
+    }}
+
+    .answer-row:hover {{
+        background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+    }}
+
+    .answer-cell {{
+        padding: 16px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-right: 1px solid #e2e8f0;
+        min-height: 60px;
+    }}
+
+    .answer-cell:last-child {{
+        border-right: none;
+        justify-content: flex-start;
+        text-align: left;
     }}
     
     .question-number {{
-        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-        color: #ffffff;
-        padding: 8px 14px;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 13px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 40px;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+        color: white;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 700;
+        border-radius: 15px;
+        box-shadow: 0 3px 8px rgba(66, 153, 225, 0.25);
+        min-width: 50px;
+        text-align: center;
     }}
     
     .correct-option {{
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: #ffffff;
-        padding: 8px 14px;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 13px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 40px;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 700;
+        border-radius: 15px;
+        box-shadow: 0 3px 8px rgba(72, 187, 120, 0.25);
+        min-width: 50px;
+        text-align: center;
         position: relative;
     }}
-    
+
     .correct-option::before {{
         content: '✓';
         margin-right: 4px;
@@ -1021,127 +1091,195 @@ def generate_answer_key_table(data, test_title, syllabus):
     }}
     
     .answer-text {{
-        text-align: left;
-        color: #e2e8f0;
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(79, 70, 229, 0.1) 100%);
-        backdrop-filter: blur(10px);
-        padding: 12px 16px;
-        border-radius: 12px;
-        border-left: 3px solid #6366f1;
-        font-weight: 400;
-        line-height: 1.5;
-        max-width: 400px;
-        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
-    }}
-    
-    .quote {{
-        text-align: center;
-        margin: 32px auto;
-        padding: 24px 32px;
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
-        backdrop-filter: blur(20px);
-        color: #fbbf24;
-        border-radius: 16px;
-        font-style: italic;
-        font-size: 18px;
+        color: #2d3748;
         font-weight: 500;
-        box-shadow: 0 10px 30px rgba(245, 158, 11, 0.2), 0 0 0 1px rgba(245, 158, 11, 0.2);
-        border: 1px solid rgba(245, 158, 11, 0.3);
-        max-width: 600px;
-        position: relative;
+        line-height: 1.6;
+        padding: 8px 12px;
+        background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        border-radius: 8px;
+        border-left: 3px solid #667eea;
+        margin: 4px 0;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        flex: 1;
     }}
-    
-    .quote-footer, .extracted-box {{
+
+    .answer-image {{
+        max-width: 200px;
+        max-height: 100px;
+        width: auto;
+        height: auto;
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin: 5px 0;
+    }}
+
+    .image-placeholder {{
+        background: #f7fafc;
+        border: 2px dashed #cbd5e0;
+        border-radius: 6px;
+        padding: 15px;
         text-align: center;
-        margin: 24px auto;
-        padding: 16px 24px;
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(29, 78, 216, 0.2) 100%);
-        backdrop-filter: blur(20px);
-        color: #93c5fd;
-        border-radius: 12px;
+        color: #a0aec0;
+        font-style: italic;
+        margin: 5px 0;
+        font-size: 12px;
+    }}
+    
+    .footer-section {{
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-align: center;
+        padding: 30px;
+    }}
+    
+    .footer-text {{
+        font-size: 20px;
         font-weight: 600;
+        margin-bottom: 15px;
+        font-family: 'Poppins', sans-serif;
+    }}
+    
+    .signature {{
         font-size: 14px;
-        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2), 0 0 0 1px rgba(59, 130, 246, 0.2);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        max-width: fit-content;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.9;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px 16px;
+        border-radius: 20px;
+        display: inline-block;
     }}
-    
-    .extracted-box {{
-        background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(126, 34, 206, 0.2) 100%);
-        color: #d8b4fe;
-        border-color: rgba(168, 85, 247, 0.3);
-        box-shadow: 0 8px 20px rgba(168, 85, 247, 0.2), 0 0 0 1px rgba(168, 85, 247, 0.2);
-    }}
-    
-    @media print {{
-        body {{ 
-            background: #000 !important; 
-            -webkit-print-color-adjust: exact;
-        }}
-        .answer-key-container {{ 
-            background: #1e293b !important;
-        }}
+
+    .watermark-link {{
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        background: linear-gradient(135deg, #fc8181 0%, #e53e3e 100%);
+        color: white;
+        padding: 5px 12px;
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 6px rgba(252, 129, 129, 0.25);
+        text-decoration: none;
+        z-index: 2;
     }}
     
     @media (max-width: 768px) {{
-        body {{ padding: 16px; }}
-        .title-box {{ padding: 24px 20px; }}
-        .title-box h1 {{ font-size: 24px; }}
-        .answer-key-table th, .answer-key-table td {{ padding: 12px 8px; font-size: 13px; }}
-        .answer-text {{ max-width: 100%; }}
+        body {{ padding: 15px; }}
+        .container {{ margin: 0; }}
+        .header {{ padding: 30px 20px; }}
+        .header h1 {{ font-size: 24px; }}
+        .answer-key-container {{ padding: 15px; }}
+        
+        .table-header,
+        .answer-row {{
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }}
+        
+        .table-header-cell,
+        .answer-cell {{
+            border-right: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            justify-content: center;
+        }}
+        
+        .table-header-cell:last-child,
+        .answer-cell:last-child {{
+            border-bottom: none;
+        }}
+        
+        .answer-text {{ margin: 8px 0; }}
+        .quote-section {{ padding: 20px; }}
+        .quote-text {{ font-size: 14px; }}
+        
+        .watermark-link {{
+            position: relative;
+            top: auto;
+            right: auto;
+            display: block;
+            margin: 10px auto 0;
+            width: fit-content;
+        }}
     }}
 </style>
-<!-- MathJax for equations -->
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
-<div class='title-box'>
-    <h1>{test_title}</h1>
-    <div>🎯Answer Key & Solutions</div>
-</div>
-<div class='quote'>"𝑻𝒉𝒆 𝒐𝒏𝒍𝒚 𝒊𝒎𝒑𝒐𝒔𝒔𝒊𝒃𝒍𝒆 𝒋𝒐𝒖𝒓𝒏𝒆𝒚 𝒊𝒔 𝒕𝒉𝒆 𝒐𝒏𝒆 𝒚𝒐𝒖 𝒏𝒆𝒗𝒆𝒓 𝒃𝒆𝒈𝒊𝒏" </div>
+<div class='container'>
+    <div class='header'>
+        <h1>{test_title} - Answer Key</h1>
+        <div class='header-subtitle'>Master Your Knowledge with Complete Solutions</div>
+        <a href='https://t.me/Harshleaks' target='_blank' class='watermark-link'>@Harsh</a>
+    </div>
+    
+    <div class='quote-section'>
+        <div class='quote-text'>The only impossible journey is the one you never begin</div>
+    </div>
 
-<div class='answer-key-container'>
-<table class='answer-key-table'>
-    <thead>
-        <tr>
-            <th>Question No.</th>
-            <th>Correct Option</th>
-            <th>Answer Text</th>
-        </tr>
-    </thead>
-    <tbody>"""
+    <div class='answer-key-container'>
+        <div class='answer-key-table'>
+            <div class='table-header'>
+                <div class='table-header-cell'>Question No.</div>
+                <div class='table-header-cell'>Correct Option</div>
+                <div class='table-header-cell'>Answer Text</div>
+            </div>
+"""
     
     for idx, q in enumerate(data, 1):
         correct_option = ""
         correct_answer = ""
         
-        for i, opt in enumerate(q["alternatives"][:4]):
+        # Find the correct answer
+        for i, opt in enumerate(q.get("alternatives", [])[:4]):
             if str(opt.get("score_if_chosen")) == "1":
                 correct_option = ["A", "B", "C", "D"][i]
-                # handle both text and image
-                correct_answer = process_html_content(opt.get('answer')) or ""
+                
+                # Handle both text and image content
+                correct_answer = opt.get('answer') or ""
+                
+                # Enhanced image handling for answers
                 if not correct_answer and opt.get("image"):
-                    correct_answer = f"<img src='{opt['image']}' style='max-width:100%; height:auto;'>"
+                    image_url = opt['image']
+                    correct_answer = f"<img src='{image_url}' alt='Answer {correct_option}' class='answer-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
+                elif opt.get("image"):
+                    image_url = opt['image']
+                    correct_answer += f"<br><img src='{image_url}' alt='Answer {correct_option}' class='answer-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
+                
                 break
         
         html += f"""
-        <tr>
-            <td><span class='question-number'>{idx}</span></td>
-            <td><span class='correct-option'>{correct_option}</span></td>
-            <td><div class='answer-text'>{correct_answer}</div></td>
-        </tr>"""
+            <div class='answer-row'>
+                <div class='answer-cell'>
+                    <span class='question-number'>{idx}</span>
+                </div>
+                <div class='answer-cell'>
+                    <span class='correct-option'>{correct_option}</span>
+                </div>
+                <div class='answer-cell'>
+                    <div class='answer-text'>{correct_answer}</div>
+                </div>
+            </div>"""
     
     html += """
-    </tbody>
-</table>
+        </div>
+    </div>
+    
+    <div class='footer-section'>
+        <div class='footer-text'>Knowledge is power, apply it wisely</div>
+        <div class='signature'>Generated by Harsh</div>
+    </div>
 </div>
-<div class='quote-footer'>"𝕂𝕟𝕠𝕨𝕝𝕖𝕕𝕘𝕖 𝕚𝕤 𝕡𝕠𝕨𝕖𝕣, 𝕒𝕡𝕡𝕝𝕪 𝕚𝕥 𝕨𝕚𝕤𝕖𝕝𝕪"</div>
-<div class='extracted-box'>"𝒢𝐸𝒩𝐸𝑅𝒜𝒯𝐸𝒟 𝐵𝒴 𝐻𝒜𝑅𝒮𝐻"</div>
 </body>
 </html>"""
+    
     return html
-
 # === Main ===
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
