@@ -772,23 +772,9 @@ def generate_html_with_answers(data, test_title, syllabus):
 """
     
     for idx, q in enumerate(data, 1):
-        question_body_content = ""
-        # Check if question has text
-        if q.get('body'):
-            question_body_content = q['body']
-        
-        # Check if question has an image and append it to the content
-        if q.get("image"):
-            image_url = q['image']
-            # Correct the protocol-relative URL to a full URL
-            if image_url.startswith('//'):
-                image_url = 'https:' + image_url
-            
-            image_html = f"<img src='{image_url}' alt='Question {idx} Image' class='question-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
-            if question_body_content:
-                question_body_content += "<br>" + image_html
-            else:
-                question_body_content = image_html
+        question_body_content = q.get('body') or ""
+        # Fix protocol-relative URLs in the question body HTML
+        question_body_content = question_body_content.replace('src="//', 'src="https://')
 
         html += f"""
         <div class='question-box'>
@@ -809,23 +795,9 @@ def generate_html_with_answers(data, test_title, syllabus):
             is_correct = str(opt.get("score_if_chosen")) == "1"
             class_name = "option correct" if is_correct else "option"
             
-            option_body_content = ""
-            # Check if option has text
-            if opt.get("answer"):
-                option_body_content = opt["answer"]
-            
-            # Check if option has an image and append it to the content
-            if opt.get("image"):
-                image_url = opt['image']
-                # Correct the protocol-relative URL to a full URL
-                if image_url.startswith('//'):
-                    image_url = 'https:' + image_url
-                    
-                image_html = f"<img src='{image_url}' alt='Option {labels[opt_idx]}' class='option-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
-                if option_body_content:
-                    option_body_content += "<br>" + image_html
-                else:
-                    option_body_content = image_html
+            option_body_content = opt.get("answer") or ""
+            # Fix protocol-relative URLs in the option answer HTML
+            option_body_content = option_body_content.replace('src="//', 'src="https://')
             
             html += f"""
                 <div class='{class_name}'>
