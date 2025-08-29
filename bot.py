@@ -771,15 +771,19 @@ def generate_html_with_answers(data, test_title, syllabus):
 """
     
     for idx, q in enumerate(data, 1):
-        processed_body = q.get('body') or ""
+        question_body_content = ""
+        # Check if question has text, if not, check for an image
+        if q.get('body'):
+            question_body_content = q['body']
         
-        # Enhanced image handling
-        if not processed_body and q.get("image"):
+        # Check if question has an image and append it to the content
+        if q.get("image"):
             image_url = q['image']
-            processed_body = f"<img src='{image_url}' alt='Question {idx} Image' class='question-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
-        elif q.get("image"):
-            image_url = q['image']
-            processed_body += f"<br><img src='{image_url}' alt='Question {idx} Image' class='question-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
+            image_html = f"<img src='{image_url}' alt='Question {idx} Image' class='question-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
+            if question_body_content:
+                question_body_content += "<br>" + image_html
+            else:
+                question_body_content = image_html
 
         html += f"""
         <div class='question-box'>
@@ -790,7 +794,7 @@ def generate_html_with_answers(data, test_title, syllabus):
                 </div>
             </div>
             <div class='question-content'>
-                <div class='question-text'>{processed_body}</div>
+                <div class='question-text'>{question_body_content}</div>
                 <div class='options-grid'>"""
         
         alternatives = q.get("alternatives", [])[:4]
@@ -799,21 +803,25 @@ def generate_html_with_answers(data, test_title, syllabus):
         for opt_idx, opt in enumerate(alternatives):
             is_correct = str(opt.get("score_if_chosen")) == "1"
             class_name = "option correct" if is_correct else "option"
-
-            processed_answer = opt.get("answer") or ""
             
-            # Enhanced image handling for options
-            if not processed_answer and opt.get("image"):
+            option_body_content = ""
+            # Check if option has text, if not, check for an image
+            if opt.get("answer"):
+                option_body_content = opt["answer"]
+            
+            # Check if option has an image and append it to the content
+            if opt.get("image"):
                 image_url = opt['image']
-                processed_answer = f"<img src='{image_url}' alt='Option {labels[opt_idx]}' class='option-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
-            elif opt.get("image"):
-                image_url = opt['image']
-                processed_answer += f"<br><img src='{image_url}' alt='Option {labels[opt_idx]}' class='option-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
-
+                image_html = f"<img src='{image_url}' alt='Option {labels[opt_idx]}' class='option-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
+                if option_body_content:
+                    option_body_content += "<br>" + image_html
+                else:
+                    option_body_content = image_html
+            
             html += f"""
                 <div class='{class_name}'>
                     <span class='option-label'>{labels[opt_idx]})</span>
-                    <div>{processed_answer}</div>
+                    <div>{option_body_content}</div>
                 </div>"""
         
         html += """
@@ -889,7 +897,7 @@ def generate_answer_key_table(data, test_title, syllabus):
       height: 300px;
       background: url('https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png') no-repeat center;
       background-size: contain;
-      opacity: 0.8; /* Changed opacity to 80% */
+      opacity: 1.5; /* Changed opacity to 80% */
       transform: translate(-50%, -50%) rotate(-30deg);
       z-index: -1;
       pointer-events: none;
