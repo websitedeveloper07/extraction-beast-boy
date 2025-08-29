@@ -20,8 +20,8 @@ from html import unescape
 from datetime import datetime, timezone, timedelta
 
 # === CONFIG ===
-BOT_TOKEN = "8042533210:AAFzHzkotAwaZrtHh_OC1ftAbfCo9htxUAk"
-OWNER_IDS = {8406230162}  # Bot owners
+BOT_TOKEN = "7719606789:AAFYmaHQ0bok6xLp_nQvpxRuoq5UfgLH6o4"
+OWNER_IDS = {8493360284}  # Bot owners
 AUTHORIZED_USER_IDS = set(OWNER_IDS)
 PLAN = "PRO PLAN⚡"
 
@@ -377,7 +377,7 @@ def process_html_content(html):
 
 # === HTML Generators - Modern Premium Theme ===
 def generate_html_with_answers(data, test_title, syllabus):
-    """Generate HTML with questions and highlighted correct answers - Modern Premium theme"""
+    """Generate HTML with questions and highlighted correct answers - Vibrant Light Theme"""
     html = f"""
 <!DOCTYPE html>
 <html>
@@ -396,14 +396,21 @@ def generate_html_with_answers(data, test_title, syllabus):
     
     body {{
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        background: radial-gradient(circle at 20% 50%, #120078 0%, #000000 50%, #1a0033 100%);
-        background-attachment: fixed;
-        color: #f8fafc;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        color: #2d3748;
         padding: 24px;
         line-height: 1.7;
         margin: 0;
         min-height: 100vh;
         position: relative;
+    }}
+    
+    @keyframes gradientShift {{
+        0% {{ background-position: 0% 50%; }}
+        50% {{ background-position: 100% 50%; }}
+        100% {{ background-position: 0% 50%; }}
     }}
     
     body::before {{
@@ -413,31 +420,40 @@ def generate_html_with_answers(data, test_title, syllabus):
         left: 0;
         width: 100%;
         height: 100%;
-        background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><circle fill="%23ffffff" fill-opacity="0.02" cx="30" cy="30" r="1"/></g></svg>');
+        background: url('data:image/svg+xml,<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><circle fill="%23ffffff" fill-opacity="0.15" cx="40" cy="40" r="2"/><circle fill="%23ffffff" fill-opacity="0.08" cx="20" cy="60" r="1"/><circle fill="%23ffffff" fill-opacity="0.12" cx="60" cy="20" r="1.5"/></g></svg>');
         z-index: -1;
-        opacity: 0.4;
+        opacity: 0.6;
     }}
 
     table {{
         border-collapse: collapse;
         width: 100%;
         margin: 10px 0;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        overflow: hidden;
     }}
     table, th, td {{
-        border: 1px solid #ccc;
-        padding: 6px;
+        border: 1px solid #e2e8f0;
+        padding: 12px;
         text-align: center;
     }}
     
-    .title-box {{
+    th {{
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 600;
+    }}
+    
+    .title-box {{
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
         backdrop-filter: blur(20px);
-        padding: 32px;
-        border-radius: 20px;
+        padding: 40px;
+        border-radius: 24px;
         text-align: center;
         margin-bottom: 32px;
-        box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.6);
         position: relative;
         overflow: hidden;
     }}
@@ -449,8 +465,8 @@ def generate_html_with_answers(data, test_title, syllabus):
         left: -50%;
         width: 200%;
         height: 200%;
-        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-        animation: shine 3s infinite;
+        background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.2), transparent);
+        animation: shine 4s infinite;
     }}
     
     @keyframes shine {{
@@ -461,26 +477,27 @@ def generate_html_with_answers(data, test_title, syllabus):
     .title-box h1 {{
         position: relative;
         z-index: 1;
-        font-size: 32px;
+        font-size: 36px;
         font-weight: 700;
-        background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         text-shadow: none;
         margin: 0;
+        letter-spacing: -0.5px;
     }}
     
     .question-card {{
         position: relative;
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
         backdrop-filter: blur(20px);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        border-radius: 16px;
-        padding: 24px;
-        margin-bottom: 24px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
-        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 20px;
+        padding: 28px;
+        margin-bottom: 28px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.4s ease;
         overflow: hidden;
     }}
     
@@ -490,180 +507,207 @@ def generate_html_with_answers(data, test_title, syllabus):
         top: 0;
         left: 0;
         right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-        border-radius: 16px 16px 0 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+        border-radius: 20px 20px 0 0;
     }}
     
     .question-card:hover {{
-        transform: translateY(-2px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        transform: translateY(-4px) scale(1.01);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 10px 25px rgba(0, 0, 0, 0.1);
+        border-color: rgba(255, 255, 255, 0.8);
     }}
     
     .question-watermark {{
         position: absolute;
-        top: 16px;
-        right: 16px;
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+        top: 18px;
+        right: 18px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
         backdrop-filter: blur(10px);
         border: 1px solid rgba(102, 126, 234, 0.3);
-        padding: 6px 12px;
-        border-radius: 20px;
+        padding: 8px 16px;
+        border-radius: 25px;
         font-size: 12px;
         font-weight: 600;
-        color: #a5b4fc;
+        color: #ffffff;
         font-family: 'Inter', monospace;
         z-index: 2;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }}
     
     .question-watermark a {{
-        color: #a5b4fc;
+        color: #ffffff;
         text-decoration: none;
-        transition: color 0.3s ease;
+        transition: all 0.3s ease;
     }}
     
     .question-watermark a:hover {{
-        color: #c7d2fe;
+        color: #f0f9ff;
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
     }}
     
     .question-title {{
-        font-size: 20px;
-        font-weight: 600;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-size: 22px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        margin-bottom: 16px;
+        margin-bottom: 18px;
         margin-top: 8px;
+        letter-spacing: -0.3px;
     }}
     
     .question-body {{
-        color: #cbd5e1;
-        margin-bottom: 20px;
+        color: #4a5568;
+        margin-bottom: 24px;
         white-space: pre-wrap;
         word-wrap: break-word;
         font-weight: 400;
-        line-height: 1.6;
+        line-height: 1.7;
+        font-size: 16px;
     }}
     
     .options {{
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 14px;
     }}
     
     .option-row {{
         display: flex;
-        gap: 12px;
+        gap: 14px;
     }}
     
     .option {{
-        background: linear-gradient(135deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.6) 100%);
+        background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.9) 100%);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        padding: 14px 18px;
-        border-radius: 12px;
-        font-size: 14px;
+        border: 2px solid rgba(203, 213, 225, 0.5);
+        padding: 16px 20px;
+        border-radius: 16px;
+        font-size: 15px;
         font-weight: 500;
-        color: #e2e8f0;
+        color: #374151;
         width: 50%;
         box-sizing: border-box;
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
+        cursor: pointer;
     }}
     
     .option:hover {{
-        background: linear-gradient(135deg, rgba(71, 85, 105, 0.7) 0%, rgba(51, 65, 85, 0.7) 100%);
-        border-color: rgba(148, 163, 184, 0.4);
-        transform: translateY(-1px);
+        background: linear-gradient(135deg, rgba(236, 254, 255, 0.9) 0%, rgba(207, 250, 254, 0.9) 100%);
+        border-color: #67e8f9;
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 8px 25px rgba(103, 232, 249, 0.3);
     }}
     
     .option.correct {{
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         border-color: #34d399;
         color: #ffffff;
-        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4), 0 0 0 1px rgba(52, 211, 153, 0.2);
+        box-shadow: 0 12px 30px rgba(16, 185, 129, 0.4), 0 0 0 2px rgba(52, 211, 153, 0.3);
         font-weight: 600;
     }}
     
     .option.correct::before {{
         content: '✓';
         position: absolute;
-        top: 8px;
-        right: 12px;
+        top: 12px;
+        right: 16px;
         font-weight: bold;
-        font-size: 16px;
+        font-size: 18px;
         color: #ffffff;
+        text-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+    }}
+    
+    .option.correct:hover {{
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(16, 185, 129, 0.5), 0 0 0 2px rgba(52, 211, 153, 0.4);
     }}
     
     .quote {{
         text-align: center;
-        margin: 32px auto;
-        padding: 24px 32px;
-        background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%);
+        margin: 40px auto;
+        padding: 32px 40px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(254, 252, 232, 0.95) 100%);
         backdrop-filter: blur(20px);
-        color: #fbbf24;
-        border-radius: 16px;
+        color: #f59e0b;
+        border-radius: 20px;
         font-style: italic;
-        font-size: 18px;
-        font-weight: 500;
-        box-shadow: 0 10px 30px rgba(251, 191, 36, 0.2), 0 0 0 1px rgba(251, 191, 36, 0.2);
-        border: 1px solid rgba(251, 191, 36, 0.3);
-        max-width: 600px;
+        font-size: 20px;
+        font-weight: 600;
+        box-shadow: 0 15px 35px rgba(245, 158, 11, 0.2), 0 5px 15px rgba(245, 158, 11, 0.1);
+        border: 2px solid rgba(251, 191, 36, 0.3);
+        max-width: 700px;
         position: relative;
     }}
     
     .quote::before {{
         content: '"';
         position: absolute;
-        top: -10px;
-        left: 20px;
-        font-size: 60px;
-        color: rgba(251, 191, 36, 0.3);
+        top: -15px;
+        left: 25px;
+        font-size: 70px;
+        color: rgba(245, 158, 11, 0.3);
         font-family: serif;
+        font-weight: bold;
     }}
     
-    .quote-footer, .extracted-box {{
+    .quote-footer {{
         text-align: center;
-        margin: 24px auto;
-        padding: 16px 24px;
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+        margin: 28px auto;
+        padding: 20px 28px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 249, 255, 0.95) 100%);
         backdrop-filter: blur(20px);
-        color: #a5b4fc;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 14px;
-        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2), 0 0 0 1px rgba(102, 126, 234, 0.2);
-        border: 1px solid rgba(102, 126, 234, 0.3);
+        color: #3b82f6;
+        border-radius: 16px;
+        font-weight: 700;
+        font-size: 16px;
+        box-shadow: 0 12px 30px rgba(59, 130, 246, 0.2), 0 4px 12px rgba(59, 130, 246, 0.1);
+        border: 2px solid rgba(59, 130, 246, 0.3);
         max-width: fit-content;
+        letter-spacing: 0.5px;
     }}
     
     .extracted-box {{
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(109, 40, 217, 0.2) 100%);
-        color: #c4b5fd;
-        border-color: rgba(139, 92, 246, 0.3);
-        box-shadow: 0 8px 20px rgba(139, 92, 246, 0.2), 0 0 0 1px rgba(139, 92, 246, 0.2);
+        text-align: center;
+        margin: 28px auto;
+        padding: 20px 28px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 245, 255, 0.95) 100%);
+        backdrop-filter: blur(20px);
+        color: #8b5cf6;
+        border-radius: 16px;
+        font-weight: 700;
+        font-size: 16px;
+        box-shadow: 0 12px 30px rgba(139, 92, 246, 0.2), 0 4px 12px rgba(139, 92, 246, 0.1);
+        border: 2px solid rgba(139, 92, 246, 0.3);
+        max-width: fit-content;
+        letter-spacing: 0.5px;
     }}
     
     @media print {{
         body {{ 
-            background: #000 !important; 
+            background: #f8fafc !important; 
             -webkit-print-color-adjust: exact;
         }}
         .question-card {{ 
             page-break-inside: avoid; 
-            background: #1e293b !important;
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
         }}
     }}
     
     @media (max-width: 768px) {{
         body {{ padding: 16px; }}
-        .title-box {{ padding: 24px 20px; }}
-        .title-box h1 {{ font-size: 24px; }}
-        .question-card {{ padding: 20px; }}
+        .title-box {{ padding: 28px 20px; }}
+        .title-box h1 {{ font-size: 28px; }}
+        .question-card {{ padding: 24px; }}
         .option-row {{ flex-direction: column; }}
         .option {{ width: 100%; }}
+        .quote {{ padding: 24px 28px; font-size: 18px; }}
     }}
 </style>
 </head>
@@ -677,7 +721,7 @@ def generate_html_with_answers(data, test_title, syllabus):
     for idx, q in enumerate(data, 1):
         processed_body = q.get('body') or ""
         if not processed_body and q.get("image"):
-            processed_body = f"<img src='{q['image']}' style='max-width:100%; height:auto;'>"
+            processed_body = f"<img src='{q['image']}' style='max-width:100%; height:auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);'>"
 
         html += f"""
 <div class='question-card'>
@@ -700,7 +744,7 @@ def generate_html_with_answers(data, test_title, syllabus):
 
                     processed_answer = opt.get("answer") or ""
                     if not processed_answer and opt.get("image"):
-                        processed_answer = f"<img src='{opt['image']}' style='max-width:100%; height:auto;'>"
+                        processed_answer = f"<img src='{opt['image']}' style='max-width:100%; height:auto; border-radius: 8px;'>"
 
                     html += f"<div class='{class_name}'>{labels[opt_idx]}) {processed_answer}</div>"
             html += "</div>"
