@@ -852,7 +852,7 @@ def generate_html_only_questions(data, test_title, syllabus):
         ".option.correct-hidden::before {"
     )
 def generate_answer_key_table(data, test_title, syllabus):
-    """Generate HTML answer key table - Matching the vibrant quiz layout style"""
+    """Generate HTML answer key table - Matching the vibrant quiz layout style with watermark logo"""
     html = f"""
 <!DOCTYPE html>
 <html>
@@ -876,6 +876,23 @@ def generate_answer_key_table(data, test_title, syllabus):
         padding: 25px;
         line-height: 1.6;
         min-height: 100vh;
+        position: relative;
+    }}
+
+    /* 🔹 Watermark logo in center diagonally */
+    body::before {{
+        content: "";
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 500px;
+        height: 500px;
+        background: url('https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png') no-repeat center;
+        background-size: contain;
+        opacity: 0.85;  /* 85% visible */
+        transform: translate(-50%, -50%) rotate(-30deg);
+        z-index: -1;
+        pointer-events: none;
     }}
 
     .container {{
@@ -885,6 +902,8 @@ def generate_answer_key_table(data, test_title, syllabus):
         border-radius: 16px;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         overflow: hidden;
+        position: relative;
+        z-index: 1; /* keeps content above watermark */
     }}
 
     .header {{
@@ -1152,63 +1171,6 @@ def generate_answer_key_table(data, test_title, syllabus):
         border-radius: 20px;
         display: inline-block;
     }}
-
-    .watermark-link {{
-        position: absolute;
-        top: 15px;
-        right: 20px;
-        background: linear-gradient(135deg, #fc8181 0%, #e53e3e 100%);
-        color: white;
-        padding: 5px 12px;
-        font-size: 11px;
-        font-weight: 600;
-        border-radius: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        box-shadow: 0 2px 6px rgba(252, 129, 129, 0.25);
-        text-decoration: none;
-        z-index: 2;
-    }}
-    
-    @media (max-width: 768px) {{
-        body {{ padding: 15px; }}
-        .container {{ margin: 0; }}
-        .header {{ padding: 30px 20px; }}
-        .header h1 {{ font-size: 24px; }}
-        .answer-key-container {{ padding: 15px; }}
-        
-        .table-header,
-        .answer-row {{
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }}
-        
-        .table-header-cell,
-        .answer-cell {{
-            border-right: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            text-align: center;
-            justify-content: center;
-        }}
-        
-        .table-header-cell:last-child,
-        .answer-cell:last-child {{
-            border-bottom: none;
-        }}
-        
-        .answer-text {{ margin: 8px 0; }}
-        .quote-section {{ padding: 20px; }}
-        .quote-text {{ font-size: 14px; }}
-        
-        .watermark-link {{
-            position: relative;
-            top: auto;
-            right: auto;
-            display: block;
-            margin: 10px auto 0;
-            width: fit-content;
-        }}
-    }}
 </style>
 </head>
 <body>
@@ -1231,45 +1193,27 @@ def generate_answer_key_table(data, test_title, syllabus):
             </div>
             <div class='table-content'>
 """
-    
+    # Loop through questions
     for idx, q in enumerate(data, 1):
         correct_option = ""
         correct_answer = ""
         
-        # Find the correct answer
         for i, opt in enumerate(q.get("alternatives", [])[:4]):
             if str(opt.get("score_if_chosen")) == "1":
                 correct_option = ["A", "B", "C", "D"][i]
                 
-                # Handle both text and image content
                 answer_text = opt.get('answer', '').strip()
                 answer_image = opt.get('image', '').strip()
                 
-                # Build the correct answer display with proper image handling
                 if answer_text and answer_image:
-                    # Both text and image
                     correct_answer = f"""{answer_text}<br>
-                    <div class='image-loading'>Loading image...</div>
-                    <img src='{answer_image}' alt='Answer {correct_option}' class='answer-image' 
-                         style='display: none;'
-                         onload="this.style.display='block'; this.previousElementSibling.style.display='none';" 
-                         onerror="this.style.display='none'; this.previousElementSibling.style.display='none'; this.nextElementSibling.style.display='block';" />
-                    <div class='image-placeholder' style='display: none;'>❌ Image failed to load: <br><small>{answer_image}</small></div>"""
+                    <img src='{answer_image}' alt='Answer {correct_option}' class='answer-image' onerror="this.style.display='none';">"""
                 elif answer_image and not answer_text:
-                    # Only image
-                    correct_answer = f"""<div class='image-loading'>Loading image...</div>
-                                       <img src='{answer_image}' alt='Answer {correct_option}' class='answer-image' 
-                                            style='display: none;'
-                                            onload="this.style.display='block'; this.previousElementSibling.style.display='none';" 
-                                            onerror="this.style.display='none'; this.previousElementSibling.style.display='none'; this.nextElementSibling.style.display='block';" />
-                                       <div class='image-placeholder' style='display: none;'>❌ Image failed to load: <br><small>{answer_image}</small></div>"""
+                    correct_answer = f"""<img src='{answer_image}' alt='Answer {correct_option}' class='answer-image' onerror="this.style.display='none';">"""
                 elif answer_text:
-                    # Only text
                     correct_answer = answer_text
                 else:
-                    # Neither text nor image
                     correct_answer = "<em>No answer content available</em>"
-                
                 break
         
         html += f"""
@@ -1299,6 +1243,7 @@ def generate_answer_key_table(data, test_title, syllabus):
 </html>"""
     
     return html
+
 # === Main ===
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
