@@ -377,7 +377,7 @@ def process_html_content(html):
 
 # === HTML Generators - Modern Premium Theme ===
 def generate_html_with_answers(data, test_title, syllabus):
-    """Generate HTML with questions and highlighted correct answers - Simple Vibrant Layout"""
+    """Generate HTML with questions and highlighted correct answers - Modern Vibrant Layout"""
     html = f"""
 <!DOCTYPE html>
 <html>
@@ -386,7 +386,7 @@ def generate_html_with_answers(data, test_title, syllabus):
 <title>{test_title}</title>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
     
     * {{
         margin: 0;
@@ -395,83 +395,177 @@ def generate_html_with_answers(data, test_title, syllabus):
     }}
     
     body {{
-        font-family: 'Roboto', sans-serif;
-        background: #f0f4f8;
-        color: #2d3748;
-        padding: 40px 20px;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
+        color: #1a202c;
+        padding: 0;
         line-height: 1.6;
         min-height: 100vh;
     }}
 
-    .container {{
-        max-width: 1000px;
-        margin: 0 auto;
+    @keyframes gradientBG {{
+        0% {{ background-position: 0% 50%; }}
+        50% {{ background-position: 100% 50%; }}
+        100% {{ background-position: 0% 50%; }}
     }}
 
-    table {{
-        border-collapse: collapse;
-        width: 100%;
-        margin: 30px 0;
-        background: #ffffff;
+    .container {{
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
     }}
-    
-    table, th, td {{
-        border: 1px solid #e2e8f0;
-        padding: 15px;
-        text-align: center;
+
+    .main-content {{
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        margin: 20px 0;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
     }}
-    
-    th {{
-        background: #3182ce;
-        color: white;
-        font-weight: 600;
-    }}
-    
+
     .header {{
         text-align: center;
-        margin-bottom: 50px;
-        padding: 50px 20px;
+        padding: 60px 40px;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
+        position: relative;
+        overflow: hidden;
+    }}
+
+    .header::before {{
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+    }}
+
+    @keyframes rotate {{
+        from {{ transform: rotate(0deg); }}
+        to {{ transform: rotate(360deg); }}
     }}
     
     .header h1 {{
-        font-size: 42px;
-        font-weight: 700;
+        font-family: 'Poppins', sans-serif;
+        font-size: 48px;
+        font-weight: 800;
         margin: 0;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        letter-spacing: -1px;
     }}
-    
+
+    .header-subtitle {{
+        font-size: 18px;
+        margin-top: 12px;
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+        font-weight: 500;
+    }}
+
+    .inspirational-quote {{
+        margin: 40px;
+        padding: 40px;
+        background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+        border-radius: 20px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 15px 35px rgba(255, 154, 158, 0.3);
+        overflow: hidden;
+    }}
+
+    .inspirational-quote::before {{
+        content: '"';
+        font-size: 120px;
+        font-family: 'Poppins', serif;
+        position: absolute;
+        top: -20px;
+        left: 30px;
+        color: rgba(255, 255, 255, 0.6);
+        font-weight: 700;
+    }}
+
+    .inspirational-quote::after {{
+        content: '"';
+        font-size: 120px;
+        font-family: 'Poppins', serif;
+        position: absolute;
+        bottom: -60px;
+        right: 30px;
+        color: rgba(255, 255, 255, 0.6);
+        font-weight: 700;
+    }}
+
+    .quote-text {{
+        font-family: 'Poppins', sans-serif;
+        font-size: 24px;
+        font-weight: 600;
+        color: #2d3748;
+        font-style: italic;
+        position: relative;
+        z-index: 2;
+        line-height: 1.4;
+    }}
+
     .question-section {{
-        margin-bottom: 40px;
-        padding: 30px 0;
-        border-bottom: 3px solid #e2e8f0;
+        margin: 0 40px 50px;
+        padding: 40px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(102, 126, 234, 0.1);
+        transition: all 0.3s ease;
+    }}
+
+    .question-section:hover {{
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
     }}
     
     .question-header {{
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 25px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 20px;
     }}
     
     .question-number {{
-        background: #3182ce;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        padding: 12px 24px;
-        font-size: 18px;
+        padding: 16px 32px;
+        font-size: 20px;
         font-weight: 700;
-        border-radius: 6px;
+        border-radius: 50px;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        font-family: 'Poppins', sans-serif;
+        letter-spacing: 0.5px;
     }}
     
     .watermark {{
-        background: #e53e3e;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
         color: white;
-        padding: 8px 16px;
-        font-size: 13px;
+        padding: 12px 24px;
+        font-size: 14px;
         font-weight: 600;
-        border-radius: 4px;
+        border-radius: 50px;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
+        box-shadow: 0 6px 15px rgba(238, 90, 36, 0.3);
+        transition: transform 0.3s ease;
+    }}
+
+    .watermark:hover {{
+        transform: scale(1.05);
     }}
     
     .watermark a {{
@@ -480,132 +574,230 @@ def generate_html_with_answers(data, test_title, syllabus):
     }}
     
     .question-text {{
-        font-size: 18px;
-        margin-bottom: 30px;
-        color: #4a5568;
+        font-size: 20px;
+        margin-bottom: 35px;
+        color: #2d3748;
         line-height: 1.7;
+        font-weight: 500;
     }}
     
     .options-container {{
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 20px;
-        margin-top: 25px;
+        margin-top: 30px;
     }}
     
     .option {{
-        padding: 20px;
-        font-size: 16px;
-        color: #2d3748;
-        border: 2px solid #cbd5e0;
-        background: #f7fafc;
-        transition: all 0.2s ease;
+        padding: 25px;
+        font-size: 17px;
+        color: #4a5568;
+        border: 2px solid #e2e8f0;
+        background: #f8fafc;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        font-weight: 500;
     }}
     
+    .option::before {{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: left 0.5s;
+    }}
+
     .option:hover {{
-        border-color: #3182ce;
+        border-color: #667eea;
         background: #edf2f7;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+    }}
+
+    .option:hover::before {{
+        left: 100%;
     }}
     
     .option.correct {{
-        background: #38a169;
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
         border-color: #38a169;
         color: white;
         font-weight: 600;
-        position: relative;
+        box-shadow: 0 12px 30px rgba(72, 187, 120, 0.3);
+        transform: scale(1.02);
     }}
     
     .option.correct::after {{
         content: '✓';
         position: absolute;
-        top: 15px;
-        right: 20px;
-        font-size: 20px;
+        top: 20px;
+        right: 25px;
+        font-size: 24px;
         font-weight: bold;
+        background: rgba(255, 255, 255, 0.2);
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }}
+
+    .option-label {{
+        font-weight: 700;
+        font-size: 18px;
+        color: #667eea;
+        margin-right: 12px;
+    }}
+
+    .option.correct .option-label {{
+        color: rgba(255, 255, 255, 0.9);
     }}
     
-    .inspirational {{
+    .footer-section {{
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
         text-align: center;
-        margin: 60px 0;
-        padding: 40px 20px;
-        background: #fed7d7;
-        color: #c53030;
-        font-style: italic;
-        font-size: 20px;
-        font-weight: 600;
+        padding: 50px 40px;
+        margin-top: 60px;
     }}
     
     .footer-text {{
-        text-align: center;
-        margin: 40px 0;
-        padding: 25px;
-        background: #667eea;
-        color: white;
+        font-size: 22px;
         font-weight: 600;
-        font-size: 18px;
+        margin-bottom: 20px;
+        font-family: 'Poppins', sans-serif;
     }}
     
     .signature {{
-        text-align: center;
-        margin: 20px 0;
-        padding: 20px;
-        background: #38a169;
-        color: white;
+        font-size: 18px;
         font-weight: 600;
-        font-size: 16px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 0.9;
+    }}
+
+    .stats-bar {{
+        display: flex;
+        justify-content: space-around;
+        margin: 40px;
+        padding: 30px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }}
+
+    .stat-item {{
+        text-align: center;
+    }}
+
+    .stat-number {{
+        font-size: 32px;
+        font-weight: 800;
+        color: #667eea;
+        font-family: 'Poppins', sans-serif;
+    }}
+
+    .stat-label {{
+        font-size: 14px;
+        color: #718096;
+        font-weight: 500;
         text-transform: uppercase;
         letter-spacing: 1px;
     }}
     
     @media (max-width: 768px) {{
-        body {{ padding: 20px 15px; }}
-        .header {{ padding: 40px 20px; }}
-        .header h1 {{ font-size: 32px; }}
-        .question-section {{ padding: 25px 0; }}
+        body {{ padding: 0; }}
+        .container {{ padding: 0 15px; }}
+        .header {{ padding: 40px 30px; }}
+        .header h1 {{ font-size: 36px; }}
+        .question-section {{ 
+            margin: 0 20px 30px;
+            padding: 30px 25px; 
+        }}
         .question-header {{ 
             flex-direction: column; 
-            align-items: flex-start;
+            align-items: stretch;
             gap: 15px;
+        }}
+        .question-number {{
+            text-align: center;
+            padding: 12px 20px;
+            font-size: 18px;
         }}
         .options-container {{ 
             grid-template-columns: 1fr; 
             gap: 15px; 
         }}
-        .option {{ padding: 18px; }}
-        .inspirational {{ 
-            margin: 40px 0; 
-            padding: 30px 20px; 
-            font-size: 18px; 
+        .option {{ 
+            padding: 20px; 
+            font-size: 16px;
+        }}
+        .inspirational-quote {{ 
+            margin: 20px; 
+            padding: 30px 25px; 
+        }}
+        .quote-text {{ 
+            font-size: 20px; 
+        }}
+        .stats-bar {{
+            margin: 20px;
+            padding: 20px;
+            flex-direction: column;
+            gap: 20px;
         }}
     }}
 </style>
 </head>
 <body>
 <div class='container'>
-    <div class='header'>
-        <h1>{test_title}</h1>
-    </div>
-    
-    <div class='inspirational'>
-        "The only impossible journey is the one you never begin"
-    </div>
+    <div class='main-content'>
+        <div class='header'>
+            <h1>{test_title}</h1>
+            <div class='header-subtitle'>Test Your Knowledge & Excel</div>
+        </div>
+        
+        <div class='inspirational-quote'>
+            <div class='quote-text'>The only impossible journey is the one you never begin</div>
+        </div>
+
+        <div class='stats-bar'>
+            <div class='stat-item'>
+                <div class='stat-number'>{len(data)}</div>
+                <div class='stat-label'>Questions</div>
+            </div>
+            <div class='stat-item'>
+                <div class='stat-number'>100</div>
+                <div class='stat-label'>Max Score</div>
+            </div>
+            <div class='stat-item'>
+                <div class='stat-number'>∞</div>
+                <div class='stat-label'>Attempts</div>
+            </div>
+        </div>
 """
     
     for idx, q in enumerate(data, 1):
         processed_body = q.get('body') or ""
         if not processed_body and q.get("image"):
-            processed_body = f"<img src='{q['image']}' style='max-width:100%; height:auto; margin: 15px 0;'>"
+            processed_body = f"<img src='{q['image']}' style='max-width:100%; height:auto; margin: 15px 0; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);'>"
 
         html += f"""
-<div class='question-section'>
-    <div class='question-header'>
-        <div class='question-number'>Question {idx}</div>
-        <div class='watermark'>
-            <a href='https://t.me/Harshleaks' target='_blank'>@Harsh</a>
-        </div>
-    </div>
-    <div class='question-text'>{processed_body}</div>
-    <div class='options-container'>"""
+        <div class='question-section'>
+            <div class='question-header'>
+                <div class='question-number'>Question {idx}</div>
+                <div class='watermark'>
+                    <a href='https://t.me/Harshleaks' target='_blank'>@Harsh</a>
+                </div>
+            </div>
+            <div class='question-text'>{processed_body}</div>
+            <div class='options-container'>"""
         
         alternatives = q.get("alternatives", [])[:4]
         labels = ["A", "B", "C", "D"]
@@ -616,15 +808,22 @@ def generate_html_with_answers(data, test_title, syllabus):
 
             processed_answer = opt.get("answer") or ""
             if not processed_answer and opt.get("image"):
-                processed_answer = f"<img src='{opt['image']}' style='max-width:100%; height:auto;'>"
+                processed_answer = f"<img src='{opt['image']}' style='max-width:100%; height:auto; border-radius: 8px;'>"
 
-            html += f"<div class='{class_name}'><strong>{labels[opt_idx]})</strong> {processed_answer}</div>"
+            html += f"""
+                <div class='{class_name}'>
+                    <span class='option-label'>{labels[opt_idx]})</span>
+                    {processed_answer}
+                </div>"""
         
         html += "</div></div>"
     
     html += """
-    <div class='footer-text'>Knowledge is power, apply it wisely</div>
-    <div class='signature'>Generated by Harsh</div>
+        <div class='footer-section'>
+            <div class='footer-text'>Knowledge is power, apply it wisely</div>
+            <div class='signature'>Generated by Harsh</div>
+        </div>
+    </div>
 </div>
 </body>
 </html>"""
