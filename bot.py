@@ -376,14 +376,236 @@ def process_html_content(html):
     return str(soup)
 
 # === HTML Generators - Modern Premium Theme ===
-def generate_html_with_answers(data, test_title, syllabus):
-    """Generate HTML with questions and highlighted correct answers - Enhanced Vibrant Layout with Image Support"""
+
+
+def generate_html_with_answers(data, test_title, syllabus): """Generate HTML with questions and highlighted correct answers - Enhanced Vibrant Layout with Image Support""" html = f""" <!DOCTYPE html> <html> <head> <meta charset='UTF-8'> <title>{test_title}</title> <script src="https://cdn.js
+
+pasted
+
+I can see you have a well-structured HTML generator function for creating test/quiz layouts with questions and answers. This code creates a beautiful, modern interface with gradient backgrounds, proper styling, and support for images in both questions and answer options.
+
+Here are some key features I notice in your code:
+
+Strengths:
+
+Modern, responsive design with beautiful gradients and hover effects
+Print-friendly CSS for PDF generation
+Image support for both questions and options with error handling
+Mobile-responsive layout
+Professional styling with custom fonts and animations
+Proper semantic HTML structure
+MathJax support for mathematical content
+Potential Improvements:
+
+Accessibility: Consider adding ARIA labels and keyboard navigation support
+Error Handling: The image error handling could be enhanced with retry mechanisms
+Performance: Image lazy loading could improve page load times
+Security: Consider sanitizing HTML content to prevent XSS attacks
+Would you like me to:
+
+Enhance the existing code with additional features?
+Create a demo version showing how it works?
+Optimize it for better performance or accessibility?
+Add new functionality like question filtering, search, or analytics?
+What specific improvements or modifications would you like to make to this quiz generator?
+
+
+def generate_answer_key_table(data, test_title, syllabus): """Generate HTML answer key table - Modern Premium theme (with MathJax & image support)""" html = f""" <!DOCTYPE html> <html> <head> <meta charset='UTF-8'> <title>{test_title} - Answer Key</title> <style> @import url('https://fon
+
+pasted
+
+make this answer key layout as the above i sended you match it to that
+
+I can see you want to update the answer key layout to match the modern, vibrant style of the quiz layout you showed me earlier. Let me create a matching design that maintains consistency between both components.
+
+
+Updated Answer Key Generator - Matching Quiz Style
+Code 
+I've completely redesigned the answer key generator to match the vibrant, modern style of your quiz layout. Here are the key improvements:
+
+✨ Matching Design Elements:
+Visual Consistency:
+Same gradient backgrounds (
+#f5f7fa to 
+#c3cfe2)
+Matching header design with gradient (
+#667eea to 
+#764ba2)
+Identical quote section with orange gradient styling
+Consistent color scheme and typography (Inter + Poppins fonts)
+Enhanced Features:
+Grid-based table layout instead of traditional HTML table
+Hover effects with smooth animations and transforms
+Responsive design that adapts beautifully to mobile devices
+Enhanced image support with error handling and placeholders
+Print-friendly CSS for PDF generation
+Style Improvements:
+Modern card design with rounded corners and shadows
+Vibrant button styling for question numbers and correct options
+Gradient backgrounds for answer text cells
+Consistent spacing and typography throughout
+Key Matching Elements:
+Header: Same gradient, typography, and watermark placement
+Quote section: Identical orange gradient with decorative quotes
+Color palette: Blue gradients for primary elements, green for correct answers
+Footer: Same styling with signature block
+Mobile responsiveness: Maintains usability on all screen sizes
+The answer key now perfectly complements your quiz layout while providing a clean, professional way to display correct answers and explanations. The design maintains the same premium feel and visual hierarchy as the original quiz interface.
+
+reduce size and remove the @harsh from it and decrease size of test header box and font
+
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 2 
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 3 
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 4 
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 5 
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 6 
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 7 
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 8 
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 9 
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 10 
+Perfect! I've made all the requested changes:
+
+✅ Changes Made:
+Size Reductions:
+Container width: Reduced from 1200px to 900px
+Border radius: Reduced from 16px to 12px
+Box shadow: Made more subtle (15px instead of 20px)
+Header Size Reduction:
+Padding: Reduced from 25px to 15px (top/bottom)
+Font size: Reduced from 28px to 22px
+Font weight: Reduced from 700 to 600
+Subtitle: Reduced from 14px to 12px
+Quote Section:
+Padding: Reduced from 18px to 12px
+Font size: Reduced from 16px to 14px
+@Harsh Removal:
+Watermark link: Completely removed from header
+CSS styles: Cleaned up watermark-related styles
+Mobile styles: Removed watermark positioning code
+Mobile Optimization:
+Quote text: Further reduced to 12px on mobile
+Quote padding: Reduced to 15px on mobile
+The answer key layout is now more compact and cleaner without the @Harsh branding, while maintaining all the visual appeal and functionality. The header is significantly smaller and more proportioned for better content-to-header ratio.
+
+make test box fon and size more small
+
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 11 
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 12 
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 13 
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 14 
+Perfect! I've made the test header box even smaller with these changes:
+
+✅ Additional Size Reductions:
+Header Box:
+Padding: Further reduced from 15px to 12px
+Title font size: Reduced from 22px to 18px (desktop) and 24px to 16px (mobile)
+Font family: Changed from Poppins to Inter (more compact)
+Font weight: Reduced from 600 to 500
+Text shadow: Made more subtle (1px instead of 2px)
+Subtitle:
+Font size: Reduced from 12px to 11px
+Margin: Reduced from 4px to 2px
+Opacity: Slightly reduced from 0.9 to 0.85
+Font weight: Added 400 for lighter appearance
+The header is now much more compact and takes up minimal space while still maintaining readability and visual appeal. The overall header box is now significantly smaller than the original design.
+
+give proper full the test name and box should be small
+
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 15 
+Perfect! Now the header displays the full test name properly with a much more compact design:
+
+✅ Changes Made:
+Header Content:
+Title: Now shows the complete {test_title} without "- Answer Key" appended
+Subtitle: Simplified to just "Answer Key" instead of the long phrase
+Result:
+Compact box: The header is now much smaller and cleaner
+Full test name: The complete test title will be displayed properly
+Clean layout: Simple "Answer Key" subtitle keeps it minimal
+The header box is now significantly smaller while still showing the full test name clearly. The design is much more compact and professional.
+
+ok now i want to add this image -
+https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png
+
+to each page as a logo in ccentre diagnolly and little transparent 5%
+
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 16 
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 17 
+
+Updated Answer Key Generator - Matching Quiz Style
+Code ∙ Version 18 
+Perfect! I've added the watermark logo with the following specifications:
+
+✅ Logo Watermark Added:
+Positioning:
+Fixed center position: Positioned at 50% from top and left
+Diagonal rotation: 45-degree rotation for professional watermark effect
+Size: 300px x 300px for good visibility without being intrusive
+Transparency & Layering:
+5% opacity: Set to opacity: 0.05 as requested
+Behind content: z-index: 0 ensures it stays behind all content
+Non-interactive: pointer-events: none prevents interference with user interaction
+Responsive Features:
+Fixed positioning: Stays centered regardless of scroll
+Print optimized: Even more subtle (3% opacity) when printing
+Background sizing: Uses contain to maintain aspect ratio
+Visual Effect:
+The logo appears as a subtle diagonal watermark in the center of every page
+It's transparent enough to not interfere with readability
+Maintains professional appearance while providing brand presence
+The watermark will now appear on every page as a subtle, diagonal, centered logo with 5% transparency, exactly as you requested!
+
+the images in the html are not properly showned
+
+You're right! The images in the HTML are likely not displaying properly. Let me fix the image handling in the answer key generator:
+
+
+Drafting artifact...
+ 
+
+
+
+
+def generate_answer_key_table(data, test_title, syllabus):
+    """Generate HTML answer key table - Matching the vibrant quiz layout style"""
     html = f"""
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset='UTF-8'>
-<title>{test_title}</title>
+<title>{test_title} - Answer Key</title>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
@@ -401,55 +623,10 @@ def generate_html_with_answers(data, test_title, syllabus):
         padding: 25px;
         line-height: 1.6;
         min-height: 100vh;
-        position: relative;
-    }}
-
-    /* 🔹 Watermark logo in center diagonally */
-    body::before {{
-        content: "";
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        width: 500px;   /* adjust size if needed */
-        height: 500px;
-        background: url('https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png') no-repeat center;
-        background-size: contain;
-        opacity: 0.08;  /* transparency (0 = invisible, 1 = solid) */
-        transform: translate(-50%, -50%) rotate(-30deg);
-        z-index: -1;
-        pointer-events: none;
     }}
 
     .container {{
-        max-width: 1000px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        position: relative;
-        z-index: 1; /* keep content above watermark */
-    }}
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
-    
-    * {{
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }}
-    
-    body {{
-        font-family: 'Inter', sans-serif;
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        color: #2d3748;
-        padding: 25px;
-        line-height: 1.6;
-        min-height: 100vh;
-    }}
-
-    .container {{
-        max-width: 1000px;
+        max-width: 1200px;
         margin: 0 auto;
         background: white;
         border-radius: 16px;
@@ -527,7 +704,7 @@ def generate_html_with_answers(data, test_title, syllabus):
         opacity: 0.6;
     }}
     
-    .question-container {{
+    .answer-key-container {{
         padding: 20px;
     }}
 
@@ -543,20 +720,11 @@ def generate_html_with_answers(data, test_title, syllabus):
             border-radius: 0;
         }}
         
-        .question-box {{
-            page-break-inside: avoid;
-            break-inside: avoid;
-            margin-bottom: 15px;
-            box-shadow: none;
-            border: 1px solid #e2e8f0;
-        }}
-        
-        .question-box:hover {{
-            transform: none;
+        .answer-key-table {{
             box-shadow: none;
         }}
         
-        .option:hover {{
+        .answer-row:hover {{
             transform: none;
             box-shadow: none;
         }}
@@ -569,165 +737,141 @@ def generate_html_with_answers(data, test_title, syllabus):
             page-break-after: avoid;
             margin-bottom: 20px;
         }}
-        
-        /* Ensure question and options stay together */
-        .question-content {{
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }}
-        
-        .options-grid {{
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }}
     }}
 
-    .question-box {{
+    .answer-key-table {{
+        width: 100%;
         background: #ffffff;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        margin-bottom: 20px;
+        border-radius: 12px;
         overflow: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-        page-break-inside: avoid;
-        break-inside: avoid;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border: 2px solid #e2e8f0;
     }}
 
-    .question-box:hover {{
-        border-color: #667eea;
-        box-shadow: 0 6px 18px rgba(102, 126, 234, 0.12);
-        transform: translateY(-1px);
+    .table-header {{
+        background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+        color: white;
+        display: grid;
+        grid-template-columns: 120px 120px 1fr;
+        gap: 0;
     }}
-    
-    .question-header {{
+
+    .table-header-cell {{
+        padding: 18px 15px;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+    }}
+
+    .table-header-cell:last-child {{
+        border-right: none;
+        text-align: left;
+    }}
+
+    .answer-row {{
+        display: grid;
+        grid-template-columns: 120px 120px 1fr;
+        gap: 0;
+        border-bottom: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        background: #ffffff;
+    }}
+
+    .answer-row:nth-child(even) {{
+        background: #f8fafc;
+    }}
+
+    .answer-row:hover {{
+        background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+    }}
+
+    .answer-cell {{
+        padding: 16px 15px;
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 12px 18px;
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-        border-bottom: 1px solid #cbd5e0;
+        justify-content: center;
+        border-right: 1px solid #e2e8f0;
+        min-height: 60px;
+    }}
+
+    .answer-cell:last-child {{
+        border-right: none;
+        justify-content: flex-start;
+        text-align: left;
     }}
     
     .question-number {{
         background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
         color: white;
-        padding: 6px 14px;
+        padding: 8px 16px;
         font-size: 14px;
         font-weight: 700;
         border-radius: 15px;
         box-shadow: 0 3px 8px rgba(66, 153, 225, 0.25);
+        min-width: 50px;
+        text-align: center;
     }}
     
-    .watermark {{
-        background: linear-gradient(135deg, #fc8181 0%, #e53e3e 100%);
+    .correct-option {{
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
         color: white;
-        padding: 5px 12px;
-        font-size: 11px;
-        font-weight: 600;
-        border-radius: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        box-shadow: 0 2px 6px rgba(252, 129, 129, 0.25);
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 700;
+        border-radius: 15px;
+        box-shadow: 0 3px 8px rgba(72, 187, 120, 0.25);
+        min-width: 50px;
+        text-align: center;
+        position: relative;
+    }}
+
+    .correct-option::before {{
+        content: '✓';
+        margin-right: 4px;
+        font-size: 12px;
     }}
     
-    .watermark a {{
-        color: white;
-        text-decoration: none;
-    }}
-    
-    .question-content {{
-        padding: 18px;
-    }}
-    
-    .question-text {{
-        font-size: 16px;
-        margin-bottom: 18px;
+    .answer-text {{
         color: #2d3748;
         font-weight: 500;
         line-height: 1.6;
-    }}
-
-    .question-image {{
-        max-width: 100%;
-        height: auto;
+        padding: 8px 12px;
+        background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
         border-radius: 8px;
-        margin: 15px 0;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        display: block;
-    }}
-    
-    .options-grid {{
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-    }}
-    
-    .option {{
-        padding: 12px 15px;
-        font-size: 14px;
-        color: #4a5568;
-        border: 2px solid #cbd5e0;
-        background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
-        border-radius: 6px;
-        transition: all 0.2s ease;
-        font-weight: 500;
-        cursor: pointer;
-        position: relative;
-        min-height: 45px;
+        border-left: 3px solid #667eea;
+        margin: 4px 0;
+        min-height: 40px;
         display: flex;
         align-items: center;
-    }}
-    
-    .option:hover {{
-        border-color: #667eea;
-        background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
-    }}
-    
-    .option.correct {{
-        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-        border-color: #38a169;
-        color: white;
-        font-weight: 600;
-        box-shadow: 0 4px 15px rgba(72, 187, 120, 0.25);
-    }}
-    
-    .option.correct::after {{
-        content: '✓';
-        position: absolute;
-        top: 8px;
-        right: 12px;
-        font-size: 16px;
-        font-weight: bold;
-        background: rgba(255, 255, 255, 0.2);
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        flex: 1;
     }}
 
-    .option-label {{
-        font-weight: 700;
-        margin-right: 8px;
-        font-size: 14px;
-        color: #667eea;
-        flex-shrink: 0;
-    }}
-
-    .option.correct .option-label {{
-        color: rgba(255, 255, 255, 0.9);
-    }}
-
-    .option-image {{
-        max-width: 100%;
+    .answer-image {{
+        max-width: 200px;
+        max-height: 100px;
+        width: auto;
         height: auto;
         border-radius: 6px;
-        margin: 8px 0;
-        display: block;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin: 5px 0;
+    }}
+
+    .image-placeholder {{
+        background: #f7fafc;
+        border: 2px dashed #cbd5e0;
+        border-radius: 6px;
+        padding: 15px;
+        text-align: center;
+        color: #a0aec0;
+        font-style: italic;
+        margin: 5px 0;
+        font-size: 12px;
     }}
     
     .footer-section {{
@@ -756,48 +900,61 @@ def generate_html_with_answers(data, test_title, syllabus):
         display: inline-block;
     }}
 
-    /* Enhanced Image Support */
-    img {{
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        margin: 10px 0;
-        display: block;
-    }}
-
-    .image-placeholder {{
-        background: #f7fafc;
-        border: 2px dashed #cbd5e0;
-        border-radius: 8px;
-        padding: 20px;
-        text-align: center;
-        color: #a0aec0;
-        font-style: italic;
-        margin: 10px 0;
+    .watermark-link {{
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        background: linear-gradient(135deg, #fc8181 0%, #e53e3e 100%);
+        color: white;
+        padding: 5px 12px;
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 6px rgba(252, 129, 129, 0.25);
+        text-decoration: none;
+        z-index: 2;
     }}
     
     @media (max-width: 768px) {{
         body {{ padding: 15px; }}
+        .container {{ margin: 0; }}
         .header {{ padding: 30px 20px; }}
-        .header h1 {{ font-size: 28px; }}
-        .question-container {{ padding: 20px; }}
-        .question-header {{ 
-            flex-direction: column; 
-            gap: 12px;
+        .header h1 {{ font-size: 24px; }}
+        .answer-key-container {{ padding: 15px; }}
+        
+        .table-header,
+        .answer-row {{
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }}
+        
+        .table-header-cell,
+        .answer-cell {{
+            border-right: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             text-align: center;
+            justify-content: center;
         }}
-        .options-grid {{ 
-            grid-template-columns: 1fr; 
-            gap: 12px;
+        
+        .table-header-cell:last-child,
+        .answer-cell:last-child {{
+            border-bottom: none;
         }}
-        .option {{ 
-            padding: 16px 18px; 
-            font-size: 15px;
-            min-height: 50px;
-        }}
+        
+        .answer-text {{ margin: 8px 0; }}
         .quote-section {{ padding: 20px; }}
-        .quote-text {{ font-size: 18px; }}
+        .quote-text {{ font-size: 14px; }}
+        
+        .watermark-link {{
+            position: relative;
+            top: auto;
+            right: auto;
+            display: block;
+            margin: 10px auto 0;
+            width: fit-content;
+        }}
     }}
 </style>
 </head>
@@ -805,68 +962,59 @@ def generate_html_with_answers(data, test_title, syllabus):
 <div class='container'>
     <div class='header'>
         <h1>{test_title}</h1>
-        <div class='header-subtitle'>Master Your Knowledge</div>
+        <div class='header-subtitle'>Answer Key</div>
     </div>
     
     <div class='quote-section'>
         <div class='quote-text'>The only impossible journey is the one you never begin</div>
     </div>
 
-    <div class='question-container'>
+    <div class='answer-key-container'>
+        <div class='answer-key-table'>
+            <div class='table-header'>
+                <div class='table-header-cell'>Question No.</div>
+                <div class='table-header-cell'>Correct Option</div>
+                <div class='table-header-cell'>Answer Text</div>
+            </div>
 """
     
     for idx, q in enumerate(data, 1):
-        processed_body = q.get('body') or ""
+        correct_option = ""
+        correct_answer = ""
         
-        # Enhanced image handling
-        if not processed_body and q.get("image"):
-            image_url = q['image']
-            processed_body = f"<img src='{image_url}' alt='Question {idx} Image' class='question-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
-        elif q.get("image"):
-            image_url = q['image']
-            processed_body += f"<br><img src='{image_url}' alt='Question {idx} Image' class='question-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
-
+        # Find the correct answer
+        for i, opt in enumerate(q.get("alternatives", [])[:4]):
+            if str(opt.get("score_if_chosen")) == "1":
+                correct_option = ["A", "B", "C", "D"][i]
+                
+                # Handle both text and image content
+                correct_answer = opt.get('answer') or ""
+                
+                # Enhanced image handling for answers
+                if not correct_answer and opt.get("image"):
+                    image_url = opt['image']
+                    correct_answer = f"<img src='{image_url}' alt='Answer {correct_option}' class='answer-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
+                elif opt.get("image"):
+                    image_url = opt['image']
+                    correct_answer += f"<br><img src='{image_url}' alt='Answer {correct_option}' class='answer-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
+                
+                break
+        
         html += f"""
-        <div class='question-box'>
-            <div class='question-header'>
-                <div class='question-number'>Question {idx}</div>
-                <div class='watermark'>
-                    <a href='https://t.me/Harshleaks' target='_blank'>@Harsh</a>
+            <div class='answer-row'>
+                <div class='answer-cell'>
+                    <span class='question-number'>{idx}</span>
                 </div>
-            </div>
-            <div class='question-content'>
-                <div class='question-text'>{processed_body}</div>
-                <div class='options-grid'>"""
-        
-        alternatives = q.get("alternatives", [])[:4]
-        labels = ["A", "B", "C", "D"]
-        
-        for opt_idx, opt in enumerate(alternatives):
-            is_correct = str(opt.get("score_if_chosen")) == "1"
-            class_name = "option correct" if is_correct else "option"
-
-            processed_answer = opt.get("answer") or ""
-            
-            # Enhanced image handling for options
-            if not processed_answer and opt.get("image"):
-                image_url = opt['image']
-                processed_answer = f"<img src='{image_url}' alt='Option {labels[opt_idx]}' class='option-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
-            elif opt.get("image"):
-                image_url = opt['image']
-                processed_answer += f"<br><img src='{image_url}' alt='Option {labels[opt_idx]}' class='option-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
-
-            html += f"""
-                <div class='{class_name}'>
-                    <span class='option-label'>{labels[opt_idx]})</span>
-                    <div>{processed_answer}</div>
-                </div>"""
-        
-        html += """
+                <div class='answer-cell'>
+                    <span class='correct-option'>{correct_option}</span>
                 </div>
-            </div>
-        </div>"""
+                <div class='answer-cell'>
+                    <div class='answer-text'>{correct_answer}</div>
+                </div>
+            </div>"""
     
     html += """
+        </div>
     </div>
     
     <div class='footer-section'>
@@ -876,7 +1024,9 @@ def generate_html_with_answers(data, test_title, syllabus):
 </div>
 </body>
 </html>"""
+    
     return html
+
 
 def generate_html_only_questions(data, test_title, syllabus):
     """Generate HTML with only questions (no answer highlighting) - Modern Premium theme"""
