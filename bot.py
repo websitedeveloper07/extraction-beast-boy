@@ -781,7 +781,7 @@ def generate_html_with_answers(data, test_title, syllabus):
             <div class='question-header'>
                 <div class='question-number'>Question {idx}</div>
                 <div class='watermark'>
-                    <a href='https://t.me/+cKL6ndt3C7IzMGE1' target='_blank'>@𝑯𝒂𝒓𝒔𝒉</a>
+                    <a href='https://t.me/+cKL6ndt3C7IzMGE1' target='_blank'>@𝗛𝗮𝗿𝘀𝗵</a>
                 </div>
             </div>
             <div class='question-content'>
@@ -1017,6 +1017,11 @@ def generate_answer_key_table(data, test_title, syllabus):
         text-align: left;
     }}
 
+    /* Ensure italics for text within the answer-text class */
+    .answer-text em {{
+        font-style: italic;
+    }}
+
     .answer-image {{
         max-width: 200px;
         max-height: 100px;
@@ -1094,14 +1099,15 @@ def generate_answer_key_table(data, test_title, syllabus):
             if str(opt.get("score_if_chosen")) == "1":
                 correct_option = ["A", "B", "C", "D"][i]
                 
-                # Get the answer text, which may contain HTML with image tags
+                # Get the answer content, which may contain HTML with image tags
                 answer_content = opt.get("answer", "").strip()
                 
                 # Fix protocol-relative URLs in the answer content
                 if answer_content:
                     answer_content = answer_content.replace('src="//', 'src="https://')
                     
-                correct_answer = answer_content if answer_content else "<em>No answer</em>"
+                # Wrap the content in <em> tags to make it italic
+                correct_answer = f"<em>{answer_content}</em>" if answer_content else "<em>No answer</em>"
                 break
 
         html += f"""
