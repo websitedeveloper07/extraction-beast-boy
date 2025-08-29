@@ -773,13 +773,17 @@ def generate_html_with_answers(data, test_title, syllabus):
     
     for idx, q in enumerate(data, 1):
         question_body_content = ""
-        # Check if question has text, if not, check for an image
+        # Check if question has text
         if q.get('body'):
             question_body_content = q['body']
         
         # Check if question has an image and append it to the content
         if q.get("image"):
             image_url = q['image']
+            # Correct the protocol-relative URL to a full URL
+            if image_url.startswith('//'):
+                image_url = 'https:' + image_url
+            
             image_html = f"<img src='{image_url}' alt='Question {idx} Image' class='question-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
             if question_body_content:
                 question_body_content += "<br>" + image_html
@@ -806,13 +810,17 @@ def generate_html_with_answers(data, test_title, syllabus):
             class_name = "option correct" if is_correct else "option"
             
             option_body_content = ""
-            # Check if option has text, if not, check for an image
+            # Check if option has text
             if opt.get("answer"):
                 option_body_content = opt["answer"]
             
             # Check if option has an image and append it to the content
             if opt.get("image"):
                 image_url = opt['image']
+                # Correct the protocol-relative URL to a full URL
+                if image_url.startswith('//'):
+                    image_url = 'https:' + image_url
+                    
                 image_html = f"<img src='{image_url}' alt='Option {labels[opt_idx]}' class='option-image' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='block';\" /><div class='image-placeholder' style='display:none;'>Image not available</div>"
                 if option_body_content:
                     option_body_content += "<br>" + image_html
