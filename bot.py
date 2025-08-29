@@ -879,38 +879,28 @@ def generate_answer_key_table(data, test_title, syllabus):
         position: relative;
     }}
 
-    /* 🔹 Watermark for screen */
+    /* 🔹 Watermark for screen and PDF/print */
     body::before {{
       content: '';
-      position: fixed;
+      position: fixed; /* 'fixed' for screen, 'absolute' for print, this covers both */
       top: 50%;
       left: 50%;
-      width: 300px;      /* smaller size */
+      width: 300px;
       height: 300px;
       background: url('https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png') no-repeat center;
       background-size: contain;
-      opacity: 0.2;      /* lighter transparency */
+      opacity: 0.8; /* Changed opacity to 80% */
       transform: translate(-50%, -50%) rotate(-30deg);
       z-index: -1;
       pointer-events: none;
     }}
-
-    /* 🔹 Watermark for PDF/print */
+    
     @media print {{
       body::before {{
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 300px;    /* same small size */
-        height: 300px;
-        background: url('https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png') no-repeat center;
-        background-size: contain;
-        opacity: 0.2;
-        transform: translate(-50%, -50%) rotate(-30deg);
-        z-index: -1;
+        position: absolute; /* Ensures it stays on the page content when printing */
+        content: ''; /* Required for print media queries */
       }}
-
+    
       body {{
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
