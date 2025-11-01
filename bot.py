@@ -1132,7 +1132,7 @@ def generate_answer_key_table(data, test_title, syllabus):
     return html
 
 # === Main ===
-def main():
+async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     conv_handler = ConversationHandler(
@@ -1147,13 +1147,11 @@ def main():
     app.add_handler(CommandHandler("au", authorize_user))
     app.add_handler(CommandHandler("ru", revoke_user))
     app.add_handler(CommandHandler("send", send_command))
-
     app.add_handler(conv_handler)
 
     logger.info("Bot started...")
-    app.run_polling()
-
+    await app.run_polling()  # ✅ Await instead of direct call
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())  # ✅ Proper async entry point
