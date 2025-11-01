@@ -53,7 +53,10 @@ def extract_syllabus(description):
     if not description:
         return {}
     
-    soup = BeautifulSoup(description, 'html.parser')
+    # Decode HTML entities
+    decoded_description = unescape(description)
+    
+    soup = BeautifulSoup(decoded_description, 'html.parser')
     syllabus = {}
     
     # Find all strong tags and extract the subject and content
