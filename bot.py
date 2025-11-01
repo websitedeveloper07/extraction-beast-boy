@@ -20,8 +20,8 @@ from html import unescape
 from datetime import datetime, timezone, timedelta
 
 # === CONFIG ===
-BOT_TOKEN = "8176027436:AAEQHeGHjjCf6xc8m6ya3lDjV-Mh1xbgebE"
-OWNER_IDS = {8278658138}  # Bot owners
+BOT_TOKEN = "8281535597:AAH8cE1IHd8gciFTLkqx_fizHsV0fuK6A1Q"
+OWNER_IDS = {8516723793}  # Bot owners
 AUTHORIZED_USER_IDS = set(OWNER_IDS)
 PLAN = "PRO PLAN⚡"
 
