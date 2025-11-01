@@ -1132,7 +1132,7 @@ def generate_answer_key_table(data, test_title, syllabus):
     return html
 
 # === Main ===
-async def main():
+def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     conv_handler = ConversationHandler(
@@ -1150,11 +1150,8 @@ async def main():
     app.add_handler(conv_handler)
 
     logger.info("Bot started...")
-    await app.run_polling()
+    app.run_polling()
 
 
 if __name__ == "__main__":
-    # Fixed: Direct call to main() instead of using asyncio.run()
-    # This prevents the "event loop already running" error
-    import asyncio
-    asyncio.run(main())
+    main()
