@@ -54,17 +54,28 @@ def clean_html(html):
     return BeautifulSoup(html or "", "html.parser").get_text(separator="\n", strip=True)
 
 def extract_syllabus(description):
+    """Extract syllabus information from the description HTML"""
     soup = BeautifulSoup(description, 'html.parser')
-    lines = soup.get_text(separator="\n").splitlines()
-    subjects = {"Physics": "", "Chemistry": "", "Mathematics": ""}
-    for line in lines:
-        if "Physics" in line:
-            subjects["Physics"] = line.replace("Physics :", "").strip()
-        elif "Chemistry" in line:
-            subjects["Chemistry"] = line.replace("Chemistry :", "").strip()
-        elif "Mathematics" in line:
-            subjects["Mathematics"] = line.replace("Mathematics :", "").strip()
-    return subjects
+    syllabus = {}
+    
+    # Find all strong tags and extract the subject and content
+    for strong_tag in soup.find_all('strong'):
+        subject_text = strong_tag.get_text().strip()
+        if ':' in subject_text:
+            subject = subject_text.split(':')[0].strip()
+            # Get the content after the strong tag until the next <br> or end
+            content = ""
+            next_sibling = strong_tag.next_sibling
+            while next_sibling and next_sibling.name != 'br':
+                if hasattr(next_sibling, 'get_text'):
+                    content += next_sibling.get_text()
+                elif isinstance(next_sibling, str):
+                    content += next_sibling
+                next_sibling = next_sibling.next_sibling
+            
+            syllabus[subject] = content.strip()
+    
+    return syllabus
 
 def fetch_locale_json_from_api(nid, prefer_lang="843"):
     url = f"https://learn.aakashitutor.com/quiz/{nid}/getlocalequestions"
@@ -104,10 +115,13 @@ def fetch_test_title_and_description(nid):
         response = requests.get(url, timeout=10)
         data = response.json()
         if data:
-            return data[0].get("title", f"Test_{nid}"), data[0].get("description", "")
+            title = data[0].get("title", f"Test_{nid}")
+            description = data[0].get("description", "")
+            syllabus = extract_syllabus(description)
+            return title, description, syllabus
     except:
         pass
-    return f"Test_{nid}", ""
+    return f"Test_{nid}", "", {}
 
 def process_html_content(html):
     if not html:
@@ -299,22 +313,22 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ No valid data found for this CODE.")
         return ConversationHandler.END
 
-    # Fetch test title and description
-    title, desc = fetch_test_title_and_description(nid)
+    # Fetch test title, description, and syllabus
+    title, desc, syllabus = fetch_test_title_and_description(nid)
 
     user_id = update.effective_user.id
 
     if user_id == 7138086137:  # Harsh's ID
         htmls = {
-            "QP_with_Answers.html": generate_html_with_answers_user2(data, title, desc),
-            "Only_Answer_Key.html": generate_answer_key_table_user2(data, title, desc),
-            "Only_Question_Paper.html": generate_html_only_questions_user2(data, title, desc)
+            "QP_with_Answers.html": generate_html_with_answers_user2(data, title, desc, syllabus),
+            "Only_Answer_Key.html": generate_answer_key_table_user2(data, title, desc, syllabus),
+            "Only_Question_Paper.html": generate_html_only_questions_user2(data, title, desc, syllabus)
         }
     else:
         htmls = {
-            "QP_with_Answers.html": generate_html_with_answers(data, title, desc),
-            "Only_Answer_Key.html": generate_answer_key_table(data, title, desc),
-            "Only_Question_Paper.html": generate_html_only_questions(data, title, desc)
+            "QP_with_Answers.html": generate_html_with_answers(data, title, desc, syllabus),
+            "Only_Answer_Key.html": generate_answer_key_table(data, title, desc, syllabus),
+            "Only_Question_Paper.html": generate_html_only_questions(data, title, desc, syllabus)
         }
 
     # Prepare documents to send
@@ -360,10 +374,13 @@ def fetch_test_title_and_description(nid):
         response = requests.get(url, timeout=10)
         data = response.json()
         if data:
-            return data[0].get("title", f"Test_{nid}"), data[0].get("description", "")
+            title = data[0].get("title", f"Test_{nid}")
+            description = data[0].get("description", "")
+            syllabus = extract_syllabus(description)
+            return title, description, syllabus
     except:
         pass
-    return f"Test_{nid}", ""
+    return f"Test_{nid}", "", {}
 
 def process_html_content(html):
     if not html:
@@ -376,7 +393,7 @@ def process_html_content(html):
     return str(soup)
 
 # === HTML Generators - Modern Premium Theme ===
-def generate_html_with_answers(data, test_title, syllabus):
+def generate_html_with_answers(data, test_title, description, syllabus):
     """Generate HTML with questions and highlighted correct answers - Enhanced Vibrant Layout with Image Support"""
     html = f"""
 <!DOCTYPE html>
@@ -482,6 +499,46 @@ def generate_html_with_answers(data, test_title, syllabus):
         opacity: 0.6;
     }}
     
+    .syllabus-section {{
+        padding: 20px 25px;
+        background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+        border-bottom: 3px solid #1890ff;
+    }}
+    
+    .syllabus-title {{
+        font-family: 'Poppins', sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        color: #0050b3;
+        margin-bottom: 15px;
+        text-align: center;
+    }}
+    
+    .syllabus-grid {{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }}
+    
+    .syllabus-item {{
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 10px;
+        padding: 12px 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }}
+    
+    .syllabus-subject {{
+        font-weight: 600;
+        color: #0050b3;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }}
+    
+    .syllabus-content {{
+        color: #333;
+        font-size: 13px;
+    }}
+    
     .question-container {{
         padding: 20px;
     }}
@@ -521,6 +578,11 @@ def generate_html_with_answers(data, test_title, syllabus):
         }}
         
         .quote-section {{
+            page-break-after: avoid;
+            margin-bottom: 20px;
+        }}
+        
+        .syllabus-section {{
             page-break-after: avoid;
             margin-bottom: 20px;
         }}
@@ -754,6 +816,8 @@ def generate_html_with_answers(data, test_title, syllabus):
         }}
         .quote-section {{ padding: 20px; }}
         .quote-text {{ font-size: 18px; }}
+        .syllabus-section {{ padding: 20px; }}
+        .syllabus-grid {{ grid-template-columns: 1fr; }}
     }}
 </style>
 </head>
@@ -766,6 +830,28 @@ def generate_html_with_answers(data, test_title, syllabus):
     
     <div class='quote-section'>
         <div class='quote-text'>"𝗗𝗼𝗻'𝘁 𝘄𝗮𝗶𝘁 𝗳𝗼𝗿 𝗼𝗽𝗽𝗼𝗿𝘁𝘂𝗻𝗶𝘁𝘆. 𝗖𝗿𝗲𝗮𝘁𝗲 𝗶𝘁."</div>
+    </div>
+    
+    <div class='syllabus-section'>
+        <div class='syllabus-title'>📚 Syllabus</div>
+        <div class='syllabus-grid'>"""
+    
+    # Add syllabus items
+    if syllabus:
+        for subject, content in syllabus.items():
+            html += f"""
+            <div class='syllabus-item'>
+                <div class='syllabus-subject'>{subject}</div>
+                <div class='syllabus-content'>{content}</div>
+            </div>"""
+    else:
+        html += """
+            <div class='syllabus-item'>
+                <div class='syllabus-content'>Syllabus information not available</div>
+            </div>"""
+    
+    html += """
+        </div>
     </div>
 
     <div class='question-container'>
@@ -822,9 +908,9 @@ def generate_html_with_answers(data, test_title, syllabus):
 </html>"""
     return html
 
-def generate_html_only_questions(data, test_title, syllabus):
+def generate_html_only_questions(data, test_title, description, syllabus):
     """Generate HTML with only questions (no answer highlighting) - Modern Premium theme"""
-    return generate_html_with_answers(data, test_title, syllabus).replace(
+    return generate_html_with_answers(data, test_title, description, syllabus).replace(
         "class='option correct'", "class='option'"
     ).replace(
         "background: linear-gradient(135deg, #10b981 0%, #059669 100%);",
@@ -839,7 +925,8 @@ def generate_html_only_questions(data, test_title, syllabus):
         ".option.correct::before {",
         ".option.correct-hidden::before {"
     )
-def generate_answer_key_table(data, test_title, syllabus):
+
+def generate_answer_key_table(data, test_title, description, syllabus):
     """Generate HTML answer key table with watermark and repeating headers"""
     html = f"""
 <!DOCTYPE html>
@@ -877,7 +964,7 @@ def generate_answer_key_table(data, test_title, syllabus):
       height: 300px;
       background: url('https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png') no-repeat center;
       background-size: contain;
-      opacity: 1.5; /* Changed opacity to 80% */
+      opacity: 0.15; /* Changed opacity to 15% */
       transform: translate(-50%, -50%) rotate(-30deg);
       z-index: -1;
       pointer-events: none;
@@ -941,6 +1028,46 @@ def generate_answer_key_table(data, test_title, syllabus):
         font-weight: 600;
         color: #d84315;
         font-style: italic;
+    }}
+    
+    .syllabus-section {{
+        padding: 20px 25px;
+        background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+        border-bottom: 3px solid #1890ff;
+    }}
+    
+    .syllabus-title {{
+        font-family: 'Poppins', sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        color: #0050b3;
+        margin-bottom: 15px;
+        text-align: center;
+    }}
+    
+    .syllabus-grid {{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }}
+    
+    .syllabus-item {{
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 10px;
+        padding: 12px 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }}
+    
+    .syllabus-subject {{
+        font-weight: 600;
+        color: #0050b3;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }}
+    
+    .syllabus-content {{
+        color: #333;
+        font-size: 13px;
     }}
 
     .answer-key-container {{
@@ -1077,6 +1204,28 @@ def generate_answer_key_table(data, test_title, syllabus):
     
     <div class='quote-section'>
         <div class='quote-text'>"𝗗𝗼𝗻'𝘁 𝘄𝗮𝗶𝘁 𝗳𝗼𝗿 𝗼𝗽𝗽𝗼𝗿𝘁𝘂𝗻𝗶𝘁𝘆. 𝗖𝗿𝗲𝗮𝘁𝗲 𝗶𝘁."</div>
+    </div>
+    
+    <div class='syllabus-section'>
+        <div class='syllabus-title'>📚 Syllabus</div>
+        <div class='syllabus-grid'>"""
+    
+    # Add syllabus items
+    if syllabus:
+        for subject, content in syllabus.items():
+            html += f"""
+            <div class='syllabus-item'>
+                <div class='syllabus-subject'>{subject}</div>
+                <div class='syllabus-content'>{content}</div>
+            </div>"""
+    else:
+        html += """
+            <div class='syllabus-item'>
+                <div class='syllabus-content'>Syllabus information not available</div>
+            </div>"""
+    
+    html += """
+        </div>
     </div>
 
     <div class='answer-key-container'>
