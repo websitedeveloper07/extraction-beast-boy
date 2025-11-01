@@ -765,7 +765,7 @@ def generate_html_with_answers(data, test_title, syllabus):
     </div>
     
     <div class='quote-section'>
-        <div class='quote-text'>"𝗗𝗼𝗻’𝘁 𝘄𝗮𝗶𝘁 𝗳𝗼𝗿 𝗼𝗽𝗽𝗼𝗿𝘁𝘂𝗻𝗶𝘁𝘆. 𝗖𝗿𝗲𝗮𝘁𝗲 𝗶𝘁."</div>
+        <div class='quote-text'>"𝗗𝗼𝗻'𝘁 𝘄𝗮𝗶𝘁 𝗳𝗼𝗿 𝗼𝗽𝗽𝗼𝗿𝘁𝘂𝗻𝗶𝘁𝘆. 𝗖𝗿𝗲𝗮𝘁𝗲 𝗶𝘁."</div>
     </div>
 
     <div class='question-container'>
@@ -1076,7 +1076,7 @@ def generate_answer_key_table(data, test_title, syllabus):
     </div>
     
     <div class='quote-section'>
-        <div class='quote-text'>"𝗗𝗼𝗻’𝘁 𝘄𝗮𝗶𝘁 𝗳𝗼𝗿 𝗼𝗽𝗽𝗼𝗿𝘁𝘂𝗻𝗶𝘁𝘆. 𝗖𝗿𝗲𝗮𝘁𝗲 𝗶𝘁."</div>
+        <div class='quote-text'>"𝗗𝗼𝗻'𝘁 𝘄𝗮𝗶𝘁 𝗳𝗼𝗿 𝗼𝗽𝗽𝗼𝗿𝘁𝘂𝗻𝗶𝘁𝘆. 𝗖𝗿𝗲𝗮𝘁𝗲 𝗶𝘁."</div>
     </div>
 
     <div class='answer-key-container'>
@@ -1132,7 +1132,6 @@ def generate_answer_key_table(data, test_title, syllabus):
     return html
 
 # === Main ===
-# === Main ===
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
@@ -1155,8 +1154,7 @@ async def main():
 
 
 if __name__ == "__main__":
-    import nest_asyncio
+    # Fixed: Direct call to main() instead of using asyncio.run()
+    # This prevents the "event loop already running" error
     import asyncio
-
-    nest_asyncio.apply()
-    asyncio.get_event_loop().run_until_complete(main())
+    asyncio.run(main())
