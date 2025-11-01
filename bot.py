@@ -337,9 +337,9 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     return ConversationHandler.END
 
-# === HTML Generators - Original Layout with New Colors/Themes ===
+# === HTML Generators - Light Theme with New Colors ===
 def generate_html_with_answers(data, test_title, description, syllabus):
-    """Generate HTML with questions and highlighted correct answers - Original Layout with New Colors"""
+    """Generate HTML with questions and highlighted correct answers - Light Theme"""
     html = f"""
 <!DOCTYPE html>
 <html>
@@ -358,8 +358,8 @@ def generate_html_with_answers(data, test_title, description, syllabus):
     
     body {{
         font-family: 'Inter', sans-serif;
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        color: #e94560;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: #2d3748;
         padding: 25px;
         line-height: 1.6;
         min-height: 100vh;
@@ -368,16 +368,16 @@ def generate_html_with_answers(data, test_title, description, syllabus):
     .container {{
         max-width: 1000px;
         margin: 0 auto;
-        background: #0f3460;
+        background: white;
         border-radius: 16px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         overflow: hidden;
     }}
 
     .header {{
         text-align: center;
         padding: 25px 20px;
-        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         position: relative;
     }}
@@ -412,16 +412,16 @@ def generate_html_with_answers(data, test_title, description, syllabus):
 
     .quote-section {{
         padding: 18px 25px;
-        background: linear-gradient(135deg, #533483 0%, #7952b3 100%);
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
         text-align: center;
-        border-bottom: 3px solid #6f42c1;
+        border-bottom: 3px solid #ff8a65;
     }}
 
     .quote-text {{
         font-family: 'Poppins', sans-serif;
         font-size: 16px;
         font-weight: 600;
-        color: #f8f9fa;
+        color: #d84315;
         font-style: italic;
         position: relative;
     }}
@@ -446,15 +446,15 @@ def generate_html_with_answers(data, test_title, description, syllabus):
     
     .syllabus-section {{
         padding: 20px 25px;
-        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
-        border-bottom: 3px solid #e94560;
+        background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+        border-bottom: 3px solid #1890ff;
     }}
     
     .syllabus-title {{
         font-family: 'Poppins', sans-serif;
         font-size: 20px;
         font-weight: 600;
-        color: #e94560;
+        color: #0050b3;
         margin-bottom: 15px;
         text-align: center;
     }}
@@ -468,22 +468,23 @@ def generate_html_with_answers(data, test_title, description, syllabus):
     
     .syllabus-item {{
         flex: 1 1 45%;
-        background: rgba(233, 69, 96, 0.1);
-        border-left: 4px solid #e94560;
+        background: rgba(255, 255, 255, 0.7);
+        border-left: 4px solid #1890ff;
         padding: 12px 15px;
         border-radius: 8px;
         min-width: 200px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     }}
     
     .syllabus-subject {{
         font-weight: 600;
-        color: #ff6b6b;
+        color: #0050b3;
         margin-bottom: 5px;
         font-size: 16px;
     }}
     
     .syllabus-content {{
-        color: #f8f9fa;
+        color: #333;
         font-size: 14px;
     }}
     
@@ -548,20 +549,20 @@ def generate_html_with_answers(data, test_title, description, syllabus):
     }}
 
     .question-box {{
-        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
-        border: 2px solid #533483;
+        background: linear-gradient(135deg, #f7fafc 0%, #ffffff 100%);
+        border: 2px solid #e2e8f0;
         border-radius: 12px;
         margin-bottom: 25px;
         overflow: hidden;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         page-break-inside: avoid;
         break-inside: avoid;
     }}
 
     .question-box:hover {{
-        border-color: #e94560;
-        box-shadow: 0 8px 25px rgba(233, 69, 96, 0.3);
+        border-color: #667eea;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
         transform: translateY(-2px);
     }}
     
@@ -570,22 +571,22 @@ def generate_html_with_answers(data, test_title, description, syllabus):
         justify-content: space-between;
         align-items: center;
         padding: 15px 20px;
-        background: linear-gradient(135deg, #533483 0%, #7952b3 100%);
-        border-bottom: 3px solid #6f42c1;
+        background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+        border-bottom: 3px solid #cbd5e0;
     }}
     
     .question-number {{
-        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+        background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
         color: white;
         padding: 8px 16px;
         font-size: 15px;
         font-weight: 700;
         border-radius: 20px;
-        box-shadow: 0 4px 10px rgba(233, 69, 96, 0.3);
+        box-shadow: 0 4px 10px rgba(66, 153, 225, 0.3);
     }}
     
     .watermark {{
-        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+        background: linear-gradient(135deg, #fc8181 0%, #e53e3e 100%);
         color: white;
         padding: 6px 14px;
         font-size: 12px;
@@ -593,7 +594,7 @@ def generate_html_with_answers(data, test_title, description, syllabus):
         border-radius: 15px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        box-shadow: 0 3px 8px rgba(233, 69, 96, 0.3);
+        box-shadow: 0 3px 8px rgba(252, 129, 129, 0.3);
     }}
     
     .watermark a {{
@@ -608,7 +609,7 @@ def generate_html_with_answers(data, test_title, description, syllabus):
     .question-text {{
         font-size: 17px;
         margin-bottom: 20px;
-        color: #f8f9fa;
+        color: #2d3748;
         font-weight: 500;
         line-height: 1.6;
     }}
@@ -618,7 +619,7 @@ def generate_html_with_answers(data, test_title, description, syllabus):
         height: auto;
         border-radius: 10px;
         margin: 20px 0;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
         display: block;
     }}
     
@@ -631,9 +632,9 @@ def generate_html_with_answers(data, test_title, description, syllabus):
     .option {{
         padding: 15px 20px;
         font-size: 15px;
-        color: #f8f9fa;
-        border: 2px solid #533483;
-        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+        color: #4a5568;
+        border: 2px solid #e2e8f0;
+        background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
         border-radius: 8px;
         transition: all 0.3s ease;
         font-weight: 500;
@@ -642,22 +643,22 @@ def generate_html_with_answers(data, test_title, description, syllabus):
         min-height: 55px;
         display: flex;
         align-items: center;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }}
     
     .option:hover {{
-        border-color: #e94560;
-        background: linear-gradient(135deg, #533483 0%, #7952b3 100%);
+        border-color: #667eea;
+        background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
         transform: translateY(-2px);
-        box-shadow: 0 6px 18px rgba(233, 69, 96, 0.3);
+        box-shadow: 0 6px 18px rgba(102, 126, 234, 0.12);
     }}
     
     .option.correct {{
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        border-color: #28a745;
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        border-color: #38a169;
         color: white;
         font-weight: 600;
-        box-shadow: 0 6px 18px rgba(40, 167, 69, 0.4);
+        box-shadow: 0 6px 18px rgba(72, 187, 120, 0.3);
     }}
     
     .option.correct::after {{
@@ -680,7 +681,7 @@ def generate_html_with_answers(data, test_title, description, syllabus):
         font-weight: 700;
         margin-right: 10px;
         font-size: 15px;
-        color: #e94560;
+        color: #667eea;
         flex-shrink: 0;
     }}
 
@@ -697,7 +698,7 @@ def generate_html_with_answers(data, test_title, description, syllabus):
     }}
     
     .footer-section {{
-        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         text-align: center;
         padding: 30px;
@@ -727,18 +728,18 @@ def generate_html_with_answers(data, test_title, description, syllabus):
         max-width: 100%;
         height: auto;
         border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         margin: 10px 0;
         display: block;
     }}
 
     .image-placeholder {{
-        background: #16213e;
-        border: 2px dashed #533483;
+        background: #f7fafc;
+        border: 2px dashed #cbd5e0;
         border-radius: 8px;
         padding: 20px;
         text-align: center;
-        color: #e94560;
+        color: #a0aec0;
         font-style: italic;
         margin: 10px 0;
     }}
@@ -816,7 +817,7 @@ def generate_html_with_answers(data, test_title, description, syllabus):
             <div class='question-header'>
                 <div class='question-number'>Question {idx}</div>
                 <div class='watermark'>
-                    <a href='https://t.me/+cKL6ndt3C7IzMGE1' target='_blank'>@𝗛𝗮𝗿𝘀𝗵</a>
+                    <a href='https://t.me/+cKL6ndt3C7IzMGE1' target='_blank'>@𝗞𝗻𝗶𝗴𝗵𝘁𝗹𝗲𝗮𝗸𝘀</a>
                 </div>
             </div>
             <div class='question-content'>
@@ -850,7 +851,7 @@ def generate_html_with_answers(data, test_title, description, syllabus):
     
     <div class='footer-section'>
         <div class='footer-text'>"𝗙𝗮𝗹𝗹 𝘀𝗲𝘃𝗲𝗻 𝘁𝗶𝗺𝗲𝘀 𝗮𝗻𝗱 𝘀𝘁𝗮𝗻𝗱 𝘂𝗽 𝗲𝗶𝗴𝗵𝘁."</div>
-        <div class='signature'>Generated by Harsh</div>
+        <div class='signature'>Generated by Knightleaks</div>
     </div>
 </div>
 </body>
@@ -858,7 +859,7 @@ def generate_html_with_answers(data, test_title, description, syllabus):
     return html
 
 def generate_html_only_questions(data, test_title, description, syllabus):
-    """Generate HTML with only questions (no answer highlighting) - Original Layout with New Colors"""
+    """Generate HTML with only questions (no answer highlighting) - Light Theme"""
     return generate_html_with_answers(data, test_title, description, syllabus).replace(
         "class='option correct'", "class='option'"
     ).replace(
@@ -867,7 +868,7 @@ def generate_html_only_questions(data, test_title, description, syllabus):
     )
 
 def generate_answer_key_table(data, test_title, description, syllabus):
-    """Generate HTML answer key table with watermark and repeating headers - Original Layout with New Colors"""
+    """Generate HTML answer key table with watermark and repeating headers - Light Theme"""
     html = f"""
 <!DOCTYPE html>
 <html>
@@ -886,8 +887,8 @@ def generate_answer_key_table(data, test_title, description, syllabus):
     
     body {{
         font-family: 'Inter', sans-serif;
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        color: #e94560;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: #2d3748;
         padding: 25px;
         line-height: 1.6;
         min-height: 100vh;
@@ -925,9 +926,9 @@ def generate_answer_key_table(data, test_title, description, syllabus):
     .container {{
         max-width: 1200px;
         margin: 0 auto;
-        background: #0f3460;
+        background: white;
         border-radius: 16px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         overflow: hidden;
         position: relative;
         z-index: 1;
@@ -936,7 +937,7 @@ def generate_answer_key_table(data, test_title, description, syllabus):
     .header {{
         text-align: center;
         padding: 25px 20px;
-        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         position: relative;
     }}
@@ -957,30 +958,30 @@ def generate_answer_key_table(data, test_title, description, syllabus):
 
     .quote-section {{
         padding: 18px 25px;
-        background: linear-gradient(135deg, #533483 0%, #7952b3 100%);
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
         text-align: center;
-        border-bottom: 3px solid #6f42c1;
+        border-bottom: 3px solid #ff8a65;
     }}
 
     .quote-text {{
         font-family: 'Poppins', sans-serif;
         font-size: 16px;
         font-weight: 600;
-        color: #f8f9fa;
+        color: #d84315;
         font-style: italic;
     }}
     
     .syllabus-section {{
         padding: 20px 25px;
-        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
-        border-bottom: 3px solid #e94560;
+        background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+        border-bottom: 3px solid #1890ff;
     }}
     
     .syllabus-title {{
         font-family: 'Poppins', sans-serif;
         font-size: 20px;
         font-weight: 600;
-        color: #e94560;
+        color: #0050b3;
         margin-bottom: 15px;
         text-align: center;
     }}
@@ -994,22 +995,23 @@ def generate_answer_key_table(data, test_title, description, syllabus):
     
     .syllabus-item {{
         flex: 1 1 45%;
-        background: rgba(233, 69, 96, 0.1);
-        border-left: 4px solid #e94560;
+        background: rgba(255, 255, 255, 0.7);
+        border-left: 4px solid #1890ff;
         padding: 12px 15px;
         border-radius: 8px;
         min-width: 200px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     }}
     
     .syllabus-subject {{
         font-weight: 600;
-        color: #ff6b6b;
+        color: #0050b3;
         margin-bottom: 5px;
         font-size: 16px;
     }}
     
     .syllabus-content {{
-        color: #f8f9fa;
+        color: #333;
         font-size: 14px;
     }}
 
@@ -1021,15 +1023,15 @@ def generate_answer_key_table(data, test_title, description, syllabus):
     table.answer-key-table {{
         width: 100%;
         border-collapse: collapse;
-        border: 2px solid #533483;
+        border: 2px solid #e2e8f0;
         border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }}
 
     thead {{
         display: table-header-group; /* repeat headers on new page */
-        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+        background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
         color: white;
     }}
 
@@ -1049,19 +1051,19 @@ def generate_answer_key_table(data, test_title, description, syllabus):
     }}
 
     tbody td {{
-        border-bottom: 1px solid #533483;
+        border-bottom: 1px solid #e2e8f0;
         padding: 12px;
         font-size: 14px;
-        background: #16213e;
+        background: #ffffff;
         text-align: center;
     }}
 
     tbody tr:nth-child(even) td {{
-        background: #0f3460;
+        background: #f8fafc;
     }}
 
     .question-number {{
-        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+        background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
         color: white;
         padding: 6px 12px;
         border-radius: 12px;
@@ -1069,7 +1071,7 @@ def generate_answer_key_table(data, test_title, description, syllabus):
     }}
 
     .correct-option {{
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
         color: white;
         padding: 6px 12px;
         border-radius: 12px;
@@ -1077,13 +1079,13 @@ def generate_answer_key_table(data, test_title, description, syllabus):
     }}
 
     .answer-text {{
-        color: #f8f9fa;
+        color: #2d3748;
         font-weight: 500;
         line-height: 1.6;
         padding: 8px 12px;
-        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+        background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
         border-radius: 8px;
-        border-left: 3px solid #e94560;
+        border-left: 3px solid #667eea;
         text-align: left;
     }}
 
@@ -1096,24 +1098,24 @@ def generate_answer_key_table(data, test_title, description, syllabus):
         max-width: 200px;
         max-height: 100px;
         border-radius: 6px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         margin: 5px 0;
     }}
 
     .image-placeholder {{
-        background: #16213e;
-        border: 2px dashed #533483;
+        background: #f7fafc;
+        border: 2px dashed #cbd5e0;
         border-radius: 6px;
         padding: 10px;
         text-align: center;
-        color: #e94560;
+        color: #a0aec0;
         font-size: 12px;
         font-style: italic;
         margin: 5px 0;
     }}
 
     .footer-section {{
-        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         text-align: center;
         padding: 30px;
@@ -1216,7 +1218,7 @@ def generate_answer_key_table(data, test_title, description, syllabus):
     
     <div class='footer-section'>
         <div class='footer-text'>"𝗙𝗮𝗹𝗹 𝘀𝗲𝘃𝗲𝗻 𝘁𝗶𝗺𝗲𝘀 𝗮𝗻𝗱 𝘀𝘁𝗮𝗻𝗱 𝘂𝗽 𝗲𝗶𝗴𝗵𝘁."</div>
-        <div class='signature'>Generated by Harsh</div>
+        <div class='signature'>Generated by Knightleaks</div>
     </div>
 </div>
 </body>
