@@ -1132,6 +1132,7 @@ def generate_answer_key_table(data, test_title, syllabus):
     return html
 
 # === Main ===
+# === Main ===
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
@@ -1150,8 +1151,12 @@ async def main():
     app.add_handler(conv_handler)
 
     logger.info("Bot started...")
-    await app.run_polling()  # ✅ Await instead of direct call
+    await app.run_polling()
 
 
-if __name__ == '__main__':
-    asyncio.run(main())  # ✅ Proper async entry point
+if __name__ == "__main__":
+    import nest_asyncio
+    import asyncio
+
+    nest_asyncio.apply()
+    asyncio.get_event_loop().run_until_complete(main())
