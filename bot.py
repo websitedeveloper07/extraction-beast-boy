@@ -16,7 +16,7 @@ from datetime import datetime, timezone, timedelta
 
 # === CONFIG ===
 BOT_TOKEN = "8281535597:AAH8cE1IHd8gciFTLkqx_fizHsV0fuK6A1Q"
-OWNER_IDS = {8516723793 , 8278658138}  # Bot owners
+OWNER_IDS = {8516723793, 8278658138}  # Bot owners
 AUTHORIZED_USER_IDS = set(OWNER_IDS)
 PLAN = "PRO PLAN⚡"
 
@@ -337,16 +337,19 @@ async def handle_nid(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     return ConversationHandler.END
 
-# === HTML Generators - New Clean Layout ===
+# === HTML Generators - Original Layout with New Colors/Themes ===
 def generate_html_with_answers(data, test_title, description, syllabus):
-    """Generate HTML with questions and highlighted correct answers - Clean Modern Layout"""
-    html = f"""<!DOCTYPE html>
+    """Generate HTML with questions and highlighted correct answers - Original Layout with New Colors"""
+    html = f"""
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset='UTF-8'>
 <title>{test_title}</title>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
+    
     * {{
         margin: 0;
         padding: 0;
@@ -354,119 +357,243 @@ def generate_html_with_answers(data, test_title, description, syllabus):
     }}
     
     body {{
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #f8f9fa;
-        color: #212529;
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: #e94560;
+        padding: 25px;
         line-height: 1.6;
-        padding: 20px;
+        min-height: 100vh;
     }}
-    
-    .paper {{
-        max-width: 900px;
+
+    .container {{
+        max-width: 1000px;
         margin: 0 auto;
-        background: white;
-        box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        border-radius: 8px;
+        background: #0f3460;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         overflow: hidden;
     }}
-    
+
     .header {{
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 30px;
         text-align: center;
+        padding: 25px 20px;
+        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+        color: white;
         position: relative;
+    }}
+
+    .header::before {{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="90" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
     }}
     
     .header h1 {{
-        font-size: 32px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 28px;
         font-weight: 700;
-        margin-bottom: 10px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }}
-    
-    .header p {{
-        font-size: 16px;
+
+    .header-subtitle {{
+        font-size: 14px;
+        margin-top: 6px;
         opacity: 0.9;
+        position: relative;
+        z-index: 1;
+    }}
+
+    .quote-section {{
+        padding: 18px 25px;
+        background: linear-gradient(135deg, #533483 0%, #7952b3 100%);
+        text-align: center;
+        border-bottom: 3px solid #6f42c1;
+    }}
+
+    .quote-text {{
+        font-family: 'Poppins', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        color: #f8f9fa;
+        font-style: italic;
+        position: relative;
+    }}
+
+    .quote-text::before {{
+        content: '"';
+        font-size: 28px;
+        position: absolute;
+        left: -15px;
+        top: -6px;
+        opacity: 0.6;
+    }}
+
+    .quote-text::after {{
+        content: '"';
+        font-size: 28px;
+        position: absolute;
+        right: -15px;
+        bottom: -12px;
+        opacity: 0.6;
     }}
     
-    .syllabus {{
-        background: #e8f4fd;
-        padding: 25px;
-        border-bottom: 2px solid #bee5eb;
+    .syllabus-section {{
+        padding: 20px 25px;
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+        border-bottom: 3px solid #e94560;
     }}
     
-    .syllabus h2 {{
-        color: #0c5460;
+    .syllabus-title {{
+        font-family: 'Poppins', sans-serif;
         font-size: 20px;
+        font-weight: 600;
+        color: #e94560;
         margin-bottom: 15px;
         text-align: center;
     }}
     
-    .syllabus-grid {{
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    .syllabus-container {{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
         gap: 15px;
     }}
     
     .syllabus-item {{
-        background: white;
-        padding: 15px;
-        border-radius: 6px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        border-left: 4px solid #17a2b8;
-    }}
-    
-    .syllabus-item h3 {{
-        color: #0c5460;
-        font-size: 16px;
-        margin-bottom: 8px;
-    }}
-    
-    .syllabus-item p {{
-        color: #495057;
-        font-size: 14px;
-        margin: 0;
-    }}
-    
-    .content {{
-        padding: 30px;
-    }}
-    
-    .question {{
-        margin-bottom: 30px;
-        padding: 20px;
-        background: #f8f9fa;
+        flex: 1 1 45%;
+        background: rgba(233, 69, 96, 0.1);
+        border-left: 4px solid #e94560;
+        padding: 12px 15px;
         border-radius: 8px;
-        border: 1px solid #dee2e6;
-        position: relative;
+        min-width: 200px;
+    }}
+    
+    .syllabus-subject {{
+        font-weight: 600;
+        color: #ff6b6b;
+        margin-bottom: 5px;
+        font-size: 16px;
+    }}
+    
+    .syllabus-content {{
+        color: #f8f9fa;
+        font-size: 14px;
+    }}
+    
+    .question-container {{
+        padding: 20px;
+    }}
+
+    /* PDF Print Styles */
+    @media print {{
+        body {{
+            background: white;
+            padding: 10px;
+        }}
+        
+        .container {{
+            box-shadow: none;
+            border-radius: 0;
+        }}
+        
+        .question-box {{
+            page-break-inside: avoid;
+            break-inside: avoid;
+            margin-bottom: 15px;
+            box-shadow: none;
+            border: 1px solid #e2e8f0;
+        }}
+        
+        .question-box:hover {{
+            transform: none;
+            box-shadow: none;
+        }}
+        
+        .option:hover {{
+            transform: none;
+            box-shadow: none;
+        }}
+        
+        .header {{
+            page-break-after: avoid;
+        }}
+        
+        .quote-section {{
+            page-break-after: avoid;
+            margin-bottom: 20px;
+        }}
+        
+        .syllabus-section {{
+            page-break-after: avoid;
+            margin-bottom: 20px;
+        }}
+        
+        /* Ensure question and options stay together */
+        .question-content {{
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }}
+        
+        .options-grid {{
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }}
+    }}
+
+    .question-box {{
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+        border: 2px solid #533483;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }}
+
+    .question-box:hover {{
+        border-color: #e94560;
+        box-shadow: 0 8px 25px rgba(233, 69, 96, 0.3);
+        transform: translateY(-2px);
     }}
     
     .question-header {{
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #dee2e6;
+        padding: 15px 20px;
+        background: linear-gradient(135deg, #533483 0%, #7952b3 100%);
+        border-bottom: 3px solid #6f42c1;
     }}
     
     .question-number {{
-        background: #007bff;
+        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
         color: white;
-        padding: 5px 15px;
+        padding: 8px 16px;
+        font-size: 15px;
+        font-weight: 700;
         border-radius: 20px;
-        font-weight: bold;
-        font-size: 14px;
+        box-shadow: 0 4px 10px rgba(233, 69, 96, 0.3);
     }}
     
     .watermark {{
-        background: #dc3545;
+        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
         color: white;
-        padding: 5px 12px;
-        border-radius: 15px;
+        padding: 6px 14px;
         font-size: 12px;
-        font-weight: bold;
+        font-weight: 600;
+        border-radius: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 3px 8px rgba(233, 69, 96, 0.3);
     }}
     
     .watermark a {{
@@ -474,143 +601,227 @@ def generate_html_with_answers(data, test_title, description, syllabus):
         text-decoration: none;
     }}
     
-    .question-text {{
-        font-size: 16px;
-        margin-bottom: 20px;
-        color: #212529;
-        font-weight: 500;
+    .question-content {{
+        padding: 25px;
     }}
     
-    .options {{
+    .question-text {{
+        font-size: 17px;
+        margin-bottom: 20px;
+        color: #f8f9fa;
+        font-weight: 500;
+        line-height: 1.6;
+    }}
+
+    .question-image {{
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin: 20px 0;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+        display: block;
+    }}
+    
+    .options-grid {{
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 15px;
     }}
     
     .option {{
-        padding: 15px;
-        background: white;
-        border: 2px solid #dee2e6;
-        border-radius: 6px;
+        padding: 15px 20px;
         font-size: 15px;
-        cursor: pointer;
+        color: #f8f9fa;
+        border: 2px solid #533483;
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+        border-radius: 8px;
         transition: all 0.3s ease;
+        font-weight: 500;
+        cursor: pointer;
+        position: relative;
+        min-height: 55px;
         display: flex;
         align-items: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }}
     
     .option:hover {{
-        border-color: #007bff;
+        border-color: #e94560;
+        background: linear-gradient(135deg, #533483 0%, #7952b3 100%);
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,123,255,0.2);
+        box-shadow: 0 6px 18px rgba(233, 69, 96, 0.3);
     }}
     
     .option.correct {{
-        background: #28a745;
-        color: white;
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         border-color: #28a745;
+        color: white;
         font-weight: 600;
+        box-shadow: 0 6px 18px rgba(40, 167, 69, 0.4);
     }}
     
     .option.correct::after {{
         content: '✓';
-        margin-left: 10px;
-        font-weight: bold;
+        position: absolute;
+        top: 10px;
+        right: 15px;
         font-size: 18px;
-    }}
-    
-    .option-label {{
         font-weight: bold;
+        background: rgba(255, 255, 255, 0.25);
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }}
+
+    .option-label {{
+        font-weight: 700;
         margin-right: 10px;
-        color: #007bff;
-        min-width: 25px;
+        font-size: 15px;
+        color: #e94560;
+        flex-shrink: 0;
     }}
-    
+
     .option.correct .option-label {{
-        color: white;
+        color: rgba(255, 255, 255, 0.9);
+    }}
+
+    .option-image {{
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 10px 0;
+        display: block;
     }}
     
-    .footer {{
-        background: #343a40;
+    .footer-section {{
+        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
         color: white;
         text-align: center;
-        padding: 25px;
+        padding: 30px;
     }}
     
-    .footer p {{
-        font-size: 16px;
-        margin-bottom: 10px;
+    .footer-text {{
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        font-family: 'Poppins', sans-serif;
     }}
     
-    .footer .signature {{
+    .signature {{
         font-size: 14px;
-        opacity: 0.8;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.9;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px 16px;
+        border-radius: 20px;
+        display: inline-block;
     }}
-    
+
+    /* Enhanced Image Support */
     img {{
         max-width: 100%;
         height: auto;
-        border-radius: 6px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         margin: 10px 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        display: block;
     }}
-    
-    @media print {{
-        body {{ background: white; }}
-        .paper {{ box-shadow: none; }}
-        .question {{ page-break-inside: avoid; }}
-        .syllabus {{ page-break-after: always; }}
+
+    .image-placeholder {{
+        background: #16213e;
+        border: 2px dashed #533483;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        color: #e94560;
+        font-style: italic;
+        margin: 10px 0;
     }}
     
     @media (max-width: 768px) {{
-        .options {{ grid-template-columns: 1fr; }}
-        .header h1 {{ font-size: 24px; }}
-        .content {{ padding: 20px; }}
+        body {{ padding: 15px; }}
+        .header {{ padding: 30px 20px; }}
+        .header h1 {{ font-size: 28px; }}
+        .question-container {{ padding: 20px; }}
+        .question-header {{ 
+            flex-direction: column; 
+            gap: 12px;
+            text-align: center;
+        }}
+        .options-grid {{ 
+            grid-template-columns: 1fr; 
+            gap: 12px;
+        }}
+        .option {{ 
+            padding: 16px 18px; 
+            font-size: 15px;
+            min-height: 50px;
+        }}
+        .quote-section {{ padding: 20px; }}
+        .quote-text {{ font-size: 18px; }}
+        .syllabus-section {{ padding: 20px; }}
+        .syllabus-container {{ flex-direction: column; }}
+        .syllabus-item {{ flex: 1 1 100%; }}
     }}
 </style>
 </head>
 <body>
-<div class='paper'>
+<div class='container'>
     <div class='header'>
         <h1>{test_title}</h1>
-        <p>Question Paper with Answers</p>
+        <div class='header-subtitle'>"𝘚𝘶𝘤𝘤𝘦𝘴𝘴 𝘴𝘵𝘢𝘳𝘵𝘴 𝘸𝘪𝘵𝘩 𝘴𝘦𝘭𝘧-𝘥𝘪𝘴𝘤𝘪𝘱𝘭𝘪𝘯𝘦."</div>
     </div>
     
-    <div class='syllabus'>
-        <h2>📚 Syllabus</h2>
-        <div class='syllabus-grid'>"""
+    <div class='quote-section'>
+        <div class='quote-text'>"𝗗𝗼𝗻'𝘁 𝘄𝗮𝗶𝘁 𝗳𝗼𝗿 𝗼𝗽𝗽𝗼𝗿𝘁𝘂𝗻𝗶𝘁𝘆. 𝗖𝗿𝗲𝗮𝘁𝗲 𝗶𝘁."</div>
+    </div>
+    
+    <div class='syllabus-section'>
+        <div class='syllabus-title'>📚 Syllabus</div>
+        <div class='syllabus-container'>"""
     
     # Add syllabus items
     if syllabus:
         for subject, content in syllabus.items():
             html += f"""
             <div class='syllabus-item'>
-                <h3>{subject}</h3>
-                <p>{content}</p>
+                <div class='syllabus-subject'>{subject}</div>
+                <div class='syllabus-content'>{content}</div>
             </div>"""
     else:
         html += """
             <div class='syllabus-item'>
-                <p>Syllabus information not available</p>
+                <div class='syllabus-content'>Syllabus information not available</div>
             </div>"""
     
     html += """
         </div>
     </div>
-    
-    <div class='content'>"""
+
+    <div class='question-container'>
+"""
     
     for idx, q in enumerate(data, 1):
-        question_body = q.get('body', '').replace('src="//', 'src="https://')
-        
+        question_body_content = q.get('body') or ""
+        # Fix protocol-relative URLs in the question body HTML
+        question_body_content = question_body_content.replace('src="//', 'src="https://')
+
         html += f"""
-        <div class='question'>
+        <div class='question-box'>
             <div class='question-header'>
-                <span class='question-number'>Question {idx}</span>
-                <span class='watermark'><a href='https://t.me/+cKL6ndt3C7IzMGE1' target='_blank'>@Harsh</a></span>
+                <div class='question-number'>Question {idx}</div>
+                <div class='watermark'>
+                    <a href='https://t.me/+cKL6ndt3C7IzMGE1' target='_blank'>@𝗛𝗮𝗿𝘀𝗵</a>
+                </div>
             </div>
-            <div class='question-text'>{question_body}</div>
-            <div class='options'>"""
+            <div class='question-content'>
+                <div class='question-text'>{question_body_content}</div>
+                <div class='options-grid'>"""
         
         alternatives = q.get("alternatives", [])[:4]
         labels = ["A", "B", "C", "D"]
@@ -619,23 +830,26 @@ def generate_html_with_answers(data, test_title, description, syllabus):
             is_correct = str(opt.get("score_if_chosen")) == "1"
             class_name = "option correct" if is_correct else "option"
             
-            option_body = opt.get("answer", "").replace('src="//', 'src="https://')
+            option_body_content = opt.get("answer") or ""
+            # Fix protocol-relative URLs in the option answer HTML
+            option_body_content = option_body_content.replace('src="//', 'src="https://')
             
             html += f"""
                 <div class='{class_name}'>
-                    <span class='option-label'>{labels[opt_idx]}.</span>
-                    <span>{option_body}</span>
+                    <span class='option-label'>{labels[opt_idx]})</span>
+                    <div>{option_body_content}</div>
                 </div>"""
         
         html += """
+                </div>
             </div>
         </div>"""
     
     html += """
     </div>
     
-    <div class='footer'>
-        <p>"Fall seven times, stand up eight."</p>
+    <div class='footer-section'>
+        <div class='footer-text'>"𝗙𝗮𝗹𝗹 𝘀𝗲𝘃𝗲𝗻 𝘁𝗶𝗺𝗲𝘀 𝗮𝗻𝗱 𝘀𝘁𝗮𝗻𝗱 𝘂𝗽 𝗲𝗶𝗴𝗵𝘁."</div>
         <div class='signature'>Generated by Harsh</div>
     </div>
 </div>
@@ -644,23 +858,26 @@ def generate_html_with_answers(data, test_title, description, syllabus):
     return html
 
 def generate_html_only_questions(data, test_title, description, syllabus):
-    """Generate HTML with only questions (no answer highlighting)"""
+    """Generate HTML with only questions (no answer highlighting) - Original Layout with New Colors"""
     return generate_html_with_answers(data, test_title, description, syllabus).replace(
         "class='option correct'", "class='option'"
     ).replace(
-        ".option.correct::after { content: '✓'; margin-left: 10px; font-weight: bold; font-size: 18px; }",
-        ""
+        ".option.correct::after {",
+        ".option.correct-hidden::after {"
     )
 
 def generate_answer_key_table(data, test_title, description, syllabus):
-    """Generate HTML answer key table"""
-    html = f"""<!DOCTYPE html>
+    """Generate HTML answer key table with watermark and repeating headers - Original Layout with New Colors"""
+    html = f"""
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset='UTF-8'>
 <title>{test_title} - Answer Key</title>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
+    
     * {{
         margin: 0;
         padding: 0;
@@ -668,231 +885,337 @@ def generate_answer_key_table(data, test_title, description, syllabus):
     }}
     
     body {{
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #f8f9fa;
-        color: #212529;
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: #e94560;
+        padding: 25px;
         line-height: 1.6;
-        padding: 20px;
+        min-height: 100vh;
+        position: relative;
+    }}
+
+    /* 🔹 Watermark for screen and PDF/print */
+    body::before {{
+      content: '';
+      position: fixed; /* 'fixed' for screen, 'absolute' for print, this covers both */
+      top: 50%;
+      left: 50%;
+      width: 300px;
+      height: 300px;
+      background: url('https://i.postimg.cc/DwqS1pxt/image-removebg-preview-1.png') no-repeat center;
+      background-size: contain;
+      opacity: 0.15; /* Changed opacity to 15% */
+      transform: translate(-50%, -50%) rotate(-30deg);
+      z-index: -1;
+      pointer-events: none;
     }}
     
-    .paper {{
-        max-width: 900px;
+    @media print {{
+      body::before {{
+        position: absolute; /* Ensures it stays on the page content when printing */
+        content: ''; /* Required for print media queries */
+      }}
+    
+      body {{
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }}
+    }}
+    
+    .container {{
+        max-width: 1200px;
         margin: 0 auto;
-        background: white;
-        box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        border-radius: 8px;
+        background: #0f3460;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         overflow: hidden;
+        position: relative;
+        z-index: 1;
     }}
-    
+
     .header {{
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        color: white;
-        padding: 30px;
         text-align: center;
+        padding: 25px 20px;
+        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+        color: white;
+        position: relative;
     }}
-    
+
     .header h1 {{
-        font-size: 32px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 28px;
         font-weight: 700;
-        margin-bottom: 10px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        margin: 0;
+        z-index: 1;
     }}
-    
-    .header p {{
-        font-size: 16px;
+
+    .header-subtitle {{
+        font-size: 14px;
+        margin-top: 6px;
         opacity: 0.9;
     }}
-    
-    .syllabus {{
-        background: #e8f5e8;
-        padding: 25px;
-        border-bottom: 2px solid #c3e6cb;
+
+    .quote-section {{
+        padding: 18px 25px;
+        background: linear-gradient(135deg, #533483 0%, #7952b3 100%);
+        text-align: center;
+        border-bottom: 3px solid #6f42c1;
+    }}
+
+    .quote-text {{
+        font-family: 'Poppins', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        color: #f8f9fa;
+        font-style: italic;
     }}
     
-    .syllabus h2 {{
-        color: #155724;
+    .syllabus-section {{
+        padding: 20px 25px;
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+        border-bottom: 3px solid #e94560;
+    }}
+    
+    .syllabus-title {{
+        font-family: 'Poppins', sans-serif;
         font-size: 20px;
+        font-weight: 600;
+        color: #e94560;
         margin-bottom: 15px;
         text-align: center;
     }}
     
-    .syllabus-grid {{
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    .syllabus-container {{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
         gap: 15px;
     }}
     
     .syllabus-item {{
-        background: white;
-        padding: 15px;
-        border-radius: 6px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        border-left: 4px solid #28a745;
+        flex: 1 1 45%;
+        background: rgba(233, 69, 96, 0.1);
+        border-left: 4px solid #e94560;
+        padding: 12px 15px;
+        border-radius: 8px;
+        min-width: 200px;
     }}
     
-    .syllabus-item h3 {{
-        color: #155724;
+    .syllabus-subject {{
+        font-weight: 600;
+        color: #ff6b6b;
+        margin-bottom: 5px;
         font-size: 16px;
-        margin-bottom: 8px;
     }}
     
-    .syllabus-item p {{
-        color: #495057;
+    .syllabus-content {{
+        color: #f8f9fa;
         font-size: 14px;
-        margin: 0;
     }}
-    
-    .content {{
-        padding: 30px;
+
+    .answer-key-container {{
+        padding: 20px;
     }}
-    
-    table {{
+
+    /* ✅ Use real table so headers repeat on page breaks */
+    table.answer-key-table {{
         width: 100%;
         border-collapse: collapse;
-        margin: 20px 0;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        border: 2px solid #533483;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }}
-    
-    th {{
-        background: #28a745;
+
+    thead {{
+        display: table-header-group; /* repeat headers on new page */
+        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
         color: white;
-        padding: 15px;
-        text-align: left;
+    }}
+
+    thead th {{
+        padding: 14px;
+        font-family: 'Poppins', sans-serif;
         font-weight: 600;
-        font-size: 16px;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: center;
     }}
-    
-    td {{
-        padding: 12px 15px;
-        border-bottom: 1px solid #dee2e6;
-        font-size: 15px;
+
+    thead th:last-child {{
+        border-right: none;
     }}
-    
-    tr:nth-child(even) {{
-        background: #f8f9fa;
+
+    tbody td {{
+        border-bottom: 1px solid #533483;
+        padding: 12px;
+        font-size: 14px;
+        background: #16213e;
+        text-align: center;
     }}
-    
-    tr:hover {{
-        background: #e8f5e8;
+
+    tbody tr:nth-child(even) td {{
+        background: #0f3460;
     }}
-    
-    .q-number {{
-        background: #007bff;
+
+    .question-number {{
+        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
         color: white;
-        padding: 5px 10px;
-        border-radius: 15px;
-        font-weight: bold;
-        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 12px;
+        font-weight: 700;
     }}
-    
+
     .correct-option {{
-        background: #ffc107;
-        color: #212529;
-        padding: 5px 10px;
-        border-radius: 15px;
-        font-weight: bold;
-        display: inline-block;
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 12px;
+        font-weight: 700;
     }}
-    
+
     .answer-text {{
-        font-style: italic;
-        color: #495057;
+        color: #f8f9fa;
+        font-weight: 500;
+        line-height: 1.6;
+        padding: 8px 12px;
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+        border-radius: 8px;
+        border-left: 3px solid #e94560;
+        text-align: left;
     }}
-    
-    .footer {{
-        background: #343a40;
+
+    /* Ensure italics for text within the answer-text class */
+    .answer-text em {{
+        font-style: italic;
+    }}
+
+    .answer-image {{
+        max-width: 200px;
+        max-height: 100px;
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        margin: 5px 0;
+    }}
+
+    .image-placeholder {{
+        background: #16213e;
+        border: 2px dashed #533483;
+        border-radius: 6px;
+        padding: 10px;
+        text-align: center;
+        color: #e94560;
+        font-size: 12px;
+        font-style: italic;
+        margin: 5px 0;
+    }}
+
+    .footer-section {{
+        background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
         color: white;
         text-align: center;
-        padding: 25px;
+        padding: 30px;
     }}
-    
-    .footer p {{
-        font-size: 16px;
-        margin-bottom: 10px;
+
+    .footer-text {{
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        font-family: 'Poppins', sans-serif;
     }}
-    
-    .footer .signature {{
+
+    .signature {{
         font-size: 14px;
-        opacity: 0.8;
-    }}
-    
-    @media print {{
-        body {{ background: white; }}
-        .paper {{ box-shadow: none; }}
-        thead {{ display: table-header-group; }}
-    }}
-    
-    @media (max-width: 768px) {{
-        .content {{ padding: 20px; }}
-        th, td {{ padding: 10px; font-size: 14px; }}
+        font-weight: 600;
+        text-transform: uppercase;
+        opacity: 0.9;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px 16px;
+        border-radius: 20px;
+        display: inline-block;
     }}
 </style>
 </head>
 <body>
-<div class='paper'>
+<div class='container'>
     <div class='header'>
         <h1>{test_title}</h1>
-        <p>Answer Key</p>
+        <div class='header-subtitle'>Answer Key</div>
     </div>
     
-    <div class='syllabus'>
-        <h2>📚 Syllabus</h2>
-        <div class='syllabus-grid'>"""
+    <div class='quote-section'>
+        <div class='quote-text'>"𝗗𝗼𝗻'𝘁 𝘄𝗮𝗶𝘁 𝗳𝗼𝗿 𝗼𝗽𝗽𝗼𝗿𝘁𝘂𝗻𝗶𝘁𝘆. 𝗖𝗿𝗲𝗮𝘁𝗲 𝗶𝘁."</div>
+    </div>
+    
+    <div class='syllabus-section'>
+        <div class='syllabus-title'>📚 Syllabus</div>
+        <div class='syllabus-container'>"""
     
     # Add syllabus items
     if syllabus:
         for subject, content in syllabus.items():
             html += f"""
             <div class='syllabus-item'>
-                <h3>{subject}</h3>
-                <p>{content}</p>
+                <div class='syllabus-subject'>{subject}</div>
+                <div class='syllabus-content'>{content}</div>
             </div>"""
     else:
         html += """
             <div class='syllabus-item'>
-                <p>Syllabus information not available</p>
+                <div class='syllabus-content'>Syllabus information not available</div>
             </div>"""
     
     html += """
         </div>
     </div>
-    
-    <div class='content'>
-        <table>
+
+    <div class='answer-key-container'>
+        <table class='answer-key-table'>
             <thead>
                 <tr>
                     <th>Question No.</th>
                     <th>Correct Option</th>
-                    <th>Answer</th>
+                    <th>Answer Text</th>
                 </tr>
             </thead>
-            <tbody>"""
-    
+            <tbody>
+"""
+    # loop for rows
     for idx, q in enumerate(data, 1):
         correct_option = ""
-        correct_answer = "No answer"
+        correct_answer = "<em>No answer</em>"
         
         for i, opt in enumerate(q.get("alternatives", [])[:4]):
             if str(opt.get("score_if_chosen")) == "1":
                 correct_option = ["A", "B", "C", "D"][i]
-                answer_content = opt.get("answer", "").replace('src="//', 'src="https://')
-                correct_answer = answer_content if answer_content else "No answer"
+                
+                # Get the answer content, which may contain HTML with image tags
+                answer_content = opt.get("answer", "").strip()
+                
+                # Fix protocol-relative URLs in the answer content
+                if answer_content:
+                    answer_content = answer_content.replace('src="//', 'src="https://')
+                    
+                # Wrap the content in <em> tags to make it italic
+                correct_answer = f"<em>{answer_content}</em>" if answer_content else "<em>No answer</em>"
                 break
-        
+
         html += f"""
-                <tr>
-                    <td><span class='q-number'>{idx}</span></td>
-                    <td><span class='correct-option'>{correct_option}</span></td>
-                    <td class='answer-text'>{correct_answer}</td>
-                </tr>"""
-    
+            <tr>
+                <td><span class='question-number'>{idx}</span></td>
+                <td><span class='correct-option'>{correct_option}</span></td>
+                <td><div class='answer-text'>{correct_answer}</div></td>
+            </tr>"""
+
     html += """
             </tbody>
         </table>
     </div>
     
-    <div class='footer'>
-        <p>"Fall seven times, stand up eight."</p>
+    <div class='footer-section'>
+        <div class='footer-text'>"𝗙𝗮𝗹𝗹 𝘀𝗲𝘃𝗲𝗻 𝘁𝗶𝗺𝗲𝘀 𝗮𝗻𝗱 𝘀𝘁𝗮𝗻𝗱 𝘂𝗽 𝗲𝗶𝗴𝗵𝘁."</div>
         <div class='signature'>Generated by Harsh</div>
     </div>
 </div>
